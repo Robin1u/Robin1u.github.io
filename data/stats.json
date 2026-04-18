@@ -1,0 +1,14 @@
+{
+    "bilibili": {
+        "followers": 8200,
+        "videos": 42,
+        "views": 180000,
+        "updated": "2026-04-18"
+    },
+    "github": {
+        "followers": 312,
+        "repos": 18,
+        "stars": 420,
+        "updated": "2026-04-18"
+    }
+}

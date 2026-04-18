@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Fetch and sort life data by date (newest first)
+// 获取生活记录数据并按日期降序排列
+const allLifePhotos = await getCollection('life');
+const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
+---
+<BaseLayout title="生活记录" activePage="life">
+  <section class="page-hero">
+    <h1>生活记录</h1>
+    <p>一些日常碎片的记录与分享。</p>
+  </section>
+
+  <div class="life-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem;">
+    {sortedPhotos.map(photo => (
+      <article class:list={["life-card", { wide: photo.data.wide, tall: photo.data.tall }]}>
+        <img 
+          src={photo.data.image} 
+          alt={photo.data.title} 
+          loading="lazy" 
+          style="width: 100%; height: auto; border-radius: 8px; object-fit: cover;"
+        />
+        <div class="life-card-info" style="margin-top: 0.5rem;">
+          <h3 style="font-size: 1rem; margin: 0;">{photo.data.title}</h3>
+          {photo.data.caption && <p style="font-size: 0.875rem; color: #666; margin: 0.25rem 0;">{photo.data.caption}</p>}
+          <time style="font-size: 0.75rem; color: #999;">{new Date(photo.data.date).toLocaleDateString('zh-CN')}</time>
+        </div>
+      </article>
+    ))}
+  </div>
+</BaseLayout>

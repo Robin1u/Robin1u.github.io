@@ -1,0 +1,46 @@
+backend:
+  name: github
+  repo: robin1u/robin1u.github.io # Using your specific repository
+  branch: main # Branch to update
+
+media_folder: "public/images" # Where images are saved in the repo
+public_folder: "/images" # The base path for images in the frontmatter
+
+collections:
+  - name: "projects"
+    label: "作品集 (Projects)"
+    folder: "src/content/projects"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - {label: "标题 (Title)", name: "title", widget: "string"}
+      - {label: "描述 (Description)", name: "description", widget: "string"}
+      - {label: "发布日期 (Date)", name: "date", widget: "datetime"}
+      - {label: "封面图 (Cover Image)", name: "image", widget: "image", required: false}
+      - {label: "技术栈标签 (Tags)", name: "tags", widget: "list", required: false}
+      - {label: "正文内容 (Body)", name: "body", widget: "markdown"}
+
+  - name: "thoughts"
+    label: "观点 & 文章 (Thoughts)"
+    folder: "src/content/thoughts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - {label: "标题 (Title)", name: "title", widget: "string"}
+      - {label: "发布日期 (Date)", name: "date", widget: "datetime"}
+      - {label: "正文内容 (Body)", name: "body", widget: "markdown"}
+
+  - name: "life"
+    label: "生活 & 照片 (Life)"
+    folder: "src/content/life"
+    create: true
+    extension: "json" # Since your life collection uses JSON
+    format: "json"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - {label: "标题 (Title)", name: "title", widget: "string"}
+      - {label: "日期 (Date)", name: "date", widget: "datetime"}
+      - {label: "图片 (Image)", name: "image", widget: "image"}
+      - {label: "说明文字 (Caption)", name: "caption", widget: "string", required: false}
+      - {label: "宽版显示 (Wide)", name: "wide", widget: "boolean", default: false, required: false}
+      - {label: "高版显示 (Tall)", name: "tall", widget: "boolean", default: false, required: false}

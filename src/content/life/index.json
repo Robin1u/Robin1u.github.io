@@ -1,0 +1,26 @@
+[
+  {
+    "id": "coffee-shop",
+    "title": "咖啡馆工作日",
+    "caption": "找到了一个有好光线的位置，效率出奇地高",
+    "image": "/images/life-coffee.jpg",
+    "date": "2026-04-15T00:00:00Z",
+    "wide": true
+  },
+  {
+    "id": "desk-setup",
+    "title": "桌面改造完成",
+    "caption": "花了一个周末，总算调整到满意的状态",
+    "image": "/images/life-desk.jpg",
+    "date": "2026-03-20T00:00:00Z",
+    "wide": false
+  },
+  {
+    "id": "hiking",
+    "title": "周末徒步",
+    "caption": "爬到山顶才发现手机没电了",
+    "image": "/images/life-hiking.jpg",
+    "date": "2026-03-08T00:00:00Z",
+    "wide": false
+  }
+]

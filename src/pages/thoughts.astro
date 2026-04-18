@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const allThoughts = await getCollection('thoughts', ({ data }) => !data.draft);
+const sorted = allThoughts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+<BaseLayout title="想法" activePage="thoughts">
+
+  <div class="thoughts-layout">
+    <div class="thoughts-main">
+      <div class="thoughts-header">
+        <h1 style="font-size: clamp(28px,3vw,42px); font-weight:800; color:var(--color-white); letter-spacing:-0.03em;">想法</h1>
+        <p style="color:var(--color-text-muted);margin-top:12px">关于设计、代码和生活的不定期记录。</p>
+        <div class="tab-nav">
+          <button class="tab-btn active">文章</button>
+          <button class="tab-btn">生活</button>
+        </div>
+      </div>
+
+      <div class="tab-content active">
+        <div class="post-list">
+          {sorted.map(post => (
+            <a href={`/thoughts/${post.id}`} class="post-item" style="display:block">
+              <div class="post-item-meta">
+                <span class="post-date">{post.data.date.toLocaleDateString('zh-CN')}</span>
+                <span class="post-category">{post.data.category}</span>
+              </div>
+              <h3>{post.data.title}</h3>
+              <p>{post.data.description}</p>
+              <div class="post-item-footer">
+                <span class="post-read-time">{post.data.readTime} min read</span>
+                <span class="post-arrow">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <aside class="thoughts-sidebar">
+      <div class="sidebar-widget">
+        <div class="widget-title">话题</div>
+        <div class="topic-list">
+          <div class="topic-item">观点 <span class="topic-count">{sorted.filter(p => p.data.category === '观点').length}</span></div>
+          <div class="topic-item">设计 <span class="topic-count">{sorted.filter(p => p.data.category === '设计').length}</span></div>
+          <div class="topic-item">生活 <span class="topic-count">{sorted.filter(p => p.data.category === '生活').length}</span></div>
+        </div>
+      </div>
+      <div class="sidebar-widget">
+        <div class="quote-block">
+          <p class="quote-text">"作品本身不是那张截图。真正的作品，是截图背后的思考过程。"</p>
+          <span class="quote-author">— Robin Lu</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+</BaseLayout>

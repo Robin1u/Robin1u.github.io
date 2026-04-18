@@ -1,0 +1,57 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const allProjects = await getCollection('projects', ({ data }) => !data.draft);
+const sorted = allProjects.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+<BaseLayout title="作品集" activePage="portfolio">
+
+  <div class="page-hero">
+    <h1>作品集</h1>
+    <p>这里收录了我从构思到部署亲手设计和开发的一系列项目。</p>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">全部</button>
+    <button class="filter-btn" data-filter="web">Web 应用</button>
+    <button class="filter-btn" data-filter="design">设计系统</button>
+    <button class="filter-btn" data-filter="tool">工具</button>
+    <button class="filter-btn" data-filter="mobile">移动端</button>
+  </div>
+
+  <div class="portfolio-grid">
+    {sorted.map(project => (
+  <a href={`/portfolio/${project.id}`} class="portfolio-card" data-category={project.data.category}>
+    <div class="portfolio-card-image">
+      {project.data.image
+        ? <img src={project.data.image} alt={project.data.title} loading="lazy" width="600" height="338" />
+        : <div class="img-placeholder">{project.data.title.slice(0,2).toUpperCase()}</div>
+      }
+    </div>
+    <div class="portfolio-card-body">
+      <div class="portfolio-card-tags">
+        <span class="tag accent">
+          {project.data.category === 'web' ? 'Web 应用'
+          : project.data.category === 'design' ? '设计系统'
+          : project.data.category === 'tool' ? '工具'
+          : '移动端'}
+        </span>
+        {project.data.tags.slice(0,2).map(tag => <span class="tag">{tag}</span>)}
+      </div>
+      <h3 class="portfolio-card-title">{project.data.title}</h3>
+      <p class="portfolio-card-desc">{project.data.description}</p>
+      <span class="portfolio-card-link">
+        查看详情
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </span>
+    </div>
+  </a>
+))}
+  </div>
+
+  <footer class="page-footer">
+    <span class="footer-copy">© 2026 Robin Lu</span>
+  </footer>
+
+</BaseLayout>

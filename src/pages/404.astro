@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL;
+---
+<BaseLayout title="404 - 页面未找到" activePage="404">
+  <section class="error-page" style="text-align: center; padding: 4rem 1rem;">
+    <h1 style="font-size: 4rem; margin-bottom: 1rem;">404</h1>
+    <p style="font-size: 1.25rem; margin-bottom: 2rem;">抱歉，您要寻找的页面似乎去火星了。</p>
+    <a href={`${base}`} class="nav-link" style="padding: 0.75rem 1.5rem; background: #333; color: white; border-radius: 4px; text-decoration: none;">返回首页</a>
+  </section>
+</BaseLayout>
