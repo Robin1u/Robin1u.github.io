@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="陈亦凡的观点与生活分享 — 关于设计、技术与日常的思考。" />
+  <title>观点分享 — 陈亦凡</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .reveal.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 {
+      transition-delay: 0.1s;
+    }
+
+    .reveal-delay-2 {
+      transition-delay: 0.2s;
+    }
+
+    .reveal-delay-3 {
+      transition-delay: 0.3s;
+    }
+
+    /* 阅读弹窗 */
+    .read-modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 500;
+      overflow-y: auto;
+    }
+
+    .read-modal-backdrop.open {
+      display: block;
+    }
+
+    .read-modal {
+      max-width: 680px;
+      margin: 48px auto;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 48px;
+      position: relative;
+      animation: slideUp 0.35s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .read-modal-close {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: color var(--transition), background var(--transition);
+    }
+
+    .read-modal-close:hover {
+      color: var(--color-text);
+      background: var(--color-border);
+    }
+
+    .read-modal-close svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .article-title {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--color-white);
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 24px;
+    }
+
+    .article-body p {
+      font-size: 15px;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    .article-body h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-white);
+      margin: 32px 0 12px;
+    }
+
+    .article-body blockquote {
+      border-left: 3px solid var(--color-accent);
+      padding: 12px 20px;
+      margin: 24px 0;
+      background: rgba(232, 213, 163, 0.04);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .article-body blockquote p {
+      font-size: 16px;
+      font-style: italic;
+      color: var(--color-text);
+      margin: 0;
+    }
+
+    /* 生活区卡片错落感 */
+    .life-card.tall .life-card-img {
+      aspect-ratio: 3 / 4;
+    }
+
+    .life-card.wide {
+      grid-column: span 2;
+    }
+
+    .life-card.wide .life-card-img {
+      aspect-ratio: 21 / 9;
+    }
+
+    @media (max-width: 768px) {
+      .read-modal {
+        margin: 16px;
+        padding: 28px 20px;
+      }
+
+      .read-modal-close {
+        top: 12px;
+        right: 12px;
+      }
+
+      .article-title {
+        font-size: 22px;
+      }
+
+      .life-card.wide {
+        grid-column: span 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <header class="mobile-header">
+    <span class="mobile-header-name">陈亦凡</span>
+    <button class="mobile-menu-btn" id="menuBtn" aria-label="切换导航">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="layout">
+
+    <!-- ── 侧边栏 ────────────────────────────────── -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="主导航">
+      <div class="sidebar-logo">
+        <div class="name">陈亦凡</div>
+        <div class="title"><span class="status-dot"></span>正在寻找机会</div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-label">导航</div>
+          <a href="index.html" class="nav-link" data-page="home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+            首页
+          </a>
+          <a href="portfolio.html" class="nav-link" data-page="portfolio">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <path d="m8 21 4-4 4 4" />
+              <path d="M12 17v4" />
+            </svg>
+            作品集
+          </a>
+          <a href="thoughts.html" class="nav-link active" data-page="thoughts">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            观点分享
+          </a>
+          <a href="channel.html" class="nav-link" data-page="channel">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polygon points="23 7 16 12 23 17 23 7" />
+              <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+            </svg>
+            我的频道
+          </a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-label">联系</div>
+          <a href="channel.html#collab" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            合作方式
+          </a>
+          <a href="mailto:alex@example.com" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            发送邮件
+          </a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-footer-label">在这里找到我</div>
+        <div class="social-links">
+          <a href="#" class="social-link" aria-label="GitHub" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+            </svg>
+          </a>
+          <a href="#" class="social-link" aria-label="X / Twitter" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+          </a>
+          <a href="#" class="social-link" aria-label="Bilibili" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.789 1.894v7.36c.02.764.283 1.396.789 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.497.769-1.129.789-1.893v-7.36c-.02-.765-.283-1.396-.789-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.386-.947.258-.257.574-.386.947-.386zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── 主内容区 ──────────────────────────────── -->
+    <main class="main-content" role="main">
+
+      <div class="thoughts-layout" data-tabs>
+
+        <!-- 左：内容区 -->
+        <div class="thoughts-main">
+          <header class="thoughts-header">
+            <h1
+              style="font-size: clamp(28px, 3.5vw, 44px); font-weight: 800; color: var(--color-white); letter-spacing: -0.03em; margin-bottom: 8px;">
+              观点 &amp; 生活</h1>
+            <p style="font-size: 14px; color: var(--color-text-muted); line-height: 1.6;">关于设计、技术与世界的一些想法，以及日常生活的切片。</p>
+
+            <!-- 标签页导航 -->
+            <nav class="tab-nav" aria-label="内容分类">
+              <button class="tab-btn active" aria-selected="true">个人观点</button>
+              <button class="tab-btn" aria-selected="false">设计笔记</button>
+              <button class="tab-btn" aria-selected="false">生活分享</button>
+            </nav>
+          </header>
+
+          <!-- ── 标签 1：个人观点 ─────────────────── -->
+          <div class="tab-content active" id="tab-opinions" role="tabpanel">
+            <div class="post-list">
+
+              <article class="post-item reveal" onclick="openArticle('a1')" role="button" tabindex="0"
+                aria-label="大多数作品集都很糟糕 — 打开文章">
+                <div class="post-item-meta">
+                  <time class="post-date">2026 年 4 月 12 日</time>
+                  <span class="post-category">观点</span>
+                </div>
+                <h2>大多数作品集都很糟糕 —— 原因在这里</h2>
+                <p>我们都见过这种作品集：视觉很漂亮，却什么都没讲清楚。一堆精美的截图，零背景、零思考。下面是我对"作品集到底应该做什么"的看法。</p>
+                <div class="post-item-footer">
+                  <span class="post-read-time">阅读约 5 分钟</span>
+                  <span class="post-arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </span>
+                </div>
+              </article>
+
+              <article class="post-item reveal" onclick="openArticle('a2')" role="button" tabindex="0"
+                aria-label="设计系统是懦弱者的选择 — 打开文章">
+                <div class="post-item-meta">
+                  <time class="post-date">2026 年 3 月 28 日</time>
+                  <span class="post-category">热评</span>
+                </div>
+                <h2>设计系统是懦弱者的选择（有时候是）</h2>
+                <p>别误会 —— 我很喜欢好的设计系统。但我见过太多团队把"我们得先搞一套设计系统"当作不上线的借口。时机与场景都很重要。</p>
+                <div class="post-item-footer">
+                  <span class="post-read-time">阅读约 4 分钟</span>
+                  <span class="post-arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </span>
+                </div>
+              </article>
+
+              <article class="post-item reveal" onclick="openArticle('a3')" role="button" tabindex="0"
+                aria-label="CSS 的回归 — 打开文章">
+                <div class="post-item-meta">
+                  <time class="post-date">2026 年 3 月 10 日</time>
+                  <span class="post-category">技术</span>
+                </div>
+                <h2>CSS 正在真正回归，我感到非常兴奋</h2>
+                <p>容器查询、:has()、级联层、锚点定位。2026 年的 CSS 真的让人激动，我不打算再假装平静了。让我们聊聊到底变了什么。</p>
+                <div class="post-item-footer">
+                  <span class="post-read-time">阅读约 7 分钟</span>
+                  <span class="post-arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </span>
+                </div>
+              </article>
+
+              <article class="post-item reveal" onclick="openArticle('a4')" role="button" tabindex="0"
+                aria-label="公开学习 — 打开文章">
+                <div class="post-item-meta">
+                  <time class="post-date">2026 年 2 月 18 日</time>
+                  <span class="post-category">思维</span>
+                </div>
+                <h2>"公开学习"彻底改变了我对成长的认知</h2>
+                <p>一年前我开始记录自己学习的一切 —— 包括犯过的错。那种感觉并不舒适。但这是作为学生以来对我职业生涯帮助最大的一件事。</p>
+                <div class="post-item-footer">
+                  <span class="post-read-time">阅读约 6 分钟</span>
+                  <span class="post-arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </span>
+                </div>
+              </article>
+
+            </div>
+          </div>
+
+          <!-- ── 标签 2：设计笔记 ─────────────── -->
+          <div class="tab-content" id="tab-design" role="tabpanel">
+            <div class="post-list">
+
+              <article class="post-item reveal" onclick="openArticle('d1')" role="button" tabindex="0">
+                <div class="post-item-meta">
+                  <time class="post-date">2026 年 4 月 08 日</time>
+                  <span class="post-category">字体排印</span>
+                </div>
+                <h2>我真正在用的 8 条字体排印法则</h2>
+                <p>不是清单文。是我在交付 20+ 个界面后沉淀下来的真实经验。剧透：行高决定一切，大多数人设置得都太紧了。</p>
+                <div class="post-item-footer">
+                  <span class="post-read-time">阅读约 8 分钟</span>
+                  <span class="post-arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </span>
+                </div>
+              </article>
+
+              <article class="post-item reveal" onclick="openArticle('d2')" role="button" tabindex="0">
+                <div class="post-item-meta">
+                  <time class="post-date">2026 年 3 月 20 日</time>
+                  <span class="post-category">色彩</span>
+                </div>
+                <h2>为什么深色模式比看起来更难做</h2>
+                <p>把颜色反过来并不是深色模式。深色模式是一次对整个色彩体系的重新思考 —— 层次、对比、在无光之处阴影该如何工作。</p>
+                <div class="post-item-footer">
+                  <span class="post-read-time">阅读约 5 分钟</span>
+                  <span class="post-arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </span>
+                </div>
+              </article>
+
+              <article class="post-item reveal" onclick="openArticle('d3')" role="button" tabindex="0">
+                <div class="post-item-meta">
+                  <time class="post-date">2026 年 2 月 28 日</time>
+                  <span class="post-category">交互</span>
+                </div>
+                <h2>微动效：真正的"少即是多"</h2>
+                <p>动效要么让产品活起来，要么让它感觉"坏了"。这里整理了我关于"增强而非干扰"的动效准则。</p>
+                <div class="post-item-footer">
+                  <span class="post-read-time">阅读约 4 分钟</span>
+                  <span class="post-arrow" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                      <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </span>
+                </div>
+              </article>
+
+            </div>
+          </div>
+
+          <!-- ── 标签 3：生活分享 ────────────────────── -->
+          <div class="tab-content" id="tab-life" role="tabpanel">
+            <div class="life-grid">
+
+              <div class="life-card reveal wide">
+                <div class="life-card-img">
+                  <img src="images/life-coffee.jpg" alt="早晨的咖啡与一本翻开的书" />
+                </div>
+                <div class="life-card-body">
+                  <div class="life-card-date">2026 年 4 月 15 日</div>
+                  <div class="life-card-title">每天早上从一杯美式和 30 分钟的阅读开始。</div>
+                  <div class="life-card-caption">正在读：《设计心理学》—— 依然是最好的。</div>
+                </div>
+              </div>
+
+              <div class="life-card reveal">
+                <div class="life-card-img">
+                  <img src="images/life-night.jpg" alt="深夜书桌前的笔记本电脑" />
+                </div>
+                <div class="life-card-body">
+                  <div class="life-card-date">2026 年 4 月 10 日</div>
+                  <div class="life-card-title">宿舍安静下来，凌晨两点的 coding 有种别样的感觉。</div>
+                  <div class="life-card-caption">这个网站的导航组件就是午夜 12 点到 3 点之间写出来的。</div>
+                </div>
+              </div>
+
+              <div class="life-card reveal reveal-delay-1">
+                <div class="life-card-img">
+                  <img src="images/life-hiking.jpg" alt="晨雾中的山间小径" />
+                </div>
+                <div class="life-card-body">
+                  <div class="life-card-date">2026 年 4 月 5 日</div>
+                  <div class="life-card-title">周末去山里跑跑步，远离屏幕。</div>
+                  <div class="life-card-caption">最好的想法，往往出现在你不再刻意寻找它们的时候。</div>
+                </div>
+              </div>
+
+              <div class="life-card reveal reveal-delay-1">
+                <div class="life-card-img">
+                  <img src="images/life-cafe.jpg" alt="安静咖啡馆里的办公时光" />
+                </div>
+                <div class="life-card-body">
+                  <div class="life-card-date">2026 年 3 月 29 日</div>
+                  <div class="life-card-title">发现了新的设计据点：一家没有 wifi 密码的小咖啡馆。</div>
+                  <div class="life-card-caption">被迫离线，反而出奇高效。</div>
+                </div>
+              </div>
+
+              <div class="life-card reveal reveal-delay-2">
+                <div class="life-card-img">
+                  <img src="images/life-desk.jpg" alt="极简风桌面布置" />
+                </div>
+                <div class="life-card-body">
+                  <div class="life-card-date">2026 年 3 月 20 日</div>
+                  <div class="life-card-title">折腾两年，终于对自己的桌面满意了。</div>
+                  <div class="life-card-caption">极简：一块屏幕，一株绿植，完毕。</div>
+                </div>
+              </div>
+
+              <div class="life-card reveal reveal-delay-3">
+                <div class="life-card-img">
+                  <img src="images/life-film.jpg" alt="老式胶片相机与胶卷" />
+                </div>
+                <div class="life-card-body">
+                  <div class="life-card-date">2026 年 3 月 12 日</div>
+                  <div class="life-card-title">胶片摄影是我对抗完美主义的解药。</div>
+                  <div class="life-card-caption">只有 36 张的时候，每一张都重要。</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- 右：侧边小组件 -->
+        <aside class="thoughts-sidebar" aria-label="侧边栏组件">
+
+          <div class="sidebar-widget">
+            <div class="widget-title">话题标签</div>
+            <div class="topic-list" role="list">
+              <div class="topic-item" role="listitem">设计<span class="topic-count">8</span></div>
+              <div class="topic-item" role="listitem">技术<span class="topic-count">6</span></div>
+              <div class="topic-item" role="listitem">思维<span class="topic-count">4</span></div>
+              <div class="topic-item" role="listitem">生活<span class="topic-count">12</span></div>
+              <div class="topic-item" role="listitem">观点<span class="topic-count">5</span></div>
+              <div class="topic-item" role="listitem">教程<span class="topic-count">3</span></div>
+            </div>
+          </div>
+
+          <div class="sidebar-widget">
+            <div class="widget-title">最近在做</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div
+                style="padding:12px 14px;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-sm);">
+                <div
+                  style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--color-text-subtle);margin-bottom:4px;">
+                  阅读</div>
+                <div style="font-size:13px;color:var(--color-text);font-weight:500;">《设计心理学》</div>
+                <div style="font-size:11px;color:var(--color-text-muted);margin-top:2px;">Don Norman</div>
+              </div>
+              <div
+                style="padding:12px 14px;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-sm);">
+                <div
+                  style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--color-text-subtle);margin-bottom:4px;">
+                  开发</div>
+                <div style="font-size:13px;color:var(--color-text);font-weight:500;">个人网站 v3</div>
+                <div style="font-size:11px;color:var(--color-text-muted);margin-top:2px;">HTML / CSS / JS</div>
+              </div>
+              <div
+                style="padding:12px 14px;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-sm);">
+                <div
+                  style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--color-text-subtle);margin-bottom:4px;">
+                  在听</div>
+                <div style="font-size:13px;color:var(--color-text);font-weight:500;">My Chemical Romance</div>
+                <div style="font-size:11px;color:var(--color-text-muted);margin-top:2px;">The Black Parade</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-widget">
+            <div class="widget-title">本周金句</div>
+            <div class="quote-block">
+              <p class="quote-text">"细节并非细节，它们即是设计本身。"</p>
+              <p class="quote-author">— Charles Eames</p>
+            </div>
+          </div>
+
+          <div class="sidebar-widget">
+            <div class="widget-title">订阅通讯</div>
+            <p style="font-size:12px;color:var(--color-text-muted);line-height:1.6;margin-bottom:12px;">
+              每月一封：我的思考、有趣的链接，以及手头的项目。
+            </p>
+            <form onsubmit="handleNewsletterSubmit(event)" style="display:flex;flex-direction:column;gap:8px;">
+              <input type="email" placeholder="your@email.com" required
+                style="background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-sm);padding:9px 12px;font-size:13px;color:var(--color-text);font-family:var(--font-sans);outline:none;transition:border-color .25s ease;"
+                onfocus="this.style.borderColor='var(--color-accent)'"
+                onblur="this.style.borderColor='var(--color-border)'" />
+              <button type="submit"
+                style="background:var(--color-accent);color:var(--color-bg);font-size:12px;font-weight:700;padding:9px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-family:var(--font-sans);letter-spacing:.04em;transition:background .25s ease;"
+                onmouseover="this.style.background='var(--color-accent-2)'"
+                onmouseout="this.style.background='var(--color-accent)'">
+                订阅
+              </button>
+            </form>
+            <div id="nlSuccess"
+              style="display:none;padding:10px 12px;background:rgba(76,175,118,.08);border:1px solid rgba(76,175,118,.25);border-radius:var(--radius-sm);font-size:12px;color:#4caf76;margin-top:8px;">
+              订阅成功，感谢关注！
+            </div>
+          </div>
+
+        </aside>
+      </div>
+
+      <footer class="page-footer" role="contentinfo">
+        <p class="footer-copy">&copy; 2026 陈亦凡. 保留所有权利.</p>
+        <nav class="footer-links" aria-label="页脚导航">
+          <a href="index.html">首页</a>
+          <a href="portfolio.html">作品集</a>
+          <a href="channel.html">我的频道</a>
+        </nav>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- ══ 文章弹窗 ═══════════════════════════ -->
+
+  <div class="read-modal-backdrop" id="article-a1" onclick="closeArticleOnBackdrop(event,'article-a1')">
+    <div class="read-modal">
+      <button class="read-modal-close" onclick="closeArticle('article-a1')" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <div class="article-meta">
+        <time class="post-date">2026 年 4 月 12 日</time>
+        <span class="post-category">观点</span>
+        <span class="post-read-time">阅读约 5 分钟</span>
+      </div>
+      <h1 class="article-title">大多数作品集都很糟糕 —— 原因在这里</h1>
+      <div class="article-body">
+        <p>我看过数百份作品集，套路总是惊人地一致：一个配着夸张口号的首屏、一堆漂亮的项目缩略图，以及底部的一个邮箱地址。运气好的话，会有一段简短的项目描述。</p>
+        <h3>作品集缺失的东西</h3>
+        <p>作品集的目的不是证明你做过东西，而是展示你如何思考。你在解决什么问题？受到了什么约束？哪些尝试失败了，为什么？这些问题的答案，比任何一张截图都更有说服力。</p>
+        <blockquote>
+          <p>"作品本身不是那张截图。真正的作品，是截图背后的思考过程。"</p>
+        </blockquote>
+        <p>我见过最好的作品集只包含一个案例研究：三个项目，每个都有一份 1500 字的详解 —— 问题、过程、结果，包括哪些地方失败了。它让作者拿到了顶级设计咨询公司的 offer。</p>
+        <h3>方法很简单，但不容易做到</h3>
+        <p>写下你的过程。不要写得抽象（比如"我构思了方案并在反馈中迭代"），要写得具体。展示丑陋的线框图；展示你上线的那版和你最想做的那版；展示那些让你改变主意的数据。</p>
+        <p>这需要脆弱感。它要求你会写作 —— 这是许多设计师不太练习的技能。但它几乎是你能为自己职业做的最高杠杆率的一件事。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="read-modal-backdrop" id="article-a2" onclick="closeArticleOnBackdrop(event,'article-a2')">
+    <div class="read-modal">
+      <button class="read-modal-close" onclick="closeArticle('article-a2')" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <div class="article-meta">
+        <time class="post-date">2026 年 3 月 28 日</time>
+        <span class="post-category">热评</span>
+      </div>
+      <h1 class="article-title">设计系统是懦弱者的选择（有时候是）</h1>
+      <div class="article-body">
+        <p>在你关掉这个标签页之前：我喜欢设计系统，我自己也做过两套。我自己维护的开源设计系统 Tempo，正是我三个项目的基础。所以请先听我说。</p>
+        <p>问题不在设计系统本身，而在于有些团队把"我们得先把设计系统建好"当成一种借口 —— 借口自己不必面对"交付一份不完美作品"时的那种不适。</p>
+        <blockquote>
+          <p>设计系统是学习的产物，不是学习的前提。</p>
+        </blockquote>
+        <p>只有交付了足够多的东西，你才能看清楚哪些东西该沉淀进设计系统。如果从系统出发，你其实是在为尚未发生的问题设计抽象 —— 这是过度工程的温床。</p>
+        <h3>正确的顺序</h3>
+        <p>先上线一个东西，再上线一个。留意你在反复复制粘贴什么，把它抽取成组件，再这样做十次。此时你手上就会有一套真正的设计系统 —— 一套解决真实问题的系统。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="read-modal-backdrop" id="article-a3" onclick="closeArticleOnBackdrop(event,'article-a3')">
+    <div class="read-modal">
+      <button class="read-modal-close" onclick="closeArticle('article-a3')" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <div class="article-meta">
+        <time class="post-date">2026 年 3 月 10 日</time>
+        <span class="post-category">技术</span>
+      </div>
+      <h1 class="article-title">CSS 正在真正回归，我感到非常兴奋</h1>
+      <div class="article-body">
+        <p>多年来 CSS 的口碑一直不太好 —— 它是前端圈每个段子的笑点；JD 里没人提它；所有框架似乎都在"把你从 CSS 里解救出来"。但过去两年里，一些事情发生了改变，我想聊聊它。</p>
+        <p>容器查询让组件能够响应自身尺寸而非视口；:has() 赋予了 CSS 真正的父选择能力；级联层在语言历史上第一次让"优先级之战"变得可控；锚点定位消除了一整类过去必须用 JavaScript 处理的场景。</p>
+        <blockquote>
+          <p>浏览器是世界上最强大的布局引擎。我们只是一直在和它对抗，而不是顺势而为。</p>
+        </blockquote>
+        <h3>这对开发者意味着什么</h3>
+        <p>我们正在进入一个时期：深入理解 CSS 本身 —— 不只是"我知道 flexbox 怎么用"，而是把级联、继承、优先级以及新的布局原语作为一个整体来理解 ——
+          会再次成为超级技能。这套知识到处都用得上，而且不需要构建步骤。</p>
+        <p>这整个网站没有使用任何 CSS 框架，而我对最终结果从没这么满意过。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="read-modal-backdrop" id="article-a4" onclick="closeArticleOnBackdrop(event,'article-a4')">
+    <div class="read-modal">
+      <button class="read-modal-close" onclick="closeArticle('article-a4')" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <div class="article-meta">
+        <time class="post-date">2026 年 2 月 18 日</time>
+        <span class="post-category">思维</span>
+      </div>
+      <h1 class="article-title">"公开学习"彻底改变了我对成长的认知</h1>
+      <div class="article-body">
+        <p>一年前我开始做一件让自己不太舒服的事：在公开平台写下自己正在学习的东西，包括困惑、犯错和卡壳的部分。我以为会让自己尴尬到死，但实际上发生了完全出乎意料的事。</p>
+        <p>陌生人开始主动联系我 —— 不是来纠错（虽然也有），大多数人是说"我也一直在思考这个问题"或者"六个月前的我也有过同样的困惑"。脆弱感反而建立了连接。我的学习记录，开始对那些比我晚走几步的人变得有用。</p>
+        <blockquote>
+          <p>你不需要成为专家才能分享，只需要对自己现在所处的位置足够诚实。</p>
+        </blockquote>
+        <h3>意外的副作用</h3>
+        <p>写作本身会强迫清晰。当我尝试解释一个刚学到的概念，几乎一定会发现其中有三件事我其实并不真正理解。写作本身就是学习工具：如果我没法讲清楚，就是我没学透。</p>
+        <p>公开学习一年，换来了一个 Bilibili 频道、一系列博客文章、两个真实有人在用的开源项目，以及一群原本无从相识的合作者。强烈推荐你也试试。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 设计笔记 -->
+  <div class="read-modal-backdrop" id="article-d1" onclick="closeArticleOnBackdrop(event,'article-d1')">
+    <div class="read-modal">
+      <button class="read-modal-close" onclick="closeArticle('article-d1')" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <div class="article-meta"><time class="post-date">2026 年 4 月 08 日</time><span class="post-category">字体排印</span>
+      </div>
+      <h1 class="article-title">我真正在用的 8 条字体排印法则</h1>
+      <div class="article-body">
+        <p><strong>1. 正文行高：1.5–1.7。</strong> 大多数开发者设置成 1.2，还奇怪自己的文字为什么读起来那么累。</p>
+        <p><strong>2. 永远不要在纯白上用纯黑。</strong> 对比刺眼又业余，至少用 #fafafa 上的 #111。</p>
+        <p><strong>3. 最多用两种字体。</strong> 一种用于标题，一种用于正文，通常就够了。</p>
+        <p><strong>4. 正文每行 50–75 个字符。</strong> 超过这个宽度，眼睛就很难准确回到下一行。</p>
+        <p><strong>5. 字号没有字重和间距重要。</strong> 一个字距舒展的 14px 字体，读起来比一个行高糟糕的 20px 字体还好。</p>
+        <p><strong>6. 给标题加上 text-wrap: balance。</strong> 一个单词孤零零吊在一行上，几乎总是错的。</p>
+        <p><strong>7. 尊重字号阶梯。</strong> 使用模块化比例（1.25x 或 1.5x），让尺寸显得有关联而不是随机。</p>
+        <p><strong>8. 可读性优先于风格。</strong> 一款漂亮却难读的字体，在这个语境下就是一款失败的字体。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="read-modal-backdrop" id="article-d2" onclick="closeArticleOnBackdrop(event,'article-d2')">
+    <div class="read-modal">
+      <button class="read-modal-close" onclick="closeArticle('article-d2')" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <div class="article-meta"><time class="post-date">2026 年 3 月 20 日</time><span class="post-category">色彩</span>
+      </div>
+      <h1 class="article-title">为什么深色模式比看起来更难做</h1>
+      <div class="article-body">
+        <p>最朴素的做法：把浅色模式的颜色全部翻转过来。背景变成黑，文字变成白，搞定。可结果却是，怎么看怎么别扭，却又说不上来哪里不对。</p>
+        <p>原因在于：浅色模式下，深度靠阴影从表面下方投出；深色模���里，深度的规则反过来 —— 更亮的表面看起来更"浮"。你的层级系统需要整体翻转。</p>
+        <blockquote>
+          <p>深色模式不是浅色模式的反转，而是一套完全不同规则的系统。</p>
+        </blockquote>
+        <p>我学到的几件事：纯黑（#000000）几乎从来不是正确的背景；使用非常深的灰（#0a0a0a、#111111）更容易维持层级感；高饱和度的颜色在深色背景下会表现不同 ——
+          经常需要稍微降饱和，以免与深色表面"视觉抖动"。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="read-modal-backdrop" id="article-d3" onclick="closeArticleOnBackdrop(event,'article-d3')">
+    <div class="read-modal">
+      <button class="read-modal-close" onclick="closeArticle('article-d3')" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <div class="article-meta"><time class="post-date">2026 年 2 月 28 日</time><span class="post-category">交互</span>
+      </div>
+      <h1 class="article-title">微动效：真正的"少即是多"</h1>
+      <div class="article-body">
+        <p>我的判断标准：一个动效要么在传递信息（状态变化、加载、方向），要么在营造情绪（惊喜、愉悦）。如果两者都做不到，就砍掉。</p>
+        <p>糟糕的动效通常犯两个错误：太慢、太频繁。悬停过渡 500ms 让人觉得拖沓；每一次交互都加动效，最终会像一道道障碍。我的基线：悬停态 150–250ms，页面切换 300–400ms，任何动效都不应超过 500ms。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    function openArticle(id) {
+      const el = document.getElementById('article-' + id);
+      if (el) {
+        el.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+    function closeArticle(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    }
+    function closeArticleOnBackdrop(e, id) {
+      if (e.target === document.getElementById(id)) closeArticle(id);
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.read-modal-backdrop.open').forEach(el => {
+          el.classList.remove('open');
+          document.body.style.overflow = '';
+        });
+      }
+    });
+    // 帖子项键盘支持
+    document.querySelectorAll('.post-item[tabindex]').forEach(item => {
+      item.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          item.click();
+        }
+      });
+    });
+    function handleNewsletterSubmit(e) {
+      e.preventDefault();
+      document.getElementById('nlSuccess').style.display = 'block';
+      e.target.reset();
+      setTimeout(() => { document.getElementById('nlSuccess').style.display = 'none'; }, 5000);
+    }
+  </script>
+</body>
+
+</html>

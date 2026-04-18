@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="陈亦凡的作品集 — 精选网页设计与开发作品。" />
+  <title>作品集 — 陈亦凡</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .reveal.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 {
+      transition-delay: 0.1s;
+    }
+
+    .reveal-delay-2 {
+      transition-delay: 0.2s;
+    }
+
+    .reveal-delay-3 {
+      transition-delay: 0.3s;
+    }
+
+    /* 精选卡片 — 通栏 */
+    .portfolio-card.featured {
+      grid-column: 1 / -1;
+    }
+
+    .portfolio-card.featured .portfolio-card-image {
+      aspect-ratio: 21 / 7;
+    }
+
+    .portfolio-card.featured .img-placeholder {
+      font-size: 64px;
+    }
+
+    /* 占位色变体 */
+    .img-placeholder.c1 {
+      background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+      color: #2a2a2a;
+    }
+
+    .img-placeholder.c2 {
+      background: linear-gradient(135deg, #111 0%, #0d1a14 100%);
+      color: #1a3028;
+    }
+
+    .img-placeholder.c3 {
+      background: linear-gradient(135deg, #111 0%, #1a1208 100%);
+      color: #2e2008;
+    }
+
+    .img-placeholder.c4 {
+      background: linear-gradient(135deg, #111 0%, #0e0e1a 100%);
+      color: #1a1a30;
+    }
+
+    .img-placeholder.c5 {
+      background: linear-gradient(135deg, #111 0%, #1a0d0d 100%);
+      color: #301818;
+    }
+
+    /* 案例弹窗 */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      max-width: 680px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+      animation: modalIn 0.3s ease;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: scale(0.96) translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color var(--transition), background var(--transition);
+    }
+
+    .modal-close:hover {
+      color: var(--color-text);
+      background: var(--color-border);
+    }
+
+    .modal-close svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .modal-thumb {
+      aspect-ratio: 16 / 7;
+      background: var(--color-surface-2);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+      font-weight: 900;
+      color: var(--color-border);
+      overflow: hidden;
+    }
+
+    .modal-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .modal-body {
+      padding: 32px;
+    }
+
+    .modal-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--color-white);
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+
+    .modal-desc {
+      font-size: 14px;
+      color: var(--color-text-muted);
+      line-height: 1.75;
+      margin-bottom: 24px;
+    }
+
+    .modal-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-text-subtle);
+      margin-bottom: 12px;
+    }
+
+    .modal-tech {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .modal-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <header class="mobile-header">
+    <span class="mobile-header-name">陈亦凡</span>
+    <button class="mobile-menu-btn" id="menuBtn" aria-label="切换导航">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="layout">
+
+    <!-- ── 侧边栏 ────────────────────────────────── -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="主导航">
+      <div class="sidebar-logo">
+        <div class="name">陈亦凡</div>
+        <div class="title"><span class="status-dot"></span>正在寻找机会</div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-label">导航</div>
+          <a href="index.html" class="nav-link" data-page="home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+            首页
+          </a>
+          <a href="portfolio.html" class="nav-link active" data-page="portfolio">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <path d="m8 21 4-4 4 4" />
+              <path d="M12 17v4" />
+            </svg>
+            作品集
+          </a>
+          <a href="thoughts.html" class="nav-link" data-page="thoughts">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            观点分享
+          </a>
+          <a href="channel.html" class="nav-link" data-page="channel">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polygon points="23 7 16 12 23 17 23 7" />
+              <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+            </svg>
+            我的频道
+          </a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-label">联系</div>
+          <a href="channel.html#collab" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            合作方式
+          </a>
+          <a href="mailto:alex@example.com" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            发送邮件
+          </a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-footer-label">在这里找到我</div>
+        <div class="social-links">
+          <a href="#" class="social-link" aria-label="GitHub" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+            </svg>
+          </a>
+          <a href="#" class="social-link" aria-label="Bilibili" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.789 1.894v7.36c.02.764.283 1.396.789 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.497.769-1.129.789-1.893v-7.36c-.02-.765-.283-1.396-.789-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.386-.947.258-.257.574-.386.947-.386zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373z" />
+            </svg>
+          </a>
+          <a href="#" class="social-link" aria-label="X / Twitter" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── 主内容区 ──────────────────────────────── -->
+    <main class="main-content" role="main">
+
+      <section class="page-hero" aria-label="作品集标题">
+        <h1>精选作品</h1>
+        <p>这里收录了我从构思到部署亲手设计和开发的一系列项目。点击任意卡片可查看完整的项目案例分析。</p>
+      </section>
+
+      <!-- 筛选栏 -->
+      <div class="filter-bar" role="toolbar" aria-label="作品筛选">
+        <button class="filter-btn active" data-filter="all">全部</button>
+        <button class="filter-btn" data-filter="web">Web 应用</button>
+        <button class="filter-btn" data-filter="design">UI / 设计</button>
+        <button class="filter-btn" data-filter="tool">工具 / 插件</button>
+        <button class="filter-btn" data-filter="mobile">移动端</button>
+      </div>
+
+      <!-- 网格 -->
+      <div class="portfolio-grid">
+
+        <!-- 精选 -->
+        <article class="portfolio-card featured reveal" data-category="web" onclick="openModal('modal-campus')"
+          role="button" tabindex="0" aria-label="校园互联 — 打开案例">
+          <div class="portfolio-card-image">
+            <img src="images/work-campus.jpg" alt="校园互联 — 学生学习协作平台界面预览" />
+          </div>
+          <div class="portfolio-card-body">
+            <div class="portfolio-card-tags">
+              <span class="tag accent">精选</span>
+              <span class="tag">Web 应用</span>
+              <span class="tag">全栈</span>
+            </div>
+            <h2 class="portfolio-card-title">校园互联</h2>
+            <p class="portfolio-card-desc">一个帮助同学组建学习小组、分享学习资源、展开协作项目的全栈学生社交平台。在一次黑客松中用 4 周时间从零打造，目前服务 1200+ 在校学生。</p>
+            <span class="portfolio-card-link">
+              查看案例详情
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </span>
+          </div>
+        </article>
+
+        <!-- 卡片 2 -->
+        <article class="portfolio-card reveal" data-category="design" onclick="openModal('modal-tempo')" role="button"
+          tabindex="0" aria-label="Tempo 设计系统 — 打开案例">
+          <div class="portfolio-card-image">
+            <img src="images/work-tempo.jpg" alt="Tempo 设计系统 — 深色组件库预览" />
+          </div>
+          <div class="portfolio-card-body">
+            <div class="portfolio-card-tags">
+              <span class="tag">UI / 设计</span>
+              <span class="tag">CSS</span>
+            </div>
+            <h2 class="portfolio-card-title">Tempo 设计系统</h2>
+            <p class="portfolio-card-desc">一个极简、深色优先的组件库，包含 Figma 源文件、CSS 变量体系与可交互的文档网站。</p>
+            <span class="portfolio-card-link">
+              查看案例详情
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </span>
+          </div>
+        </article>
+
+        <!-- 卡片 3 -->
+        <article class="portfolio-card reveal reveal-delay-1" data-category="tool" onclick="openModal('modal-focus')"
+          role="button" tabindex="0" aria-label="FocusFlow — 打开案例">
+          <div class="portfolio-card-image">
+            <img src="images/work-focusflow.jpg" alt="FocusFlow — 番茄钟与习惯追踪浏览器扩展" />
+          </div>
+          <div class="portfolio-card-body">
+            <div class="portfolio-card-tags">
+              <span class="tag">Chrome 插件</span>
+              <span class="tag">工具</span>
+            </div>
+            <h2 class="portfolio-card-title">FocusFlow</h2>
+            <p class="portfolio-card-desc">一款效率型 Chrome 扩展，在干净的 UI 中整合番茄钟、网站拦截与习惯追踪三大功能。</p>
+            <span class="portfolio-card-link">
+              查看案例详情
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </span>
+          </div>
+        </article>
+
+        <!-- 卡片 4 -->
+        <article class="portfolio-card reveal" data-category="mobile" onclick="openModal('modal-daylog')" role="button"
+          tabindex="0" aria-label="DayLog — 打开案例">
+          <div class="portfolio-card-image">
+            <img src="images/work-daylog.jpg" alt="DayLog — 极简 iOS 每日日记应用" />
+          </div>
+          <div class="portfolio-card-body">
+            <div class="portfolio-card-tags">
+              <span class="tag">移动端</span>
+              <span class="tag">UI 设计</span>
+            </div>
+            <h2 class="portfolio-card-title">DayLog</h2>
+            <p class="portfolio-card-desc">一款为 iPhone 设计的极简每日日记应用概念，聚焦无摩擦的记录体验与优雅的心情可视化。</p>
+            <span class="portfolio-card-link">
+              查看案例详情
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </span>
+          </div>
+        </article>
+
+        <!-- 卡片 5 -->
+        <article class="portfolio-card reveal reveal-delay-1" data-category="web" onclick="openModal('modal-devboard')"
+          role="button" tabindex="0" aria-label="DevBoard — 打开案例">
+          <div class="portfolio-card-image">
+            <img src="images/work-devboard.jpg" alt="DevBoard — 开发者个人面板" />
+          </div>
+          <div class="portfolio-card-body">
+            <div class="portfolio-card-tags">
+              <span class="tag">Web 应用</span>
+              <span class="tag">Dashboard</span>
+            </div>
+            <h2 class="portfolio-card-title">DevBoard</h2>
+            <p class="portfolio-card-desc">一款专属开发者的个人面板，聚合 GitHub 动态、Hacker News 资讯与每日任务清单，支持自定义布局。</p>
+            <span class="portfolio-card-link">
+              查看案例详情
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </span>
+          </div>
+        </article>
+
+      </div>
+
+      <footer class="page-footer" role="contentinfo">
+        <p class="footer-copy">&copy; 2026 陈亦凡. 保留所有权利.</p>
+        <nav class="footer-links" aria-label="页脚导航">
+          <a href="index.html">首页</a>
+          <a href="thoughts.html">观点分享</a>
+          <a href="channel.html">我的频道</a>
+        </nav>
+      </footer>
+    </main>
+  </div>
+
+  <!-- ══ 案例弹窗 ═══════════════════════════════════ -->
+
+  <!-- 校园互联 -->
+  <div class="modal-backdrop" id="modal-campus" role="dialog" aria-modal="true" aria-label="校园互联 案例"
+    onclick="closeModalOnBackdrop(event, 'modal-campus')">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('modal-campus')" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <div class="modal-thumb"><img src="images/work-campus.jpg" alt="校园互联项目预览" /></div>
+      <div class="modal-body">
+        <div class="modal-meta">
+          <span class="tag accent">精选</span>
+          <span class="tag">Web 应用</span>
+          <span class="tag">全栈</span>
+        </div>
+        <h2 class="modal-title">校园互联</h2>
+        <p class="modal-desc">作为 2025 年的一次黑客松项目，"校园互联" 解决了大学生一个真实的痛点：如何找到合适的学习伙伴。平台允许学生创建个人档案、登记所修课程，并为他们匹配志同道合的学习搭档。短短
+          3 个月内，产品自然增长至两所校园共 1200 名用户。</p>
+        <p class="modal-desc">最大的挑战是实时消息。我用 Node.js 实现了一套轻量 WebSocket
+          方案，不依赖完整的基础设施也可以稳定扩展。匹配算法基于课程重合度、可用时间和学习风格偏好进行加权打分。</p>
+        <div class="modal-section-title">技术栈</div>
+        <div class="modal-tech">
+          <span class="tag">HTML / CSS / JS</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">Express</span>
+          <span class="tag">WebSocket</span>
+          <span class="tag">SQLite</span>
+        </div>
+        <div class="modal-links">
+          <a href="#" class="btn-primary" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+              <polyline points="15 3 21 3 21 9" />
+              <line x1="10" y1="14" x2="21" y2="3" />
+            </svg>
+            在线访问
+          </a>
+          <a href="#" class="btn-secondary" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+            </svg>
+            查看源码
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tempo -->
+  <div class="modal-backdrop" id="modal-tempo" role="dialog" aria-modal="true" aria-label="Tempo 设计系统 案例"
+    onclick="closeModalOnBackdrop(event, 'modal-tempo')">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('modal-tempo')" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <div class="modal-thumb"><img src="images/work-tempo.jpg" alt="Tempo 设计系统预览" /></div>
+      <div class="modal-body">
+        <div class="modal-meta"><span class="tag">UI / 设计</span><span class="tag">CSS</span></div>
+        <h2 class="modal-title">Tempo 设计系统</h2>
+        <p class="modal-desc">Tempo 是我为加速原型设计流程而构建的个人设计系统。它包含一个拥有 60+ 组件的 Figma 库、一套匹配的 CSS
+          变量体系和一个文档站点。核心理念：深色优先、高对比度、去除不必要的装饰。</p>
+        <p class="modal-desc">每个组件都内置了无障碍支持 —— 合理的 ARIA 角色、完整的键盘导航，以及符合 WCAG AA 标准的色彩对比度。这套系统目前是我另外三个项目的基础。</p>
+        <div class="modal-section-title">技术栈</div>
+        <div class="modal-tech">
+          <span class="tag">Figma</span>
+          <span class="tag">CSS 变量</span>
+          <span class="tag">原生 JS</span>
+          <span class="tag">HTML</span>
+        </div>
+        <div class="modal-links">
+          <a href="#" class="btn-primary" target="_blank" rel="noopener">查看文档</a>
+          <a href="#" class="btn-secondary" target="_blank" rel="noopener">Figma 源文件</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FocusFlow -->
+  <div class="modal-backdrop" id="modal-focus" role="dialog" aria-modal="true" aria-label="FocusFlow 案例"
+    onclick="closeModalOnBackdrop(event, 'modal-focus')">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('modal-focus')" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <div class="modal-thumb"><img src="images/work-focusflow.jpg" alt="FocusFlow 扩展预览" /></div>
+      <div class="modal-body">
+        <div class="modal-meta"><span class="tag">Chrome 插件</span><span class="tag">工具</span></div>
+        <h2 class="modal-title">FocusFlow</h2>
+        <p class="modal-desc">市面上的效率类应用往往不是太复杂就是太丑。FocusFlow 把我每天都会用到的三件工具 —— 番茄钟、网站拦截和习惯追踪 —— 整合进一款极简的 Chrome 扩展。目前已上架
+          Chrome 应用商店，安装量超过 800。</p>
+        <div class="modal-section-title">技术栈</div>
+        <div class="modal-tech">
+          <span class="tag">Chrome Extension API</span>
+          <span class="tag">原生 JS</span>
+          <span class="tag">CSS</span>
+          <span class="tag">localStorage</span>
+        </div>
+        <div class="modal-links">
+          <a href="#" class="btn-primary" target="_blank" rel="noopener">Chrome 商店</a>
+          <a href="#" class="btn-secondary" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DayLog -->
+  <div class="modal-backdrop" id="modal-daylog" role="dialog" aria-modal="true" aria-label="DayLog 案例"
+    onclick="closeModalOnBackdrop(event, 'modal-daylog')">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('modal-daylog')" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <div class="modal-thumb"><img src="images/work-daylog.jpg" alt="DayLog 应用预览" /></div>
+      <div class="modal-body">
+        <div class="modal-meta"><span class="tag">移动端</span><span class="tag">UI 设计</span></div>
+        <h2 class="modal-title">DayLog</h2>
+        <p class="modal-desc">一次关于"无摩擦日记应用"的纯粹设计探索。核心洞察：大多数日记应用问得太多。DayLog 只以一个文本框开始 —— 心情标签、天气、位置等一切其他信息，都是可选的、次要的。</p>
+        <div class="modal-section-title">工具</div>
+        <div class="modal-tech">
+          <span class="tag">Figma</span>
+          <span class="tag">Principle</span>
+          <span class="tag">iOS 设计</span>
+        </div>
+        <div class="modal-links">
+          <a href="#" class="btn-primary" target="_blank" rel="noopener">Figma 原型</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DevBoard -->
+  <div class="modal-backdrop" id="modal-devboard" role="dialog" aria-modal="true" aria-label="DevBoard 案例"
+    onclick="closeModalOnBackdrop(event, 'modal-devboard')">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('modal-devboard')" aria-label="关闭">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <div class="modal-thumb"><img src="images/work-devboard.jpg" alt="DevBoard 面板预览" /></div>
+      <div class="modal-body">
+        <div class="modal-meta"><span class="tag">Web 应用</span><span class="tag">Dashboard</span></div>
+        <h2 class="modal-title">DevBoard</h2>
+        <p class="modal-desc">一个用于替换浏览器新标签页的个人面板，聚合真正有用的东西：GitHub 贡献图、Hacker News 最新文章、任务清单和当前时间。零冗余。纯 HTML/CSS/JS
+          搭建，配合浏览器本地存储 —— 零依赖、瞬时加载。</p>
+        <div class="modal-section-title">技术栈</div>
+        <div class="modal-tech">
+          <span class="tag">HTML / CSS / JS</span>
+          <span class="tag">GitHub API</span>
+          <span class="tag">HN API</span>
+          <span class="tag">Chrome Storage</span>
+        </div>
+        <div class="modal-links">
+          <a href="#" class="btn-primary" target="_blank" rel="noopener">Chrome 商店</a>
+          <a href="#" class="btn-secondary" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    function openModal(id) {
+      const m = document.getElementById(id);
+      if (m) {
+        m.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+    function closeModal(id) {
+      const m = document.getElementById(id);
+      if (m) {
+        m.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    }
+    function closeModalOnBackdrop(e, id) {
+      if (e.target === document.getElementById(id)) closeModal(id);
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-backdrop.open').forEach(m => {
+          m.classList.remove('open');
+          document.body.style.overflow = '';
+        });
+      }
+    });
+    // 卡片键盘支持
+    document.querySelectorAll('.portfolio-card[tabindex]').forEach(card => {
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.click();
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

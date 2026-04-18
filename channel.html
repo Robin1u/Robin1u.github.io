@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="陈亦凡的频道 — 可以在 Bilibili、小红书、GitHub 等平台找到我。" />
+  <title>我的频道 — 陈亦凡</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .reveal.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 {
+      transition-delay: 0.1s;
+    }
+
+    .reveal-delay-2 {
+      transition-delay: 0.2s;
+    }
+
+    /* 频道主题色 */
+    .channel-card[data-ch="bilibili"] .channel-name {
+      color: #00a1d6;
+    }
+
+    .channel-card[data-ch="xiaohongshu"] .channel-name {
+      color: #ff5555;
+    }
+
+    .channel-card[data-ch="github"] .channel-name {
+      color: #e8e8e8;
+    }
+
+    .channel-card[data-ch="youtube"] .channel-name {
+      color: #ff3333;
+    }
+
+    /* 频道卡片数据行 */
+    .channel-stats {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+
+    .ch-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .ch-stat-num {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--color-white);
+      font-family: var(--font-mono);
+      letter-spacing: -0.02em;
+    }
+
+    .ch-stat-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-subtle);
+    }
+
+    /* 合作区块 */
+    .collab-cta-banner {
+      margin: 0 64px 0;
+      padding: 36px 40px;
+      background: linear-gradient(135deg, rgba(232, 213, 163, 0.06) 0%, rgba(232, 213, 163, 0.02) 100%);
+      border: 1px solid rgba(232, 213, 163, 0.15);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+    }
+
+    .collab-cta-banner h3 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--color-white);
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+
+    .collab-cta-banner p {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+      max-width: 400px;
+    }
+
+    /* 合作方式 */
+    .collab-ways {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      padding: 32px 64px 0;
+    }
+
+    @media (max-width: 1024px) {
+      .collab-ways {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .collab-cta-banner {
+        margin: 0 24px;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 24px;
+      }
+
+      .collab-ways {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 24px 24px 0;
+      }
+
+      .channel-list {
+        padding: 24px !important;
+      }
+
+      .collab-section {
+        padding: 40px 24px !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .collab-ways {
+        grid-template-columns: 1fr;
+      }
+
+      .channel-stats {
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <header class="mobile-header">
+    <span class="mobile-header-name">陈亦凡</span>
+    <button class="mobile-menu-btn" id="menuBtn" aria-label="切换导航">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div class="layout">
+
+    <!-- ── 侧边栏 ────────────────────────────────── -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="主导航">
+      <div class="sidebar-logo">
+        <div class="name">陈亦凡</div>
+        <div class="title"><span class="status-dot"></span>正在寻找机会</div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-label">导航</div>
+          <a href="index.html" class="nav-link" data-page="home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+            首页
+          </a>
+          <a href="portfolio.html" class="nav-link" data-page="portfolio">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <path d="m8 21 4-4 4 4" />
+              <path d="M12 17v4" />
+            </svg>
+            作品集
+          </a>
+          <a href="thoughts.html" class="nav-link" data-page="thoughts">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            观点分享
+          </a>
+          <a href="channel.html" class="nav-link active" data-page="channel">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polygon points="23 7 16 12 23 17 23 7" />
+              <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+            </svg>
+            我的频道
+          </a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-label">联系</div>
+          <a href="#collab" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            合作方式
+          </a>
+          <a href="mailto:alex@example.com" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            发送邮件
+          </a>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-footer-label">在这里找到我</div>
+        <div class="social-links">
+          <a href="#" class="social-link" aria-label="GitHub" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+            </svg>
+          </a>
+          <a href="#" class="social-link" aria-label="Bilibili" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.789 1.894v7.36c.02.764.283 1.396.789 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.497.769-1.129.789-1.893v-7.36c-.02-.765-.283-1.396-.789-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.386-.947.258-.257.574-.386.947-.386zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373z" />
+            </svg>
+          </a>
+          <a href="#" class="social-link" aria-label="小红书" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+            </svg>
+          </a>
+          <a href="#" class="social-link" aria-label="X / Twitter" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── 主内容区 ──────────────────────────────── -->
+    <main class="main-content" role="main">
+
+      <!-- 页面首屏 -->
+      <section class="channel-hero" aria-label="频道标题">
+        <h1
+          style="font-size: clamp(32px, 4vw, 52px); font-weight: 800; color: var(--color-white); letter-spacing: -0.03em; margin-bottom: 12px;">
+          我的频道</h1>
+        <p style="font-size: 15px; color: var(--color-text-muted); max-width: 540px; line-height: 1.65;">
+          我在多个平台分享自己正在做的、正在学的和正在想的事。每个频道都有不同的风味 —— 选一个适合你的方式来订阅。
+        </p>
+      </section>
+
+      <!-- 频道列表 -->
+      <div class="channel-list" role="list">
+
+        <!-- ── BILIBILI ─────────────────────────── -->
+        <article class="channel-card reveal" data-ch="bilibili" role="listitem" aria-label="Bilibili 频道">
+          <div class="channel-card-header">
+            <div class="channel-icon bilibili" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="#00a1d6" width="26" height="26">
+                <path
+                  d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.789 1.894v7.36c.02.764.283 1.396.789 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.497.769-1.129.789-1.893v-7.36c-.02-.765-.283-1.396-.789-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.386-.947.258-.257.574-.386.947-.386zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373z" />
+              </svg>
+            </div>
+            <div class="channel-info">
+              <div class="channel-platform">Bilibili</div>
+              <h2 class="channel-name">亦凡的设计日常</h2>
+              <div class="channel-subs">@yifan-builds · 8.2k 关注</div>
+            </div>
+            <a href="#" class="channel-follow-btn" target="_blank" rel="noopener">
+              关注
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" width="13" height="13">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </a>
+          </div>
+
+          <div class="channel-stats">
+            <div class="ch-stat"><span class="ch-stat-num">8.2k</span><span class="ch-stat-label">关注</span></div>
+            <div class="ch-stat"><span class="ch-stat-num">42</span><span class="ch-stat-label">视频</span></div>
+            <div class="ch-stat"><span class="ch-stat-num">180k</span><span class="ch-stat-label">总播放</span></div>
+          </div>
+
+          <p class="channel-desc">中英文双语的技术与设计向视频。我记录真实项目的完整过程 —— 从构思到上线。没有标题党、没有水分，只有诚实的开发日志和偶尔的设计深度解析。</p>
+
+          <div class="channel-recent">
+            <div class="channel-recent-title">最新视频</div>
+            <div class="recent-posts">
+              <div class="recent-post-card">
+                <div class="recent-post-thumb">
+                  <img src="images/video-html.jpg" alt="视频：用纯 HTML 搭建个人网站" />
+                  <span class="play-badge" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="#fff" width="28" height="28">
+                      <polygon points="6 4 20 12 6 20 6 4" />
+                    </svg>
+                  </span>
+                </div>
+                <div class="recent-post-title">用纯 HTML 搭一个个人网站 —— 完全不需要框架</div>
+                <div class="recent-post-meta">2026 年 4 月 14 日 · 18 分钟</div>
+              </div>
+              <div class="recent-post-card">
+                <div class="recent-post-thumb">
+                  <img src="images/video-css.jpg" alt="视频：CSS Grid 与 Flexbox 对比" />
+                  <span class="play-badge" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="#fff" width="28" height="28">
+                      <polygon points="6 4 20 12 6 20 6 4" />
+                    </svg>
+                  </span>
+                </div>
+                <div class="recent-post-title">CSS Grid 与 Flexbox：什么时候用哪个</div>
+                <div class="recent-post-meta">2026 年 4 月 2 日 · 12 分钟</div>
+              </div>
+              <div class="recent-post-card">
+                <div class="recent-post-thumb">
+                  <img src="images/video-hackathon.jpg" alt="视频：48 小时黑客松 Vlog" />
+                  <span class="play-badge" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="#fff" width="28" height="28">
+                      <polygon points="6 4 20 12 6 20 6 4" />
+                    </svg>
+                  </span>
+                </div>
+                <div class="recent-post-title">黑客松 Vlog：48 小时、0 睡眠、1 款应用</div>
+                <div class="recent-post-meta">2026 年 3 月 22 日 · 24 分钟</div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--color-border); display: flex; align-items: center; gap: 12px;">
+            <button class="channel-preview-toggle" aria-expanded="false" aria-controls="preview-bilibili">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <span class="toggle-label">预览频道</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="channel-preview-frame" id="preview-bilibili">
+            <div class="preview-iframe-wrap">
+              <div class="preview-iframe-overlay">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#00a1d6" stroke-width="1.5" width="36" height="36">
+                  <path
+                    d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906z" />
+                </svg>
+                <p>预览会在内嵌框架中打开 bilibili.com。<br />注意：部分站点会通过 X-Frame-Options 阻止嵌入。</p>
+                <button class="preview-open-btn" data-url="https://www.bilibili.com">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" width="13" height="13">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                  加载预览
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ── 小红书 ──────────────────────── -->
+        <article class="channel-card reveal reveal-delay-1" data-ch="xiaohongshu" role="listitem" aria-label="小红书频道">
+          <div class="channel-card-header">
+            <div class="channel-icon xiaohongshu" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="#ff5555" width="26" height="26">
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+              </svg>
+            </div>
+            <div class="channel-info">
+              <div class="channel-platform">小红书 · RED</div>
+              <h2 class="channel-name">亦凡的设计日记</h2>
+              <div class="channel-subs">@yifandesign · 3.4k 关注</div>
+            </div>
+            <a href="#" class="channel-follow-btn" target="_blank" rel="noopener" style="background-color:#ff5555;">
+              关注
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" width="13" height="13">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </a>
+          </div>
+
+          <div class="channel-stats">
+            <div class="ch-stat"><span class="ch-stat-num">3.4k</span><span class="ch-stat-label">关注</span></div>
+            <div class="ch-stat"><span class="ch-stat-num">86</span><span class="ch-stat-label">笔记</span></div>
+            <div class="ch-stat"><span class="ch-stat-num">24k</span><span class="ch-stat-label">点赞</span></div>
+          </div>
+
+          <p class="channel-desc">设计日记和生活分享。这里主要发布我的桌面布置、Figma 技巧、我发现的有趣网站，以及偶尔的"最近在读"合集。比视频内容更私人、更随意一些。</p>
+
+          <div class="channel-recent">
+            <div class="channel-recent-title">最新笔记</div>
+            <div class="recent-posts">
+              <div class="recent-post-card">
+                <div class="recent-post-thumb">
+                  <img src="images/note-desk.jpg" alt="笔记：我的桌面布置 tour" />
+                </div>
+                <div class="recent-post-title">我的桌面布置 tour —— 极简派版本</div>
+                <div class="recent-post-meta">2026 年 4 月 16 日</div>
+              </div>
+              <div class="recent-post-card">
+                <div class="recent-post-thumb">
+                  <img src="images/note-websites.jpg" alt="笔记：5 个高颜值网站" />
+                </div>
+                <div class="recent-post-title">本周让我惊艳的 5 个高颜值网站</div>
+                <div class="recent-post-meta">2026 年 4 月 9 日</div>
+              </div>
+              <div class="recent-post-card">
+                <div class="recent-post-thumb">
+                  <img src="images/note-figma.jpg" alt="笔记：实用 Figma 技巧" />
+                </div>
+                <div class="recent-post-title">那些我希望早点知道的 Figma 技巧</div>
+                <div class="recent-post-meta">2026 年 3 月 31 日</div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--color-border); display: flex; align-items: center; gap: 12px;">
+            <button class="channel-preview-toggle" aria-expanded="false" aria-controls="preview-red">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <span class="toggle-label">预览频道</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="channel-preview-frame" id="preview-red">
+            <div class="preview-iframe-wrap">
+              <div class="preview-iframe-overlay">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ff5555" stroke-width="1.5" width="36" height="36">
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+                </svg>
+                <p>预览会在内嵌框架中打开 xiaohongshu.com。<br />注意：部分站点会通过 X-Frame-Options 阻止嵌入。</p>
+                <button class="preview-open-btn" data-url="https://www.xiaohongshu.com">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" width="13" height="13">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                  加载预览
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ── GITHUB ────────────────────────────── -->
+        <article class="channel-card reveal" data-ch="github" role="listitem" aria-label="GitHub 主页">
+          <div class="channel-card-header">
+            <div class="channel-icon github" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="#e8e8e8" width="26" height="26">
+                <path
+                  d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+              </svg>
+            </div>
+            <div class="channel-info">
+              <div class="channel-platform">GitHub</div>
+              <h2 class="channel-name">yifan-chen-dev</h2>
+              <div class="channel-subs">@yifan-chen-dev · 312 关注</div>
+            </div>
+            <a href="#" class="channel-follow-btn" target="_blank" rel="noopener"
+              style="background-color:var(--color-surface-2);color:var(--color-text);border:1px solid var(--color-border);">
+              关注
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" width="13" height="13">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </a>
+          </div>
+
+          <div class="channel-stats">
+            <div class="ch-stat"><span class="ch-stat-num">18</span><span class="ch-stat-label">公开仓库</span></div>
+            <div class="ch-stat"><span class="ch-stat-num">312</span><span class="ch-stat-label">关注</span></div>
+            <div class="ch-stat"><span class="ch-stat-num">420</span><span class="ch-stat-label">年度贡献</span></div>
+          </div>
+
+          <p class="channel-desc">这里放着开源作品、副业项目，以及你在本站看到的一切背后的源代码。大部分仓库使用 MIT 协议 —— 欢迎 Fork 与二创。</p>
+
+          <div class="channel-recent">
+            <div class="channel-recent-title">最近仓库</div>
+            <div class="recent-posts">
+              <div class="recent-post-card">
+                <div class="recent-post-thumb"
+                  style="background:linear-gradient(135deg,#111,#1a1a1a);display:flex;align-items:center;justify-content:center;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" stroke-width="1.5" width="22" height="22">
+                    <polyline points="16 18 22 12 16 6" />
+                    <polyline points="8 6 2 12 8 18" />
+                  </svg>
+                </div>
+                <div class="recent-post-title">tempo-design-system</div>
+                <div class="recent-post-meta">CSS · 124 stars</div>
+              </div>
+              <div class="recent-post-card">
+                <div class="recent-post-thumb"
+                  style="background:linear-gradient(135deg,#0e0e1a,#14142a);display:flex;align-items:center;justify-content:center;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" stroke-width="1.5" width="22" height="22">
+                    <polyline points="16 18 22 12 16 6" />
+                    <polyline points="8 6 2 12 8 18" />
+                  </svg>
+                </div>
+                <div class="recent-post-title">focusflow-extension</div>
+                <div class="recent-post-meta">JavaScript · 88 stars</div>
+              </div>
+              <div class="recent-post-card">
+                <div class="recent-post-thumb"
+                  style="background:linear-gradient(135deg,#0d1a14,#102816);display:flex;align-items:center;justify-content:center;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#e8e8e8" stroke-width="1.5" width="22" height="22">
+                    <polyline points="16 18 22 12 16 6" />
+                    <polyline points="8 6 2 12 8 18" />
+                  </svg>
+                </div>
+                <div class="recent-post-title">personal-site-v3</div>
+                <div class="recent-post-meta">HTML · 32 stars</div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--color-border); display: flex; align-items: center; gap: 12px;">
+            <button class="channel-preview-toggle" aria-expanded="false" aria-controls="preview-github">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <span class="toggle-label">预览频道</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="channel-preview-frame" id="preview-github">
+            <div class="preview-iframe-wrap">
+              <div class="preview-iframe-overlay">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--color-text-muted)" width="36"
+                  height="36">
+                  <path
+                    d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+                </svg>
+                <p>预览会在内嵌框架中打开 github.com。<br />注意：部分站点会通过 X-Frame-Options 阻止嵌入。</p>
+                <button class="preview-open-btn" data-url="https://github.com">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" width="13" height="13">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                  加载预览
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div><!-- /channel-list -->
+
+      <!-- ══ 合作区块 ═══════════════════════════ -->
+      <section class="collab-section" id="collab" aria-label="合作方式">
+        <div class="section-header" style="padding: 0 0 32px;">
+          <span class="section-number">—</span>
+          <h2 class="section-title">与我合作</h2>
+          <div class="section-line"></div>
+        </div>
+
+        <!-- CTA 横幅 -->
+        <div class="collab-cta-banner reveal" style="margin: 0 0 40px;">
+          <div>
+            <h3>开放商业合作与自由职业邀约。</h3>
+            <p>有想做的项目吗？无论是一个网站、一套设计系统，还是需要技术伙伴的副业 —— 欢迎聊聊。</p>
+          </div>
+          <a href="mailto:alex@example.com" class="btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" width="14" height="14">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            发送邮件
+          </a>
+        </div>
+
+        <!-- 合作方式 -->
+        <div class="collab-ways" style="padding: 0 0 40px;">
+          <div class="collab-type reveal">
+            <div class="collab-type-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" />
+                <path d="m8 21 4-4 4 4" />
+              </svg>
+            </div>
+            <h4>网页设计 &amp; 开发</h4>
+            <p>从设计到部署的完整网站交付。专注快速、可访问、视觉优美的 Web 体验。</p>
+          </div>
+          <div class="collab-type reveal reveal-delay-1">
+            <div class="collab-type-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </div>
+            <h4>UI / UX 设计</h4>
+            <p>线框图、可交互原型与高保真 Figma 设计稿。从系统出发，为真实用户而设计。</p>
+          </div>
+          <div class="collab-type reveal reveal-delay-2">
+            <div class="collab-type-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+            </div>
+            <h4>内容合作</h4>
+            <p>投稿文章、视频联动、联合制作教程等。尤其欢迎设计 + 代码方向的内容合作。</p>
+          </div>
+          <div class="collab-type reveal reveal-delay-2">
+            <div class="collab-type-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" y1="12" x2="22" y2="12" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+              </svg>
+            </div>
+            <h4>开源共创</h4>
+            <p>希望参与有意思的开源项目。如果你的下一个公开仓库需要一位合作者，欢迎联系。</p>
+          </div>
+        </div>
+
+        <!-- 联系表单 -->
+        <div class="contact-form-wrap" style="max-width:640px;">
+          <h3>给我留言</h3>
+          <form id="contactForm" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="nameInput">姓名</label>
+                <input class="form-input" id="nameInput" type="text" placeholder="你的名字" required autocomplete="name" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="emailInput">邮箱</label>
+                <input class="form-input" id="emailInput" type="email" placeholder="your@email.com" required
+                  autocomplete="email" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="typeSelect">合作类型</label>
+              <select class="form-select" id="typeSelect" required>
+                <option value="" disabled selected>请选择合作类型…</option>
+                <option value="web">网页设计 &amp; 开发</option>
+                <option value="ui">UI / UX 设计</option>
+                <option value="content">内容合作</option>
+                <option value="opensource">开源共创</option>
+                <option value="other">其他</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="msgInput">留言</label>
+              <textarea class="form-textarea" id="msgInput" placeholder="简单介绍一下你的项目或想法…" required></textarea>
+            </div>
+            <button type="submit" class="form-submit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13" />
+                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+              </svg>
+              发送留言
+            </button>
+            <div class="form-success" id="formSuccess" role="alert">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+              留言已送达！我会在 48 小时内回复你。
+            </div>
+          </form>
+        </div>
+
+      </section>
+
+      <footer class="page-footer" role="contentinfo">
+        <p class="footer-copy">&copy; 2026 陈亦凡. 保留所有权利.</p>
+        <nav class="footer-links" aria-label="页脚导航">
+          <a href="index.html">首页</a>
+          <a href="portfolio.html">作品集</a>
+          <a href="thoughts.html">观点分享</a>
+          <a href="mailto:alex@example.com">邮箱</a>
+        </nav>
+      </footer>
+
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    // 若 hash 为 #collab，自动滚动至合作区块
+    if (window.location.hash === '#collab') {
+      setTimeout(() => {
+        const el = document.getElementById('collab');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 200);
+    }
+  </script>
+</body>
+
+</html>
