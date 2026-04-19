@@ -36,6 +36,13 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        
+      - name: Debug Directory
+        run: |
+          pwd
+          ls -la
+          echo "--- Checking src directory ---"
+          ls -la src/ || echo "src directory not found!"
 
       - name: Build with Astro
         run: npm run build
