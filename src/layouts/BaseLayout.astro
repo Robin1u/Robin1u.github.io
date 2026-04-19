@@ -1,4 +1,5 @@
 ---
+import { getEntry } from 'astro:content';
 import I18nText from '../components/I18nText.astro';
 
 export interface Props {
@@ -19,6 +20,22 @@ const {
 
 const pageTitleZh = `${title} · Robin Lu`;
 const pageTitleEn = `${titleEn} · Robin Lu`;
+
+const homeEntry = await getEntry('site', 'home').catch(() => null);
+const siteSettings = homeEntry?.data ?? {
+  name: 'Robin Lu',
+  nameEn: 'Robin Lu',
+  roles: [],
+};
+
+const sidebarNameZh = siteSettings.name;
+const sidebarNameEn = siteSettings.nameEn ?? siteSettings.name;
+const sidebarTitleZh = siteSettings.roles.length > 0
+  ? siteSettings.roles.map((role) => role.zh).join(' / ')
+  : '个人主页';
+const sidebarTitleEn = siteSettings.roles.length > 0
+  ? siteSettings.roles.map((role) => role.en ?? role.zh).join(' / ')
+  : 'Personal site';
 ---
 <!DOCTYPE html>
 <html lang="zh-CN" data-language="zh">
@@ -54,7 +71,9 @@ const pageTitleEn = `${titleEn} · Robin Lu`;
   <div class="scroll-progress" id="scrollProgress"></div>
 
   <header class="mobile-header">
-    <span class="mobile-header-name">Robin Lu</span>
+    <span class="mobile-header-name">
+      <I18nText zh={sidebarNameZh} en={sidebarNameEn} />
+    </span>
     <div class="mobile-header-actions">
       <div
         class="language-switch"
@@ -90,10 +109,12 @@ const pageTitleEn = `${titleEn} · Robin Lu`;
       data-i18n-aria-label-en="Primary navigation"
     >
       <div class="sidebar-logo">
-        <div class="name">Robin Lu</div>
+        <div class="name">
+          <I18nText zh={sidebarNameZh} en={sidebarNameEn} />
+        </div>
         <div class="title">
           <span class="status-dot"></span>
-          <I18nText zh="个人主页" en="Personal site" />
+          <I18nText zh={sidebarTitleZh} en={sidebarTitleEn} />
         </div>
       </div>
 

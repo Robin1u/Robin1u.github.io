@@ -1,38 +1,40 @@
 ---
+import { getEntry } from 'astro:content';
 import stats from '../../data/stats.json';
 import I18nText from '../components/I18nText.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const channels = [
-  {
-    platform: 'Bilibili',
-    name: { zh: '内容频道', en: 'Content Channel' },
-    stats: [
-      { value: `${stats.bilibili.followers}`, label: { zh: '关注', en: 'Followers' } },
-      { value: `${stats.bilibili.videos}`, label: { zh: '视频', en: 'Videos' } },
-      { value: `${stats.bilibili.views}`, label: { zh: '播放', en: 'Views' } },
-    ],
-    updated: stats.bilibili.updated,
-    key: 'bilibili',
+const platformMeta = {
+  bilibili: {
+    labelZh: 'Bilibili',
+    labelEn: 'Bilibili',
+    color: '#00a1d6',
   },
-  {
-    platform: 'GitHub',
-    name: { zh: '代码频道', en: 'Code Channel' },
-    stats: [
-      { value: `${stats.github.followers}`, label: { zh: '关注', en: 'Followers' } },
-      { value: `${stats.github.repos}`, label: { zh: '仓库', en: 'Repos' } },
-      { value: `${stats.github.stars}`, label: { zh: 'Stars', en: 'Stars' } },
-    ],
-    updated: stats.github.updated,
-    key: 'github',
+  xiaohongshu: {
+    labelZh: '小红书',
+    labelEn: 'Xiaohongshu',
+    color: '#ff5555',
   },
-];
+  github: {
+    labelZh: 'GitHub',
+    labelEn: 'GitHub',
+    color: '#e8e8e8',
+  },
+};
+
+const statsMap = {
+  bilibili: stats.bilibili,
+  github: stats.github,
+};
+
+const siteEntry = await getEntry('site', 'home').catch(() => null);
+const channels = siteEntry?.data?.channels ?? [];
 ---
 <BaseLayout
   title="频道"
   titleEn="Channels"
   description="Robin Lu 的频道与平台数据"
-  descriptionEn="Channel and platform stats for Robin Lu"
+  descriptionEn="Channel and platform links for Robin Lu"
   activePage="channel"
 >
   <section class="channel-hero">
@@ -41,41 +43,91 @@ const channels = [
       <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);"><I18nText zh="频道" en="Channels" /></h1>
       <div class="section-line"></div>
     </div>
-    <p style="margin-top:16px; max-width:560px; color:var(--color-text-muted);">
+    <p style="margin-top:16px; max-width:620px; color:var(--color-text-muted);">
       <I18nText
-        zh="这一页保留频道路由与框架结构，当前展示仓库里已有的频道统计数据。"
-        en="This page keeps the channel route and layout in place while showing the stats already stored in the repository."
+        zh="这里更适合做平台入口页：放账号链接、简短介绍和最新更新方向。先把 B 站和小红书集中在这里，后续如果 ADHDer 内容沉淀成体系，再拆出独立专题页会更清晰。"
+        en="This page works best as a platform hub for profile links, short introductions, and the latest direction of your work. Keep Bilibili and Xiaohongshu here first, then create a dedicated topic page later if your ADHDer content grows into a bigger knowledge base."
       />
     </p>
   </section>
 
-  <div class="channel-list">
-    {channels.map((channel) => (
-      <article class="channel-card" data-ch={channel.key}>
-        <div class="channel-card-header">
-          <div class:list={['channel-icon', channel.key]} aria-hidden="true">
-            <span style="font-weight:700;">{channel.platform.slice(0, 1)}</span>
-          </div>
-          <div class="channel-info">
-            <div class="channel-platform">{channel.platform}</div>
-            <h2 class="channel-name"><I18nText zh={channel.name.zh} en={channel.name.en} /></h2>
-            <div class="channel-subs">
-              <I18nText zh={`最近更新：${channel.updated}`} en={`Last updated: ${channel.updated}`} />
-            </div>
-          </div>
-        </div>
+  {channels.length > 0 ? (
+    <div class="channel-list">
+      {channels.map((channel) => {
+        const meta = platformMeta[channel.platform];
+        const platformStats = statsMap[channel.platform];
+        const titleZh = channel.title || meta.labelZh;
+        const titleEn = channel.titleEn || channel.title || meta.labelEn;
+        const descriptionZh = channel.description || '';
+        const descriptionEn = channel.descriptionEn || channel.description || '';
 
-        <div class="channel-stats">
-          {channel.stats.map((stat) => (
-            <div class="ch-stat">
-              <span class="ch-stat-num">{stat.value}</span>
-              <span class="ch-stat-label"><I18nText zh={stat.label.zh} en={stat.label.en} /></span>
+        return (
+          <article class="channel-card" data-platform={channel.platform}>
+            <div class="channel-card-header">
+              <div class="channel-icon" style={`background-color:${meta.color}22; color:${meta.color};`}>
+                <span style="font-weight:700;">{meta.labelZh.slice(0, 1)}</span>
+              </div>
+              <div class="channel-info">
+                <div class="channel-platform"><I18nText zh={meta.labelZh} en={meta.labelEn} /></div>
+                <h2 class="channel-name" style={`color:${meta.color};`}><I18nText zh={titleZh} en={titleEn} /></h2>
+                {channel.handle && <div class="channel-subs">{channel.handle}</div>}
+              </div>
+              {channel.url && (
+                <a href={channel.url} class="channel-follow-btn" target="_blank" rel="noopener" style={`background-color:${meta.color}; color:#0a0a0a;`}>
+                  <I18nText zh="打开链接" en="Open Link" />
+                </a>
+              )}
             </div>
-          ))}
-        </div>
-      </article>
-    ))}
-  </div>
+
+            {(descriptionZh || descriptionEn) && (
+              <p class="channel-desc">
+                <I18nText zh={descriptionZh || ' '} en={descriptionEn || descriptionZh || ' '} />
+              </p>
+            )}
+
+            {platformStats && (
+              <div class="channel-stats">
+                {'followers' in platformStats && (
+                  <div class="ch-stat">
+                    <span class="ch-stat-num">{platformStats.followers}</span>
+                    <span class="ch-stat-label"><I18nText zh="关注" en="Followers" /></span>
+                  </div>
+                )}
+                {'videos' in platformStats && (
+                  <div class="ch-stat">
+                    <span class="ch-stat-num">{platformStats.videos}</span>
+                    <span class="ch-stat-label"><I18nText zh="视频" en="Videos" /></span>
+                  </div>
+                )}
+                {'views' in platformStats && (
+                  <div class="ch-stat">
+                    <span class="ch-stat-num">{platformStats.views}</span>
+                    <span class="ch-stat-label"><I18nText zh="播放" en="Views" /></span>
+                  </div>
+                )}
+                {'repos' in platformStats && (
+                  <div class="ch-stat">
+                    <span class="ch-stat-num">{platformStats.repos}</span>
+                    <span class="ch-stat-label"><I18nText zh="仓库" en="Repos" /></span>
+                  </div>
+                )}
+                {'stars' in platformStats && (
+                  <div class="ch-stat">
+                    <span class="ch-stat-num">{platformStats.stars}</span>
+                    <span class="ch-stat-label"><I18nText zh="Stars" en="Stars" /></span>
+                  </div>
+                )}
+              </div>
+            )}
+          </article>
+        );
+      })}
+    </div>
+  ) : (
+    <div class="quote-block" style="margin:48px 64px;">
+      <p class="quote-text"><I18nText zh="当前还没有配置频道链接。" en="No channel links configured yet." /></p>
+    </div>
+  )}
 
   <footer class="page-footer">
     <span class="footer-copy">© 2026 Robin Lu</span>
@@ -86,41 +138,35 @@ const channels = [
       <a href="/life"><I18nText zh="生活" en="Life" /></a>
     </nav>
   </footer>
+
+  <style>
+    .channel-stats {
+      display: flex;
+      gap: 24px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .ch-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .ch-stat-num {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--color-white);
+      font-family: var(--font-mono);
+      letter-spacing: -0.02em;
+    }
+
+    .ch-stat-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-subtle);
+    }
+  </style>
 </BaseLayout>
-
-<style>
-  .channel-stats {
-    display: flex;
-    gap: 24px;
-    margin-bottom: 0;
-    flex-wrap: wrap;
-  }
-
-  .ch-stat {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .ch-stat-num {
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--color-white);
-    font-family: var(--font-mono);
-    letter-spacing: -0.02em;
-  }
-
-  .ch-stat-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-text-subtle);
-  }
-  .channel-card[data-ch='bilibili'] .channel-name {
-    color: #00a1d6;
-  }
-  .channel-card[data-ch='github'] .channel-name {
-    color: #e8e8e8;
-  }
-</style>

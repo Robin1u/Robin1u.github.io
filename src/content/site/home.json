@@ -1,0 +1,100 @@
+{
+  "name": "Robin Lu",
+  "nameEn": "Robin Lu",
+  "heroTag": "开放合作机会",
+  "heroTagEn": "Open for collaboration",
+  "status": "现在在柏林",
+  "statusEn": "Currently in Berlin",
+  "location": "柏林",
+  "locationEn": "Berlin",
+  "roles": [
+    {
+      "zh": "学生",
+      "en": "Student"
+    },
+    {
+      "zh": "设计师",
+      "en": "Designer"
+    },
+    {
+      "zh": "开发者",
+      "en": "Developer"
+    }
+  ],
+  "aboutTitle": "关于我",
+  "aboutTitleEn": "About Me",
+  "aboutParagraphs": [
+    {
+      "zh": "我是一名计算机科学专业的学生，对构建网页世界充满热情。在学校之外，我把空闲时间花在设计界面、编写代码，以及把学到的东西分享到网上。",
+      "en": "I am a computer science student who is deeply interested in building thoughtful web experiences. Outside class, I spend my time designing interfaces, writing code, and sharing what I learn online."
+    },
+    {
+      "zh": "我的工作处于设计与工程的交汇点。我相信最好的数字体验既是美的，也是实用的。从微型工具到全栈 Web 应用，我都有实战经验。",
+      "en": "My work sits at the intersection of design and engineering. I believe the best digital experiences should feel beautiful and practical at the same time, from small tools to full-stack web products."
+    },
+    {
+      "zh": "不在电脑前的时候，你大概能在咖啡馆里找到我 —— 读一本关于产品设计的书、背着相机去徒步，或者在刷太多的科技类视频。这些日常都被我记录在我的频道里。",
+      "en": "When I am away from the computer, you can usually find me in a cafe, on a hike with a camera, or watching too many videos about design and technology. Those everyday fragments often end up in my channel."
+    }
+  ],
+  "recentTitle": "最近在做",
+  "recentTitleEn": "Recently Doing",
+  "recentItems": [
+    {
+      "label": "阅读",
+      "labelEn": "Reading",
+      "title": "《设计心理学》",
+      "titleEn": "The Design of Everyday Things",
+      "subtitle": "Don Norman",
+      "subtitleEn": "Don Norman",
+      "done": false
+    },
+    {
+      "label": "开发",
+      "labelEn": "Building",
+      "title": "个人网站 v3",
+      "titleEn": "Personal Website v3",
+      "subtitle": "HTML / CSS / JS",
+      "subtitleEn": "HTML / CSS / JS",
+      "done": false
+    },
+    {
+      "label": "在听",
+      "labelEn": "Listening",
+      "title": "My Chemical Romance",
+      "titleEn": "My Chemical Romance",
+      "subtitle": "The Black Parade",
+      "subtitleEn": "The Black Parade",
+      "done": false
+    }
+  ],
+  "channels": [
+    {
+      "platform": "bilibili",
+      "title": "ADHDer 内容分享",
+      "titleEn": "ADHDer Content",
+      "description": "",
+      "descriptionEn": "",
+      "handle": "",
+      "url": ""
+    },
+    {
+      "platform": "xiaohongshu",
+      "title": "ADHDer 日常与方法",
+      "titleEn": "ADHDer Notes",
+      "description": "",
+      "descriptionEn": "",
+      "handle": "",
+      "url": ""
+    },
+    {
+      "platform": "github",
+      "title": "项目与源码",
+      "titleEn": "Projects & Source Code",
+      "description": "",
+      "descriptionEn": "",
+      "handle": "robin1u",
+      "url": "https://github.com/robin1u"
+    }
+  ]
+}

@@ -1,10 +1,22 @@
 ---
+import { readdirSync } from 'node:fs';
 import { getCollection } from 'astro:content';
 import I18nText from '../components/I18nText.astro';
 import { formatLocalizedDate } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-async function safeGetCollection(name) {
+function hasMarkdownEntries(relativeDir) {
+  try {
+    return readdirSync(new URL(relativeDir, import.meta.url)).some((file) => file.endsWith('.md'));
+  } catch {
+    return false;
+  }
+}
+
+async function safeGetCollection(name, shouldLoad = true) {
+  if (!shouldLoad) {
+    return [];
+  }
   try {
     return await getCollection(name, ({ data }) => !data.draft);
   } catch {
@@ -12,7 +24,7 @@ async function safeGetCollection(name) {
   }
 }
 
-const thoughts = (await safeGetCollection('thoughts'))
+const thoughts = (await safeGetCollection('thoughts', hasMarkdownEntries('../content/thoughts')))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const lifeItems = (await getCollection('life'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
@@ -51,6 +63,7 @@ const lifeItems = (await getCollection('life'))
                   <div class="post-item-meta">
                     <span class="post-date"><I18nText zh={dateCopy.zh} en={dateCopy.en} /></span>
                     {post.data.category && <span class="post-category">{post.data.category}</span>}
+                    {(post.data.tags ?? []).slice(0, 2).map((tag) => <span class="tag">{tag}</span>)}
                   </div>
                   <h3>{post.data.title}</h3>
                   {post.data.description && <p>{post.data.description}</p>}
