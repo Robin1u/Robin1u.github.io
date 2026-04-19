@@ -3,22 +3,14 @@
   "nameEn": "Robin Lu",
   "heroTag": "开放合作机会",
   "heroTagEn": "Open for collaboration",
-  "status": "现在在柏林",
-  "statusEn": "Currently in Berlin",
-  "location": "柏林",
-  "locationEn": "Berlin",
+  "status": "现在在科隆",
+  "statusEn": "Currently in Cologne",
+  "location": "科隆",
+  "locationEn": "Cologne",
   "roles": [
     {
-      "zh": "学生",
-      "en": "Student"
-    },
-    {
-      "zh": "设计师",
-      "en": "Designer"
-    },
-    {
-      "zh": "开发者",
-      "en": "Developer"
+      "zh": "商业心理学在读",
+      "en": "Business Psychology Student"
     }
   ],
   "aboutTitle": "关于我",
@@ -71,30 +63,30 @@
   "channels": [
     {
       "platform": "bilibili",
-      "title": "ADHDer 内容分享",
-      "titleEn": "ADHDer Content",
+      "title": "ADHD 内容分享",
+      "titleEn": "ADHD Content Sharing",
+      "handle": "小L的注意力离线中",
+      "url": "https://space.bilibili.com/27124811",
       "description": "",
-      "descriptionEn": "",
-      "handle": "",
-      "url": ""
+      "descriptionEn": ""
     },
     {
       "platform": "xiaohongshu",
-      "title": "ADHDer 日常与方法",
-      "titleEn": "ADHDer Notes",
+      "title": "ADHDer 日常分享和笔记",
+      "titleEn": "ADHD Notes and Daily Share",
+      "handle": "小L的注意力离线中",
+      "url": "https://xhslink.com/m/3btFpRWrBa6",
       "description": "",
-      "descriptionEn": "",
-      "handle": "",
-      "url": ""
+      "descriptionEn": ""
     },
     {
       "platform": "github",
       "title": "项目与源码",
       "titleEn": "Projects & Source Code",
-      "description": "",
-      "descriptionEn": "",
       "handle": "robin1u",
-      "url": "https://github.com/robin1u"
+      "url": "https://github.com/robin1u",
+      "description": "",
+      "descriptionEn": ""
     }
   ]
 }
