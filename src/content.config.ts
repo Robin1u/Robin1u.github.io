@@ -6,15 +6,17 @@ const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
   schema: z.object({
     title: z.string(),
+    titleEn: z.string().optional(),
     // 将可能在 CMS 中没填的字段都加上 .optional()
-    description: z.string().optional(), 
-    category: z.enum(['web', 'design', 'tool', 'mobile']).optional(), 
-    tags: z.array(z.string()).optional(), 
+    description: z.string().optional(),
+    descriptionEn: z.string().optional(),
+    category: z.enum(['web', 'design', 'tool', 'mobile']).optional(),
+    tags: z.array(z.string()).optional(),
     featured: z.boolean().default(false),
     image: z.string().optional(),
     liveUrl: z.string().url().optional(),
     githubUrl: z.string().url().optional(),
-    date: z.coerce.date(),       // ← coerce 自动转换
+    date: z.coerce.date(),
     draft: z.boolean().default(false),
   }),
 });
@@ -37,7 +39,9 @@ const life = defineCollection({
   loader: file('./src/content/life/index.json'),
   schema: z.object({
     title: z.string(),
+    titleEn: z.string().optional(),
     caption: z.string().optional(),
+    captionEn: z.string().optional(),
     image: z.string(),
     date: z.coerce.date(),
     wide: z.boolean().default(false),

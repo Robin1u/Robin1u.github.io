@@ -1,6 +1,8 @@
 ---
 title: 微调模型到底在练什么？一篇文章看懂大模型的“行为艺术”与本地落地 （Ollama+Gemma4 E2B）
+titleEn: What Does Fine-Tuning Actually Train? Understanding LLM "Behavior Art" and Local Deployment with Ollama + Gemma4 E2B
 description: 模型微调不只是学习知识，更是学习“行为习惯”。通过揭示 LoRA 适配器与 GGUF 文件的本质区别，看清模型权重的演变。让模型真正适配你的专业工作流。
+descriptionEn: Fine-tuning is not just about learning knowledge. It also teaches behavioral patterns. This piece explains the difference between LoRA adapters and GGUF files so the model's real evolution is easier to understand in practical local workflows.
 date: 2026-04-19T03:10:00
 image: /images/Screenshot 2026-04-15 at 17.26.27.png
 tags:

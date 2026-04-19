@@ -1,5 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';  // ← 导入 render
+import I18nText from '../../components/I18nText.astro';
+import { projectCategoryLabels } from '../../lib/i18n';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export async function getStaticPaths() {
@@ -12,47 +14,65 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);  // ← render(project)，不是 project.render()
-
-const categoryLabel = {
-  web: 'Web 应用', design: '设计系统', tool: '工具', mobile: '移动端'
-}[project.data.category];
+const titleEn = project.data.titleEn ?? project.data.title;
+const descriptionEn = project.data.descriptionEn ?? project.data.description;
+const categoryLabel = project.data.category ? projectCategoryLabels[project.data.category] : undefined;
 ---
-<BaseLayout title={project.data.title} activePage="portfolio">
+<BaseLayout
+  title={project.data.title}
+  titleEn={titleEn}
+  description={project.data.description ?? '项目详情'}
+  descriptionEn={descriptionEn ?? 'Project detail'}
+  activePage="portfolio"
+>
   <article style="max-width:780px; margin: 64px auto; padding: 0 64px 64px;">
 
     <a href="/portfolio" style="display:inline-flex; align-items:center; gap:8px; color:var(--color-text-muted); font-size:13px; margin-bottom:40px;">
-      ← 返回作品集
+      ← <I18nText zh="返回作品集" en="Back to Portfolio" />
     </a>
 
     <div class="portfolio-card-image" style="border-radius:12px; margin-bottom:40px; aspect-ratio:16/9;">
       {project.data.image
-        ? <img src={project.data.image} alt={project.data.title} loading="eager" width="780" height="438" style="width:100%;height:100%;object-fit:cover;border-radius:12px;" />
-        : <div class="img-placeholder" style="font-size:64px;">{project.data.title.slice(0,2).toUpperCase()}</div>
+        ? (
+          <img
+            src={project.data.image}
+            alt={project.data.title}
+            data-i18n-alt-zh={project.data.title}
+            data-i18n-alt-en={titleEn}
+            loading="eager"
+            width="780"
+            height="438"
+            style="width:100%;height:100%;object-fit:cover;border-radius:12px;"
+          />
+        )
+        : <I18nText as="div" class="img-placeholder" style="font-size:64px;" zh={project.data.title.slice(0, 2).toUpperCase()} en={titleEn.slice(0, 2).toUpperCase()} />
       }
     </div>
 
     <div class="portfolio-card-tags" style="margin-bottom:16px;">
-      <span class="tag accent">{categoryLabel}</span>
-      {project.data.tags.map(tag => <span class="tag">{tag}</span>)}
+      {categoryLabel && <span class="tag accent"><I18nText zh={categoryLabel.zh} en={categoryLabel.en} /></span>}
+      {(project.data.tags ?? []).map(tag => <span class="tag">{tag}</span>)}
     </div>
 
     <h1 style="font-size:clamp(28px,3vw,48px); font-weight:800; color:var(--color-white); letter-spacing:-0.03em; margin-bottom:16px; line-height:1.1;">
-      {project.data.title}
+      <I18nText zh={project.data.title} en={titleEn} />
     </h1>
 
-    <p style="font-size:16px; color:var(--color-text-muted); margin-bottom:32px; line-height:1.7;">
-      {project.data.description}
-    </p>
+    {project.data.description && descriptionEn && (
+      <p style="font-size:16px; color:var(--color-text-muted); margin-bottom:32px; line-height:1.7;">
+        <I18nText zh={project.data.description} en={descriptionEn} />
+      </p>
+    )}
 
     <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:48px; padding-bottom:48px; border-bottom:1px solid var(--color-border);">
       {project.data.liveUrl && (
         <a href={project.data.liveUrl} target="_blank" rel="noopener noreferrer" class="btn-primary">
-          查看线上版本 ↗
+          <I18nText zh="查看线上版本 ↗" en="Open Live Version ↗" />
         </a>
       )}
       {project.data.githubUrl && (
         <a href={project.data.githubUrl} target="_blank" rel="noopener noreferrer" class="btn-secondary">
-          GitHub 源码 ↗
+          <I18nText zh="GitHub 源码 ↗" en="GitHub Source ↗" />
         </a>
       )}
     </div>

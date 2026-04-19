@@ -1,57 +1,117 @@
 ---
 import { getCollection } from 'astro:content';
+import I18nText from '../components/I18nText.astro';
+import { projectCategoryLabels } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const allProjects = await getCollection('projects', ({ data }) => !data.draft);
-const sorted = allProjects.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
----
-<BaseLayout title="作品集" activePage="portfolio">
+const projects = (await getCollection('projects', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-  <div class="page-hero">
-    <h1>作品集</h1>
-    <p>这里收录了我从构思到部署亲手设计和开发的一系列项目。</p>
-  </div>
+const categories = [
+  { key: 'all', label: projectCategoryLabels.all },
+  { key: 'web', label: projectCategoryLabels.web },
+  { key: 'design', label: projectCategoryLabels.design },
+  { key: 'tool', label: projectCategoryLabels.tool },
+  { key: 'mobile', label: projectCategoryLabels.mobile },
+];
+---
+<BaseLayout
+  title="作品集"
+  titleEn="Portfolio"
+  description="Robin Lu 的项目与作品集"
+  descriptionEn="Projects and selected work by Robin Lu"
+  activePage="portfolio"
+>
+  <section class="page-hero">
+    <h1><I18nText zh="作品集" en="Portfolio" /></h1>
+    <p>
+      <I18nText
+        zh="保留当前项目内容，使用新的列表框架与路由结构。"
+        en="Existing project content, reorganized with a cleaner list layout and route structure."
+      />
+    </p>
+  </section>
 
   <div class="filter-bar">
-    <button class="filter-btn active" data-filter="all">全部</button>
-    <button class="filter-btn" data-filter="web">Web 应用</button>
-    <button class="filter-btn" data-filter="design">设计系统</button>
-    <button class="filter-btn" data-filter="tool">工具</button>
-    <button class="filter-btn" data-filter="mobile">移动端</button>
+    {categories.map((category, index) => (
+      <button class:list={['filter-btn', { active: index === 0 }]} data-filter={category.key}>
+        <I18nText zh={category.label.zh} en={category.label.en} />
+      </button>
+    ))}
   </div>
 
-  <div class="portfolio-grid">
-    {sorted.map(project => (
-  <a href={`/portfolio/${project.id}`} class="portfolio-card" data-category={project.data.category}>
-    <div class="portfolio-card-image">
-      {project.data.image
-        ? <img src={project.data.image} alt={project.data.title} loading="lazy" width="600" height="338" />
-        : <div class="img-placeholder">{project.data.title.slice(0,2).toUpperCase()}</div>
-      }
+  {projects.length > 0 ? (
+    <div class="portfolio-grid">
+      {projects.map((project, index) => {
+        const titleEn = project.data.titleEn ?? project.data.title;
+        const descriptionEn = project.data.descriptionEn ?? project.data.description;
+        const categoryCopy = project.data.category ? projectCategoryLabels[project.data.category] : undefined;
+
+        return (
+          <a
+            href={`/portfolio/${project.id}`}
+            class:list={['portfolio-card', { featured: index === 0 && projects.length > 1 && project.data.featured }]}
+            data-category={project.data.category ?? 'uncategorized'}
+          >
+            <div class="portfolio-card-image">
+              {project.data.image
+                ? (
+                  <img
+                    src={project.data.image}
+                    alt={project.data.title}
+                    data-i18n-alt-zh={project.data.title}
+                    data-i18n-alt-en={titleEn}
+                    loading="lazy"
+                  />
+                )
+                : (
+                  <I18nText
+                    as="div"
+                    class="img-placeholder"
+                    zh={project.data.title.slice(0, 2)}
+                    en={titleEn.slice(0, 2)}
+                  />
+                )}
+            </div>
+            <div class="portfolio-card-body">
+              <div class="portfolio-card-tags">
+                {categoryCopy && <span class="tag accent"><I18nText zh={categoryCopy.zh} en={categoryCopy.en} /></span>}
+                {(project.data.tags ?? []).slice(0, 2).map((tag) => <span class="tag">{tag}</span>)}
+              </div>
+              <h3 class="portfolio-card-title"><I18nText zh={project.data.title} en={titleEn} /></h3>
+              {project.data.description && descriptionEn && <p class="portfolio-card-desc"><I18nText zh={project.data.description} en={descriptionEn} /></p>}
+              <span class="portfolio-card-link">
+                <I18nText zh="查看详情" en="View Details" />
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </span>
+            </div>
+          </a>
+        );
+      })}
     </div>
-    <div class="portfolio-card-body">
-      <div class="portfolio-card-tags">
-        <span class="tag accent">
-          {project.data.category === 'web' ? 'Web 应用'
-          : project.data.category === 'design' ? '设计系统'
-          : project.data.category === 'tool' ? '工具'
-          : '移动端'}
-        </span>
-        {project.data.tags.slice(0,2).map(tag => <span class="tag">{tag}</span>)}
-      </div>
-      <h3 class="portfolio-card-title">{project.data.title}</h3>
-      <p class="portfolio-card-desc">{project.data.description}</p>
-      <span class="portfolio-card-link">
-        查看详情
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </span>
+  ) : (
+    <div class="quote-block" style="margin:48px 64px;">
+      <p class="quote-text"><I18nText zh="当前还没有项目内容。" en="No projects yet." /></p>
     </div>
-  </a>
-))}
-  </div>
+  )}
 
   <footer class="page-footer">
     <span class="footer-copy">© 2026 Robin Lu</span>
+    <nav class="footer-links">
+      <a href="/"><I18nText zh="首页" en="Home" /></a>
+      <a href="/thoughts"><I18nText zh="想法" en="Thoughts" /></a>
+      <a href="/life"><I18nText zh="生活" en="Life" /></a>
+      <a href="/channel"><I18nText zh="频道" en="Channels" /></a>
+    </nav>
   </footer>
-
 </BaseLayout>
+
+<style>
+  .portfolio-card.featured {
+    grid-column: 1 / -1;
+  }
+
+  .portfolio-card.featured .portfolio-card-image {
+    aspect-ratio: 21 / 7;
+  }
+</style>

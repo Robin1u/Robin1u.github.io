@@ -1,287 +1,126 @@
 ---
+import stats from '../../data/stats.json';
+import I18nText from '../components/I18nText.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// 后续接 CMS，目前静态占位数据
-const videos = [
+const channels = [
   {
-    id: 'v1',
-    title: '用 Figma Variables 搭设计系统',
-    description: '从 0 开始用 Figma Variables 建立一套完整的 Design Token 体系，包含颜色、间距、文字。',
-    duration: '18:42',
-    date: '2026-03-28',
-    category: '设计',
-    thumbnail: '/images/video-css.jpg',
-    views: '2.1k',
+    platform: 'Bilibili',
+    name: { zh: '内容频道', en: 'Content Channel' },
+    stats: [
+      { value: `${stats.bilibili.followers}`, label: { zh: '关注', en: 'Followers' } },
+      { value: `${stats.bilibili.videos}`, label: { zh: '视频', en: 'Videos' } },
+      { value: `${stats.bilibili.views}`, label: { zh: '播放', en: 'Views' } },
+    ],
+    updated: stats.bilibili.updated,
+    key: 'bilibili',
   },
   {
-    id: 'v2',
-    title: '30 分钟快速入门 CSS Grid',
-    description: '最常用的布局场景全覆盖：卡片网格、杂志排版、Bento Grid，边讲边写。',
-    duration: '31:05',
-    date: '2026-02-14',
-    category: '前端',
-    thumbnail: '/images/video-html.jpg',
-    views: '4.8k',
-  },
-  {
-    id: 'v3',
-    title: '黑客松 48 小时实录',
-    description: '一个人参加黑客松，从选题、原型到上线的完整记录，包括踩的坑和最后冲刺。',
-    duration: '24:17',
-    date: '2026-01-09',
-    category: '开发',
-    thumbnail: '/images/video-hackathon.jpg',
-    views: '3.3k',
+    platform: 'GitHub',
+    name: { zh: '代码频道', en: 'Code Channel' },
+    stats: [
+      { value: `${stats.github.followers}`, label: { zh: '关注', en: 'Followers' } },
+      { value: `${stats.github.repos}`, label: { zh: '仓库', en: 'Repos' } },
+      { value: `${stats.github.stars}`, label: { zh: 'Stars', en: 'Stars' } },
+    ],
+    updated: stats.github.updated,
+    key: 'github',
   },
 ];
-
-const categories = ['全部', '设计', '前端', '开发'];
 ---
-
-<BaseLayout title="频道" activePage="channel">
-  <div class="channel-container">
-
-    <!-- 页面标题 -->
-    <div class="page-header">
-      <h1 class="page-title">频道</h1>
-      <p class="page-desc">记录我在学习设计与开发过程中的思考，不追求完美，只求真实。</p>
+<BaseLayout
+  title="频道"
+  titleEn="Channels"
+  description="Robin Lu 的频道与平台数据"
+  descriptionEn="Channel and platform stats for Robin Lu"
+  activePage="channel"
+>
+  <section class="channel-hero">
+    <div class="section-header" style="margin-bottom:0;">
+      <span class="section-number">03</span>
+      <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);"><I18nText zh="频道" en="Channels" /></h1>
+      <div class="section-line"></div>
     </div>
+    <p style="margin-top:16px; max-width:560px; color:var(--color-text-muted);">
+      <I18nText
+        zh="这一页保留频道路由与框架结构，当前展示仓库里已有的频道统计数据。"
+        en="This page keeps the channel route and layout in place while showing the stats already stored in the repository."
+      />
+    </p>
+  </section>
 
-    <!-- 分类筛选 -->
-    <div class="filter-bar" id="filterBar">
-      {categories.map((cat, i) => (
-        <button
-          class={`filter-btn ${i === 0 ? 'active' : ''}`}
-          data-category={cat}
-          onclick="filterVideos(this)"
-        >
-          {cat}
-        </button>
-      ))}
-    </div>
-
-    <!-- 视频列表 -->
-    <div class="video-list" id="videoList">
-      {videos.map(video => (
-        <article class="video-card" data-category={video.category}>
-          <a href={`#video-${video.id}`} class="video-thumb-wrap">
-            <img
-              src={video.thumbnail}
-              alt={video.title}
-              class="video-thumb"
-              loading="lazy"
-              width="480"
-              height="270"
-              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-            />
-            <div class="video-thumb-fallback" style="display:none;">
-              <span>{video.title.slice(0, 2)}</span>
-            </div>
-            <div class="video-duration">{video.duration}</div>
-          </a>
-          <div class="video-info">
-            <div class="video-meta">
-              <span class="tag accent">{video.category}</span>
-              <span class="video-views">{video.views} 次观看</span>
-              <span class="video-date">{video.date}</span>
-            </div>
-            <h2 class="video-title">{video.title}</h2>
-            <p class="video-desc">{video.description}</p>
+  <div class="channel-list">
+    {channels.map((channel) => (
+      <article class="channel-card" data-ch={channel.key}>
+        <div class="channel-card-header">
+          <div class:list={['channel-icon', channel.key]} aria-hidden="true">
+            <span style="font-weight:700;">{channel.platform.slice(0, 1)}</span>
           </div>
-        </article>
-      ))}
-    </div>
+          <div class="channel-info">
+            <div class="channel-platform">{channel.platform}</div>
+            <h2 class="channel-name"><I18nText zh={channel.name.zh} en={channel.name.en} /></h2>
+            <div class="channel-subs">
+              <I18nText zh={`最近更新：${channel.updated}`} en={`Last updated: ${channel.updated}`} />
+            </div>
+          </div>
+        </div>
 
-    <!-- 空状态（筛选后无结果） -->
-    <div class="empty-state" id="emptyState" style="display:none;">
-      <p>该分类暂无视频</p>
-    </div>
-
+        <div class="channel-stats">
+          {channel.stats.map((stat) => (
+            <div class="ch-stat">
+              <span class="ch-stat-num">{stat.value}</span>
+              <span class="ch-stat-label"><I18nText zh={stat.label.zh} en={stat.label.en} /></span>
+            </div>
+          ))}
+        </div>
+      </article>
+    ))}
   </div>
+
+  <footer class="page-footer">
+    <span class="footer-copy">© 2026 Robin Lu</span>
+    <nav class="footer-links">
+      <a href="/"><I18nText zh="首页" en="Home" /></a>
+      <a href="/portfolio"><I18nText zh="作品集" en="Portfolio" /></a>
+      <a href="/thoughts"><I18nText zh="想法" en="Thoughts" /></a>
+      <a href="/life"><I18nText zh="生活" en="Life" /></a>
+    </nav>
+  </footer>
 </BaseLayout>
 
 <style>
-.channel-container {
-  padding: 64px 64px 80px;
-  max-width: 900px;
-}
+  .channel-stats {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+  }
 
-.page-header {
-  margin-bottom: 48px;
-}
+  .ch-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
 
-.page-title {
-  font-size: clamp(28px, 4vw, 48px);
-  font-weight: 800;
-  color: var(--color-white);
-  letter-spacing: -0.03em;
-  margin-bottom: 12px;
-  line-height: 1;
-}
+  .ch-stat-num {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--color-white);
+    font-family: var(--font-mono);
+    letter-spacing: -0.02em;
+  }
 
-.page-desc {
-  color: var(--color-text-muted);
-  font-size: 15px;
-  line-height: 1.6;
-  max-width: 52ch;
-}
-
-.filter-bar {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 40px;
-}
-
-.filter-btn {
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 500;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: transparent;
-  color: var(--color-text-muted);
-  cursor: pointer;
-  transition: all 180ms ease;
-}
-.filter-btn:hover {
-  border-color: rgba(255,255,255,0.25);
-  color: var(--color-white);
-}
-.filter-btn.active {
-  background: rgba(255,255,255,0.1);
-  border-color: rgba(255,255,255,0.2);
-  color: var(--color-white);
-}
-
-.video-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.video-card {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 24px;
-  padding: 24px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  transition: opacity 180ms ease;
-}
-.video-card:first-child {
-  padding-top: 0;
-}
-.video-card.hidden {
-  display: none;
-}
-
-.video-thumb-wrap {
-  position: relative;
-  aspect-ratio: 16/9;
-  border-radius: 8px;
-  overflow: hidden;
-  background: rgba(255,255,255,0.04);
-  display: block;
-  flex-shrink: 0;
-}
-
-.video-thumb {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 300ms ease;
-}
-.video-thumb-wrap:hover .video-thumb {
-  transform: scale(1.03);
-}
-
-.video-thumb-fallback {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32px;
-  font-weight: 800;
-  color: rgba(255,255,255,0.15);
-  letter-spacing: -0.03em;
-}
-
-.video-duration {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  background: rgba(0,0,0,0.75);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 4px;
-  letter-spacing: 0.02em;
-}
-
-.video-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 8px;
-}
-
-.video-meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.video-views, .video-date {
-  font-size: 12px;
-  color: var(--color-text-muted);
-}
-
-.video-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-white);
-  line-height: 1.3;
-  letter-spacing: -0.01em;
-}
-
-.video-desc {
-  font-size: 13px;
-  color: var(--color-text-muted);
-  line-height: 1.6;
-  max-width: 55ch;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 60px 0;
-  color: var(--color-text-muted);
-  font-size: 14px;
-}
-
-@media (max-width: 640px) {
-  .channel-container { padding: 32px 24px 60px; }
-  .video-card { grid-template-columns: 1fr; gap: 14px; }
-  .video-thumb-wrap { aspect-ratio: 16/9; }
-}
+  .ch-stat-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+  .channel-card[data-ch='bilibili'] .channel-name {
+    color: #00a1d6;
+  }
+  .channel-card[data-ch='github'] .channel-name {
+    color: #e8e8e8;
+  }
 </style>
-
-<script>
-function filterVideos(btn) {
-  const category = btn.dataset.category;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-
-  const cards = document.querySelectorAll('.video-card');
-  let visible = 0;
-  cards.forEach(card => {
-    const match = category === '全部' || card.dataset.category === category;
-    card.classList.toggle('hidden', !match);
-    if (match) visible++;
-  });
-
-  document.getElementById('emptyState').style.display = visible === 0 ? 'block' : 'none';
-}
-</script>

@@ -1,0 +1,18 @@
+---
+interface Props {
+  as?: string;
+  zh: string;
+  en?: string;
+  [key: string]: unknown;
+}
+
+const {
+  as = 'span',
+  zh,
+  en = zh,
+  ...rest
+} = Astro.props;
+
+const Tag = as;
+---
+<Tag {...rest} data-i18n-text data-zh={zh} data-en={en}>{zh}</Tag>

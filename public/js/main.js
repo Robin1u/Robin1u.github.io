@@ -4,6 +4,89 @@
 
 'use strict';
 
+const LANGUAGE_STORAGE_KEY = 'site-language';
+
+function getPreferredLanguage() {
+  try {
+    const saved = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    if (saved === 'zh' || saved === 'en') return saved;
+  } catch {
+  }
+
+  const current = document.documentElement.dataset.language;
+  return current === 'en' ? 'en' : 'zh';
+}
+
+function updateDocumentMetadata(lang) {
+  const body = document.body;
+  if (!body) return;
+
+  const title = lang === 'en' ? body.dataset.pageTitleEn : body.dataset.pageTitleZh;
+  const description = lang === 'en' ? body.dataset.pageDescriptionEn : body.dataset.pageDescriptionZh;
+  const metaDescription = document.getElementById('metaDescription');
+
+  if (title) document.title = title;
+  if (description && metaDescription) metaDescription.setAttribute('content', description);
+
+  document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
+}
+
+function updateLocalizedText(lang) {
+  document.querySelectorAll('[data-i18n-text]').forEach((el) => {
+    const text = el.dataset[lang];
+    if (text) el.textContent = text;
+  });
+}
+
+function updateLocalizedAttributes(lang) {
+  const attrMappings = [
+    { attr: 'aria-label', datasetKey: lang === 'en' ? 'i18nAriaLabelEn' : 'i18nAriaLabelZh' },
+    { attr: 'alt', datasetKey: lang === 'en' ? 'i18nAltEn' : 'i18nAltZh' },
+    { attr: 'title', datasetKey: lang === 'en' ? 'i18nTitleEn' : 'i18nTitleZh' },
+    { attr: 'placeholder', datasetKey: lang === 'en' ? 'i18nPlaceholderEn' : 'i18nPlaceholderZh' },
+  ];
+
+  attrMappings.forEach(({ attr, datasetKey }) => {
+    document.querySelectorAll(`[data-${datasetKey.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`)}]`).forEach((el) => {
+      const value = el.dataset[datasetKey];
+      if (value) el.setAttribute(attr, value);
+    });
+  });
+}
+
+function syncLanguageButtons(lang) {
+  document.querySelectorAll('[data-set-language]').forEach((button) => {
+    button.classList.toggle('active', button.getAttribute('data-set-language') === lang);
+  });
+}
+
+function applyLanguage(lang) {
+  const nextLanguage = lang === 'en' ? 'en' : 'zh';
+
+  document.documentElement.dataset.language = nextLanguage;
+  syncLanguageButtons(nextLanguage);
+  updateLocalizedText(nextLanguage);
+  updateLocalizedAttributes(nextLanguage);
+  updateDocumentMetadata(nextLanguage);
+
+  try {
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, nextLanguage);
+  } catch {
+  }
+}
+
+function initLanguageToggle() {
+  const initialLanguage = getPreferredLanguage();
+
+  document.querySelectorAll('[data-set-language]').forEach((button) => {
+    button.addEventListener('click', () => {
+      applyLanguage(button.getAttribute('data-set-language'));
+    });
+  });
+
+  applyLanguage(initialLanguage);
+}
+
 // ── Mobile sidebar ──────────────────────────────
 function initMobileSidebar() {
   const menuBtn = document.getElementById('menuBtn');
@@ -271,6 +354,7 @@ function initScrollReveal() {
 
 // ── INIT ──────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  initLanguageToggle();
   initMobileSidebar();
   initScrollProgress();
   initSkillBars();

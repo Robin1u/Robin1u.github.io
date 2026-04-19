@@ -1,59 +1,142 @@
 ---
+import I18nText from '../components/I18nText.astro';
+
 export interface Props {
   title: string;
+  titleEn?: string;
   description?: string;
-  activePage?: string;
+  descriptionEn?: string;
+  activePage?: 'home' | 'portfolio' | 'thoughts' | 'channel' | 'life' | '404';
 }
-const { title, description = '', activePage = 'home' } = Astro.props;
+
+const {
+  title,
+  titleEn = title,
+  description = '个人主页',
+  descriptionEn = 'Personal website',
+  activePage = 'home',
+} = Astro.props;
+
+const pageTitleZh = `${title} · Robin Lu`;
+const pageTitleEn = `${titleEn} · Robin Lu`;
 ---
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-language="zh">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content={description} />
-  <title>{title} · Robin Lu</title>
+  <meta id="metaDescription" name="description" content={description} />
+  <meta name="theme-color" content="#0a0a0a" />
+  <title>{pageTitleZh}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/style.css" />
+  <script is:inline>
+    (() => {
+      try {
+        const saved = localStorage.getItem('site-language');
+        if (saved === 'zh' || saved === 'en') {
+          document.documentElement.dataset.language = saved;
+          document.documentElement.lang = saved === 'en' ? 'en' : 'zh-CN';
+        }
+      } catch {
+      }
+    })();
+  </script>
 </head>
-<body>
+<body
+  data-page-title-zh={pageTitleZh}
+  data-page-title-en={pageTitleEn}
+  data-page-description-zh={description}
+  data-page-description-en={descriptionEn}
+>
   <div class="scroll-progress" id="scrollProgress"></div>
 
   <header class="mobile-header">
     <span class="mobile-header-name">Robin Lu</span>
-    <button class="mobile-menu-btn" id="menuBtn" aria-label="打开菜单">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="mobile-header-actions">
+      <div
+        class="language-switch"
+        role="group"
+        aria-label="语言切换"
+        data-i18n-aria-label-zh="语言切换"
+        data-i18n-aria-label-en="Language switch"
+      >
+        <button type="button" class="language-btn" data-set-language="zh">中</button>
+        <button type="button" class="language-btn" data-set-language="en">EN</button>
+      </div>
+      <button
+        class="mobile-menu-btn"
+        id="menuBtn"
+        aria-label="打开菜单"
+        data-i18n-aria-label-zh="打开菜单"
+        data-i18n-aria-label-en="Open menu"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </header>
 
   <div class="overlay" id="overlay"></div>
 
   <div class="layout">
-    <aside class="sidebar" id="sidebar" role="navigation">
+    <aside
+      class="sidebar"
+      id="sidebar"
+      role="navigation"
+      aria-label="主导航"
+      data-i18n-aria-label-zh="主导航"
+      data-i18n-aria-label-en="Primary navigation"
+    >
       <div class="sidebar-logo">
         <div class="name">Robin Lu</div>
-        <div class="title"><span class="status-dot"></span>学生 / 设计师 / 开发者</div>
+        <div class="title">
+          <span class="status-dot"></span>
+          <I18nText zh="个人主页" en="Personal site" />
+        </div>
       </div>
+
       <nav class="sidebar-nav">
+        <div class="nav-section nav-section-compact">
+          <div class="nav-section-label">
+            <I18nText zh="语言" en="Language" />
+          </div>
+          <div
+            class="language-switch language-switch-sidebar"
+            role="group"
+            aria-label="语言切换"
+            data-i18n-aria-label-zh="语言切换"
+            data-i18n-aria-label-en="Language switch"
+          >
+            <button type="button" class="language-btn" data-set-language="zh">中</button>
+            <button type="button" class="language-btn" data-set-language="en">EN</button>
+          </div>
+        </div>
+
         <div class="nav-section">
-          <div class="nav-section-label">导航</div>
-          <a href="/" class:list={["nav-link", { active: activePage === 'home' }]}>
+          <div class="nav-section-label">
+            <I18nText zh="导航" en="Navigation" />
+          </div>
+          <a href="/" class:list={['nav-link', { active: activePage === 'home' }]}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            首页
+            <I18nText zh="首页" en="Home" />
           </a>
-          <a href="/portfolio" class:list={["nav-link", { active: activePage === 'portfolio' }]}>
+          <a href="/portfolio" class:list={['nav-link', { active: activePage === 'portfolio' }]}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            作品集
+            <I18nText zh="作品集" en="Portfolio" />
           </a>
-          <a href="/thoughts" class:list={["nav-link", { active: activePage === 'thoughts' }]}>
+          <a href="/thoughts" class:list={['nav-link', { active: activePage === 'thoughts' }]}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            想法
+            <I18nText zh="想法" en="Thoughts" />
           </a>
-          <a href="/channel" class:list={["nav-link", { active: activePage === 'channel' }]}>
+          <a href="/life" class:list={['nav-link', { active: activePage === 'life' }]}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><circle cx="9" cy="10" r="1.5"/><path d="m13 15 2.5-3 3.5 4"/></svg>
+            <I18nText zh="生活" en="Life" />
+          </a>
+          <a href="/channel" class:list={['nav-link', { active: activePage === 'channel' }]}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-            频道
+            <I18nText zh="频道" en="Channels" />
           </a>
         </div>
       </nav>
