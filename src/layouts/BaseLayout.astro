@@ -1,5 +1,5 @@
 ---
-import { getEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 import I18nText from '../components/I18nText.astro';
 
 export interface Props {
@@ -21,7 +21,7 @@ const {
 const pageTitleZh = `${title} · Robin Lu`;
 const pageTitleEn = `${titleEn} · Robin Lu`;
 
-const homeEntry = await getEntry('site', 'home').catch(() => null);
+const [homeEntry] = await getCollection('siteHome').catch(() => []);
 const siteSettings = homeEntry?.data ?? {
   name: 'Robin Lu',
   nameEn: 'Robin Lu',

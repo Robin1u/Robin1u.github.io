@@ -4,46 +4,294 @@ import I18nText from '../components/I18nText.astro';
 import { formatLocalizedDate } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// Fetch and sort life data by date (newest first)
-// 获取生活记录数据并按日期降序排列
+const recentCategoryLabels = {
+  learning: { zh: '学习新的技能', en: 'Learning' },
+  certification: { zh: '考证', en: 'Certification' },
+  reading: { zh: '阅读', en: 'Reading' },
+  project: { zh: '做项目', en: 'Project' },
+};
+
+const [homeEntry] = await getCollection('siteHome').catch(() => []);
+const site = homeEntry?.data ?? {
+  recentTitle: '最近在做',
+  recentTitleEn: 'Recently Doing',
+  recentItems: [],
+};
+
+const timelineItems = site.recentItems
+  .map((item, index) => ({ ...item, sortIndex: index }))
+  .sort((a, b) => {
+    if (a.date && b.date) {
+      return b.date.valueOf() - a.date.valueOf();
+    }
+    if (a.date) {
+      return -1;
+    }
+    if (b.date) {
+      return 1;
+    }
+    return a.sortIndex - b.sortIndex;
+  });
+
+const currentCount = timelineItems.filter((item) => !item.done).length;
+const completedCount = timelineItems.filter((item) => item.done).length;
+
 const allLifePhotos = await getCollection('life');
 const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
 ---
 <BaseLayout
   title="生活记录"
   titleEn="Life"
-  description="Robin Lu 的生活记录页"
-  descriptionEn="A page of life updates from Robin Lu"
+  description="Robin Lu 的生活记录与时间线"
+  descriptionEn="Life timeline and everyday logs from Robin Lu"
   activePage="life"
 >
   <section class="page-hero">
     <h1><I18nText zh="生活记录" en="Life" /></h1>
-    <p><I18nText zh="一些日常碎片的记录与分享。" en="A few ordinary moments worth keeping and sharing." /></p>
+    <p>
+      <I18nText
+        zh="这里汇总正在进行的事情、已经完成的事项，以及日常碎片的记录。"
+        en="This page brings together ongoing work, completed milestones, and everyday moments."
+      />
+    </p>
   </section>
 
-  <div class="life-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem;">
-    {sortedPhotos.map((photo) => {
-      const titleEn = photo.data.titleEn ?? photo.data.title;
-      const captionEn = photo.data.captionEn ?? photo.data.caption;
-      const dateCopy = formatLocalizedDate(photo.data.date);
+  <section class="life-section">
+    <div class="section-header">
+      <span class="section-number">01</span>
+      <h2 class="section-title"><I18nText zh={site.recentTitle ?? '最近在做'} en={site.recentTitleEn ?? site.recentTitle ?? 'Recently Doing'} /></h2>
+      <div class="section-line"></div>
+    </div>
 
-      return (
-        <article class:list={['life-card', { wide: photo.data.wide, tall: photo.data.tall }]}>
-          <img
-            src={photo.data.image}
-            alt={photo.data.title}
-            data-i18n-alt-zh={photo.data.title}
-            data-i18n-alt-en={titleEn}
-            loading="lazy"
-            style="width: 100%; height: auto; border-radius: 8px; object-fit: cover;"
-          />
-          <div class="life-card-info" style="margin-top: 0.5rem;">
-            <h3 style="font-size: 1rem; margin: 0;"><I18nText zh={photo.data.title} en={titleEn} /></h3>
-            {photo.data.caption && captionEn && <p style="font-size: 0.875rem; color: #666; margin: 0.25rem 0;"><I18nText zh={photo.data.caption} en={captionEn} /></p>}
-            <time style="font-size: 0.75rem; color: #999;"><I18nText zh={dateCopy.zh} en={dateCopy.en} /></time>
-          </div>
-        </article>
-      );
-    })}
-  </div>
+    <div class="timeline-summary">
+      <div class="timeline-summary-item">
+        <span class="timeline-summary-number">{currentCount}</span>
+        <span class="timeline-summary-label"><I18nText zh="进行中" en="In Progress" /></span>
+      </div>
+      <div class="timeline-summary-item">
+        <span class="timeline-summary-number">{completedCount}</span>
+        <span class="timeline-summary-label"><I18nText zh="已完成" en="Completed" /></span>
+      </div>
+      <div class="timeline-summary-item">
+        <span class="timeline-summary-number">{timelineItems.length}</span>
+        <span class="timeline-summary-label"><I18nText zh="总计" en="Total" /></span>
+      </div>
+    </div>
+
+    {timelineItems.length > 0 ? (
+      <div class="timeline-list">
+        {timelineItems.map((item) => {
+          const categoryCopy = item.category ? recentCategoryLabels[item.category] : undefined;
+          const dateCopy = item.date ? formatLocalizedDate(item.date) : null;
+
+          return (
+            <article class:list={['timeline-card', { done: item.done }]}>
+              <div class="timeline-card-top">
+                <div class="timeline-card-meta">
+                  <span class="timeline-card-category">
+                    <I18nText
+                      zh={categoryCopy?.zh ?? item.label ?? '最近在做'}
+                      en={categoryCopy?.en ?? item.labelEn ?? item.label ?? 'Recent'}
+                    />
+                  </span>
+                  <span class:list={['timeline-card-state', { done: item.done }]}>
+                    <I18nText zh={item.done ? '已完成' : '进行中'} en={item.done ? 'Done' : 'In Progress'} />
+                  </span>
+                </div>
+                {dateCopy && (
+                  <time class="timeline-card-date">
+                    <I18nText zh={dateCopy.zh} en={dateCopy.en} />
+                  </time>
+                )}
+              </div>
+              <h3 class="timeline-card-title"><I18nText zh={item.title} en={item.titleEn ?? item.title} /></h3>
+              {item.subtitle && (
+                <p class="timeline-card-subtitle">
+                  <I18nText zh={item.subtitle} en={item.subtitleEn ?? item.subtitle} />
+                </p>
+              )}
+            </article>
+          );
+        })}
+      </div>
+    ) : (
+      <div class="quote-block" style="margin:32px 0;">
+        <p class="quote-text"><I18nText zh="当前还没有时间线内容。" en="No timeline items yet." /></p>
+      </div>
+    )}
+  </section>
+
+  <section class="life-section">
+    <div class="section-header">
+      <span class="section-number">02</span>
+      <h2 class="section-title"><I18nText zh="日常碎片" en="Daily Fragments" /></h2>
+      <div class="section-line"></div>
+    </div>
+
+    {sortedPhotos.length > 0 ? (
+      <div class="life-grid">
+        {sortedPhotos.map((photo) => {
+          const titleEn = photo.data.titleEn ?? photo.data.title;
+          const captionEn = photo.data.captionEn ?? photo.data.caption;
+          const dateCopy = formatLocalizedDate(photo.data.date);
+
+          return (
+            <article class:list={['life-card', { wide: photo.data.wide, tall: photo.data.tall }]}>
+              <img
+                src={photo.data.image}
+                alt={photo.data.title}
+                data-i18n-alt-zh={photo.data.title}
+                data-i18n-alt-en={titleEn}
+                loading="lazy"
+              />
+              <div class="life-card-info">
+                <h3><I18nText zh={photo.data.title} en={titleEn} /></h3>
+                {photo.data.caption && captionEn && <p><I18nText zh={photo.data.caption} en={captionEn} /></p>}
+                <time><I18nText zh={dateCopy.zh} en={dateCopy.en} /></time>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    ) : (
+      <div class="quote-block" style="margin:32px 0;">
+        <p class="quote-text"><I18nText zh="当前还没有生活记录。" en="No life updates yet." /></p>
+      </div>
+    )}
+  </section>
+
+  <style>
+    .life-section + .life-section {
+      margin-top: 72px;
+    }
+
+    .timeline-summary {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .timeline-summary-item {
+      min-width: 120px;
+      padding: 16px 18px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .timeline-summary-number {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--color-white);
+    }
+
+    .timeline-summary-label {
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+
+    .timeline-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .timeline-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      padding: 20px;
+    }
+
+    .timeline-card.done {
+      opacity: 0.82;
+    }
+
+    .timeline-card-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .timeline-card-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .timeline-card-category,
+    .timeline-card-state,
+    .timeline-card-date {
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+
+    .timeline-card-state {
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      padding: 4px 8px;
+    }
+
+    .timeline-card-state.done {
+      color: var(--color-accent);
+      border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
+    }
+
+    .timeline-card-title {
+      margin: 0;
+      font-size: 24px;
+      color: var(--color-white);
+    }
+
+    .timeline-card-subtitle {
+      margin: 10px 0 0;
+      color: var(--color-text-muted);
+      font-size: 15px;
+    }
+
+    .life-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .life-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .life-card-info {
+      margin-top: 0.75rem;
+    }
+
+    .life-card-info h3 {
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .life-card-info p {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      margin: 0.35rem 0;
+    }
+
+    .life-card-info time {
+      font-size: 0.75rem;
+      color: var(--color-text-subtle);
+    }
+
+    @media (max-width: 720px) {
+      .timeline-card-top {
+        flex-direction: column;
+      }
+    }
+  </style>
 </BaseLayout>

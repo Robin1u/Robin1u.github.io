@@ -7,11 +7,11 @@ media_folder: "public/images" # Where images are saved in the repo
 public_folder: "/images" # The base path for images in the frontmatter
 
 collections:
-  - name: "site"
-    label: "站点设置 (Site)"
+  - name: "home_settings"
+    label: "首页设置 (Home)"
     files:
       - name: "home"
-        label: "首页与频道 (Home & Channel)"
+        label: "首页内容"
         file: "src/content/site/home.json"
         format: "json"
         fields:
@@ -44,15 +44,38 @@ collections:
           - label: "最近在做"
             name: "recentItems"
             widget: "list"
-            summary: "{{fields.label}} - {{fields.title}}"
+            summary: "{{fields.title}}"
             fields:
-              - {label: "分类（中文）", name: "label", widget: "string"}
-              - {label: "分类（英文）", name: "labelEn", widget: "string", required: false}
+              - label: "分类"
+                name: "category"
+                widget: "select"
+                required: false
+                options:
+                  - {label: "学习新的技能", value: "learning"}
+                  - {label: "考证", value: "certification"}
+                  - {label: "阅读", value: "reading"}
+                  - {label: "做项目", value: "project"}
+              - {label: "旧分类文案（兼容旧数据）", name: "label", widget: "string", required: false}
+              - {label: "旧分类文案英文（兼容旧数据）", name: "labelEn", widget: "string", required: false}
               - {label: "标题（中文）", name: "title", widget: "string"}
               - {label: "标题（英文）", name: "titleEn", widget: "string", required: false}
               - {label: "副标题（中文）", name: "subtitle", widget: "string", required: false}
               - {label: "副标题（英文）", name: "subtitleEn", widget: "string", required: false}
+              - {label: "时间（用于生活页时间线）", name: "date", widget: "datetime", required: false}
               - {label: "已完成", name: "done", widget: "boolean", default: false, required: false}
+
+  - name: "channel_settings"
+    label: "频道设置 (Channel)"
+    files:
+      - name: "channel"
+        label: "频道内容"
+        file: "src/content/site/channel.json"
+        format: "json"
+        fields:
+          - {label: "页面标题（中文）", name: "pageTitle", widget: "string", required: false}
+          - {label: "页面标题（英文）", name: "pageTitleEn", widget: "string", required: false}
+          - {label: "页面说明（中文）", name: "intro", widget: "text", required: false}
+          - {label: "页面说明（英文）", name: "introEn", widget: "text", required: false}
           - label: "频道链接"
             name: "channels"
             widget: "list"
@@ -164,13 +187,16 @@ collections:
     label: "生活 & 照片 (Life)"
     folder: "src/content/life"
     create: true
-    extension: "json" # Since your life collection uses JSON
+    extension: "json"
     format: "json"
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
+      - {label: "ID", name: "id", widget: "string", required: false}
       - {label: "标题 (Title)", name: "title", widget: "string"}
+      - {label: "英文标题 (English Title)", name: "titleEn", widget: "string", required: false}
       - {label: "日期 (Date)", name: "date", widget: "datetime"}
       - {label: "图片 (Image)", name: "image", widget: "image"}
       - {label: "说明文字 (Caption)", name: "caption", widget: "string", required: false}
+      - {label: "英文说明 (English Caption)", name: "captionEn", widget: "string", required: false}
       - {label: "宽版显示 (Wide)", name: "wide", widget: "boolean", default: false, required: false}
       - {label: "高版显示 (Tall)", name: "tall", widget: "boolean", default: false, required: false}

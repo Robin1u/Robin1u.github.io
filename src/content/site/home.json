@@ -59,34 +59,5 @@
       "subtitleEn": "The Black Parade",
       "done": false
     }
-  ],
-  "channels": [
-    {
-      "platform": "bilibili",
-      "title": "ADHD 内容分享",
-      "titleEn": "ADHD Content Sharing",
-      "handle": "小L的注意力离线中",
-      "url": "https://space.bilibili.com/27124811",
-      "description": "",
-      "descriptionEn": ""
-    },
-    {
-      "platform": "xiaohongshu",
-      "title": "ADHDer 日常分享和笔记",
-      "titleEn": "ADHD Notes and Daily Share",
-      "handle": "小L的注意力离线中",
-      "url": "https://xhslink.com/m/3btFpRWrBa6",
-      "description": "",
-      "descriptionEn": ""
-    },
-    {
-      "platform": "github",
-      "title": "项目与源码",
-      "titleEn": "Projects & Source Code",
-      "handle": "robin1u",
-      "url": "https://github.com/robin1u",
-      "description": "",
-      "descriptionEn": ""
-    }
   ]
 }

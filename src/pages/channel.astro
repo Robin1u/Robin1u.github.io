@@ -1,6 +1,5 @@
 ---
-import { getEntry } from 'astro:content';
-import stats from '../../data/stats.json';
+import { getCollection } from 'astro:content';
 import I18nText from '../components/I18nText.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
@@ -22,17 +21,19 @@ const platformMeta = {
   },
 };
 
-const statsMap = {
-  bilibili: stats.bilibili,
-  github: stats.github,
+const [channelEntry] = await getCollection('siteChannel').catch(() => []);
+const channelSettings = channelEntry?.data ?? {
+  pageTitle: '频道',
+  pageTitleEn: 'Channels',
+  intro: '这里适合作为平台入口页，集中放置账号链接、简短介绍和更新方向。',
+  introEn: 'This page works best as a hub for profile links, short intros, and the direction of your ongoing work.',
+  channels: [],
 };
-
-const siteEntry = await getEntry('site', 'home').catch(() => null);
-const channels = siteEntry?.data?.channels ?? [];
+const channels = channelSettings.channels ?? [];
 ---
 <BaseLayout
-  title="频道"
-  titleEn="Channels"
+  title={channelSettings.pageTitle ?? '频道'}
+  titleEn={channelSettings.pageTitleEn ?? channelSettings.pageTitle ?? 'Channels'}
   description="Robin Lu 的频道与平台数据"
   descriptionEn="Channel and platform links for Robin Lu"
   activePage="channel"
@@ -40,13 +41,15 @@ const channels = siteEntry?.data?.channels ?? [];
   <section class="channel-hero">
     <div class="section-header" style="margin-bottom:0;">
       <span class="section-number">03</span>
-      <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);"><I18nText zh="频道" en="Channels" /></h1>
+      <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);">
+        <I18nText zh={channelSettings.pageTitle ?? '频道'} en={channelSettings.pageTitleEn ?? channelSettings.pageTitle ?? 'Channels'} />
+      </h1>
       <div class="section-line"></div>
     </div>
     <p style="margin-top:16px; max-width:620px; color:var(--color-text-muted);">
       <I18nText
-        zh="这里更适合做平台入口页：放账号链接、简短介绍和最新更新方向。先把 B 站和小红书集中在这里，后续如果 ADHDer 内容沉淀成体系，再拆出独立专题页会更清晰。"
-        en="This page works best as a platform hub for profile links, short introductions, and the latest direction of your work. Keep Bilibili and Xiaohongshu here first, then create a dedicated topic page later if your ADHDer content grows into a bigger knowledge base."
+        zh={channelSettings.intro ?? '这里适合作为平台入口页，集中放置账号链接、简短介绍和更新方向。'}
+        en={channelSettings.introEn ?? channelSettings.intro ?? 'This page works best as a hub for profile links, short intros, and the direction of your ongoing work.'}
       />
     </p>
   </section>
@@ -55,7 +58,6 @@ const channels = siteEntry?.data?.channels ?? [];
     <div class="channel-list">
       {channels.map((channel) => {
         const meta = platformMeta[channel.platform];
-        const platformStats = statsMap[channel.platform];
         const titleZh = channel.title || meta.labelZh;
         const titleEn = channel.titleEn || channel.title || meta.labelEn;
         const descriptionZh = channel.description || '';
@@ -84,41 +86,6 @@ const channels = siteEntry?.data?.channels ?? [];
                 <I18nText zh={descriptionZh || ' '} en={descriptionEn || descriptionZh || ' '} />
               </p>
             )}
-
-            {platformStats && (
-              <div class="channel-stats">
-                {'followers' in platformStats && (
-                  <div class="ch-stat">
-                    <span class="ch-stat-num">{platformStats.followers}</span>
-                    <span class="ch-stat-label"><I18nText zh="关注" en="Followers" /></span>
-                  </div>
-                )}
-                {'videos' in platformStats && (
-                  <div class="ch-stat">
-                    <span class="ch-stat-num">{platformStats.videos}</span>
-                    <span class="ch-stat-label"><I18nText zh="视频" en="Videos" /></span>
-                  </div>
-                )}
-                {'views' in platformStats && (
-                  <div class="ch-stat">
-                    <span class="ch-stat-num">{platformStats.views}</span>
-                    <span class="ch-stat-label"><I18nText zh="播放" en="Views" /></span>
-                  </div>
-                )}
-                {'repos' in platformStats && (
-                  <div class="ch-stat">
-                    <span class="ch-stat-num">{platformStats.repos}</span>
-                    <span class="ch-stat-label"><I18nText zh="仓库" en="Repos" /></span>
-                  </div>
-                )}
-                {'stars' in platformStats && (
-                  <div class="ch-stat">
-                    <span class="ch-stat-num">{platformStats.stars}</span>
-                    <span class="ch-stat-label"><I18nText zh="Stars" en="Stars" /></span>
-                  </div>
-                )}
-              </div>
-            )}
           </article>
         );
       })}
@@ -138,35 +105,4 @@ const channels = siteEntry?.data?.channels ?? [];
       <a href="/life"><I18nText zh="生活" en="Life" /></a>
     </nav>
   </footer>
-
-  <style>
-    .channel-stats {
-      display: flex;
-      gap: 24px;
-      margin-top: 20px;
-      flex-wrap: wrap;
-    }
-
-    .ch-stat {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .ch-stat-num {
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--color-white);
-      font-family: var(--font-mono);
-      letter-spacing: -0.02em;
-    }
-
-    .ch-stat-label {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--color-text-subtle);
-    }
-  </style>
 </BaseLayout>

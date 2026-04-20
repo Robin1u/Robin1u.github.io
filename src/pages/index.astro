@@ -1,6 +1,6 @@
 ---
 import { readdirSync } from 'node:fs';
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 import I18nText from '../components/I18nText.astro';
 import { projectCategoryLabels } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -24,7 +24,14 @@ async function safeGetCollection(name, shouldLoad = true) {
   }
 }
 
-const siteEntry = await getEntry('site', 'home').catch(() => null);
+const recentCategoryLabels = {
+  learning: { zh: '学习新的技能', en: 'Learning' },
+  certification: { zh: '考证', en: 'Certification' },
+  reading: { zh: '阅读', en: 'Reading' },
+  project: { zh: '做项目', en: 'Project' },
+};
+
+const [siteEntry] = await getCollection('siteHome').catch(() => []);
 const site = siteEntry?.data ?? {
   name: 'Robin Lu',
   nameEn: 'Robin Lu',
@@ -40,6 +47,9 @@ const site = siteEntry?.data ?? {
   recentTitleEn: 'Recently Doing',
   recentItems: [],
 };
+
+const activeRecentItems = site.recentItems.filter((item) => !item.done);
+const recentItemsPreview = activeRecentItems.length > 0 ? activeRecentItems : site.recentItems;
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
@@ -128,10 +138,18 @@ const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` :
           <I18nText zh={site.recentTitle} en={site.recentTitleEn ?? site.recentTitle} />
         </div>
         <div class="now-list">
-          {site.recentItems.map((item) => (
+          {recentItemsPreview.map((item) => {
+            const categoryCopy = item.category ? recentCategoryLabels[item.category] : undefined;
+
+            return (
             <article class:list={['now-card', { done: item.done }]}>
               <div class="now-card-meta">
-                <span class="now-card-label"><I18nText zh={item.label} en={item.labelEn ?? item.label} /></span>
+                <span class="now-card-label">
+                  <I18nText
+                    zh={categoryCopy?.zh ?? item.label ?? ''}
+                    en={categoryCopy?.en ?? item.labelEn ?? item.label ?? categoryCopy?.zh ?? ''}
+                  />
+                </span>
                 {item.done && <span class="now-card-done"><I18nText zh="已完成" en="Done" /></span>}
               </div>
               <h3 class="now-card-title"><I18nText zh={item.title} en={item.titleEn ?? item.title} /></h3>
@@ -141,7 +159,8 @@ const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` :
                 </p>
               )}
             </article>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

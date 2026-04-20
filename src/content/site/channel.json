@@ -1,0 +1,35 @@
+{
+  "pageTitle": "频道",
+  "pageTitleEn": "Channels",
+  "intro": "这里更适合做平台入口页：放账号链接、简短介绍和更新方向。先把 B 站和小红书集中在这里，后续如果 ADHDer 内容沉淀成体系，再拆出独立专题页会更清晰。",
+  "introEn": "This page works best as a platform hub for profile links, short introductions, and the latest direction of your work. Keep Bilibili and Xiaohongshu here first, then create a dedicated topic page later if your ADHDer content grows into a bigger knowledge base.",
+  "channels": [
+    {
+      "platform": "bilibili",
+      "title": "ADHD 内容分享",
+      "titleEn": "ADHD Content Sharing",
+      "description": "",
+      "descriptionEn": "",
+      "handle": "小L的注意力离线中",
+      "url": "https://space.bilibili.com/27124811"
+    },
+    {
+      "platform": "xiaohongshu",
+      "title": "ADHDer 日常分享和笔记",
+      "titleEn": "ADHD Notes and Daily Share",
+      "description": "",
+      "descriptionEn": "",
+      "handle": "小L的注意力离线中",
+      "url": "https://xhslink.com/m/3btFpRWrBa6"
+    },
+    {
+      "platform": "github",
+      "title": "项目与源码",
+      "titleEn": "Projects & Source Code",
+      "description": "",
+      "descriptionEn": "",
+      "handle": "robin1u",
+      "url": "https://github.com/robin1u"
+    }
+  ]
+}
