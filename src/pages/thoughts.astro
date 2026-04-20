@@ -46,6 +46,9 @@ const thoughtsPage = pagesEntry?.data?.thoughts ?? {
           <div class="post-list">
             {thoughts.map((post) => {
               const dateCopy = formatLocalizedDate(post.data.date);
+              const hasEnglishVersion = Boolean(post.data.titleEn?.trim() && post.data.bodyEn?.trim());
+              const titleEn = hasEnglishVersion ? post.data.titleEn ?? post.data.title : post.data.title;
+              const descriptionEn = hasEnglishVersion ? post.data.descriptionEn ?? post.data.description : post.data.description;
 
               return (
                 <a href={`/thoughts/${post.id}`} class="post-item" style="display:block">
@@ -54,8 +57,8 @@ const thoughtsPage = pagesEntry?.data?.thoughts ?? {
                     {post.data.category && <span class="post-category">{post.data.category}</span>}
                     {(post.data.tags ?? []).slice(0, 2).map((tag) => <span class="tag">{tag}</span>)}
                   </div>
-                  <h3>{post.data.title}</h3>
-                  {post.data.description && <p>{post.data.description}</p>}
+                  <h3><I18nText zh={post.data.title} en={titleEn} /></h3>
+                  {post.data.description && descriptionEn && <p><I18nText zh={post.data.description} en={descriptionEn} /></p>}
                   <div class="post-item-footer">
                     <span class="post-read-time"><I18nText zh={`${post.data.readTime} 分钟阅读`} en={`${post.data.readTime} min read`} /></span>
                     <span class="post-arrow">

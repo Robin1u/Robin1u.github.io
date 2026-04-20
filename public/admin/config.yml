@@ -162,6 +162,11 @@ collections:
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
+      - label: "双语原稿自动拆分（可选）"
+        name: "bilingualSource"
+        widget: "text"
+        required: false
+        hint: "把双语原稿按标签贴在这里，保存时会自动拆到对应字段。必填标签：[ZH_TITLE] [EN_TITLE] [ZH_BODY] [EN_BODY]；可选标签：[ZH_DESC] [EN_DESC]。保存成功后此字段不会写入文件。"
       - {label: "标题 (Title)", name: "title", widget: "string"}
       - {label: "英文标题 (English Title)", name: "titleEn", widget: "string", required: false}
       - {label: "描述 (Description)", name: "description", widget: "text", required: false}
@@ -199,7 +204,8 @@ collections:
       - {label: "GitHub 链接", name: "githubUrl", widget: "string", required: false}
       - {label: "封面图 (Cover Image)", name: "image", widget: "image", required: false}
       - {label: "草稿 (Draft)", name: "draft", widget: "boolean", default: false, required: false}
-      - {label: "正文内容 (Body)", name: "body", widget: "markdown"}
+      - {label: "中文正文 (Chinese Body)", name: "body", widget: "markdown"}
+      - {label: "英文正文（支持 Markdown）", name: "bodyEn", widget: "text", required: false}
 
   - name: "thoughts"
     label: "观点 & 文章 (Thoughts)"
@@ -207,6 +213,11 @@ collections:
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
+      - label: "双语原稿自动拆分（可选）"
+        name: "bilingualSource"
+        widget: "text"
+        required: false
+        hint: "把双语原稿按标签贴在这里，保存时会自动拆到对应字段。必填标签：[ZH_TITLE] [EN_TITLE] [ZH_BODY] [EN_BODY]；可选标签：[ZH_DESC] [EN_DESC]。保存成功后此字段不会写入文件。"
       - {label: "标题 (Title)", name: "title", widget: "string"}
       - {label: "英文标题 (English Title)", name: "titleEn", widget: "string", required: false}
       - {label: "摘要 (Description)", name: "description", widget: "text", required: false}
@@ -245,7 +256,8 @@ collections:
       - {label: "阅读时间 (分钟)", name: "readTime", widget: "number", default: 5, required: false}
       - {label: "设为精选 (Featured)", name: "featured", widget: "boolean", default: false, required: false}
       - {label: "草稿 (Draft)", name: "draft", widget: "boolean", default: false, required: false}
-      - {label: "正文内容 (Body)", name: "body", widget: "markdown"}
+      - {label: "中文正文 (Chinese Body)", name: "body", widget: "markdown"}
+      - {label: "英文正文（支持 Markdown）", name: "bodyEn", widget: "text", required: false}
 
   - name: "life"
     label: "生活 & 照片 (Life)"

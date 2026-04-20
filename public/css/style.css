@@ -2055,6 +2055,15 @@ button {
   margin: 2.5em 0;
 }
 
+.i18n-markdown[data-i18n-lang] {
+  display: block;
+}
+
+html[data-language='en'] .i18n-markdown[data-i18n-lang='zh'],
+html[data-language='zh'] .i18n-markdown[data-i18n-lang='en'] {
+  display: none;
+}
+
 .prose img {
   width: 100%;
   border-radius: 8px;

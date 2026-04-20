@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';  // ← 导入 render
 import I18nText from '../../components/I18nText.astro';
 import { projectCategoryLabels } from '../../lib/i18n';
+import { renderMarkdownToHtml } from '../../lib/markdown';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export async function getStaticPaths() {
@@ -14,9 +15,11 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);  // ← render(project)，不是 project.render()
-const titleEn = project.data.titleEn ?? project.data.title;
-const descriptionEn = project.data.descriptionEn ?? project.data.description;
+const hasEnglishVersion = Boolean(project.data.titleEn?.trim() && project.data.bodyEn?.trim());
+const titleEn = hasEnglishVersion ? project.data.titleEn ?? project.data.title : project.data.title;
+const descriptionEn = hasEnglishVersion ? project.data.descriptionEn ?? project.data.description : project.data.description;
 const categoryLabel = project.data.category ? projectCategoryLabels[project.data.category] : undefined;
+const englishBodyHtml = hasEnglishVersion ? await renderMarkdownToHtml(project.data.bodyEn ?? '') : '';
 ---
 <BaseLayout
   title={project.data.title}
@@ -83,7 +86,10 @@ const categoryLabel = project.data.category ? projectCategoryLabels[project.data
     </div>
 
     <div class="prose">
-      <Content />
+      <div class="i18n-markdown" data-i18n-lang="zh">
+        <Content />
+      </div>
+      {hasEnglishVersion && <div class="i18n-markdown" data-i18n-lang="en" set:html={englishBodyHtml} />}
     </div>
 
   </article>

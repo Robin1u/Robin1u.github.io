@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import I18nText from '../../components/I18nText.astro';
 import { formatLocalizedDate } from '../../lib/i18n';
+import { renderMarkdownToHtml } from '../../lib/markdown';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export async function getStaticPaths() {
@@ -15,12 +16,16 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const dateCopy = formatLocalizedDate(post.data.date);
+const hasEnglishVersion = Boolean(post.data.titleEn?.trim() && post.data.bodyEn?.trim());
+const detailTitleEn = hasEnglishVersion ? post.data.titleEn ?? post.data.title : post.data.title;
+const detailDescriptionEn = hasEnglishVersion ? post.data.descriptionEn ?? post.data.description : post.data.description;
+const englishBodyHtml = hasEnglishVersion ? await renderMarkdownToHtml(post.data.bodyEn ?? '') : '';
 ---
 <BaseLayout
   title={post.data.title}
-  titleEn={post.data.title}
+  titleEn={detailTitleEn}
   description={post.data.description ?? '文章详情'}
-  descriptionEn={post.data.description ?? 'Thought detail'}
+  descriptionEn={detailDescriptionEn ?? post.data.description ?? 'Thought detail'}
   activePage="thoughts"
 >
   <article style="max-width:680px; margin: 64px auto; padding: 0 64px 64px;">
@@ -31,10 +36,13 @@ const dateCopy = formatLocalizedDate(post.data.date);
       <span class="post-read-time"><I18nText zh={`${post.data.readTime} 分钟阅读`} en={`${post.data.readTime} min read`} /></span>
     </div>
     <h1 style="font-size:clamp(28px,3vw,42px); font-weight:800; color:var(--color-white); letter-spacing:-0.03em; margin-bottom:32px; line-height:1.15;">
-      {post.data.title}
+      <I18nText zh={post.data.title} en={detailTitleEn} />
     </h1>
     <div class="prose">
-      <Content />
+      <div class="i18n-markdown" data-i18n-lang="zh">
+        <Content />
+      </div>
+      {hasEnglishVersion && <div class="i18n-markdown" data-i18n-lang="en" set:html={englishBodyHtml} />}
     </div>
     <div style="margin-top:48px; padding-top:32px; border-top:1px solid var(--color-border);">
       <a href="/thoughts" style="display:inline-flex; align-items:center; gap:8px; color:var(--color-text-muted); font-size:13px;">
