@@ -1,29 +1,11 @@
 ---
-import { readdirSync } from 'node:fs';
-import { getCollection, render } from 'astro:content';  // ← 导入 render
+import { getCollection, render } from 'astro:content';
 import I18nText from '../../components/I18nText.astro';
 import { formatLocalizedDate } from '../../lib/i18n';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export async function getStaticPaths() {
-  const hasThoughts = (() => {
-    try {
-      return readdirSync(new URL('../../content/thoughts', import.meta.url)).some((file) => file.endsWith('.md'));
-    } catch {
-      return false;
-    }
-  })();
-
-  if (!hasThoughts) {
-    return [];
-  }
-
-  let posts = [];
-  try {
-    posts = await getCollection('thoughts');
-  } catch {
-    posts = [];
-  }
+  const posts = await getCollection('thoughts', ({ data }) => !data.draft);
   return posts.map(post => ({
     params: { slug: post.id },
     props: { post },
@@ -31,7 +13,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);  // ← render(post)，不是 post.render()
+const { Content } = await render(post);
 const dateCopy = formatLocalizedDate(post.data.date);
 ---
 <BaseLayout

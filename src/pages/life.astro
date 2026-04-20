@@ -4,14 +4,6 @@ import I18nText from '../components/I18nText.astro';
 import { formatLocalizedDate, formatWeekLabel, recentCategoryLabels } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-async function safeGetCollection(name) {
-  try {
-    return await getCollection(name);
-  } catch {
-    return [];
-  }
-}
-
 const [homeEntry] = await getCollection('siteHome').catch(() => []);
 const [pagesEntry] = await getCollection('sitePages').catch(() => []);
 const site = homeEntry?.data ?? {
@@ -31,8 +23,8 @@ const timelineItems = site.recentItems
   .slice()
   .sort((a, b) => b.date.valueOf() - a.date.valueOf());
 
-const allLifePhotos = await safeGetCollection('life');
-const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
+const lifePhotos = await getCollection('life').catch(() => []);
+const sortedPhotos = lifePhotos.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
 ---
 <BaseLayout
   title={lifePage.pageTitle}
@@ -41,9 +33,9 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
   descriptionEn="Life photos and everyday traces from Robin Lu"
   activePage="life"
 >
-  <div class="life-layout">
-    <div class="life-main">
-      <div class="life-header">
+  <div class="thoughts-layout life-page-layout">
+    <div class="thoughts-main">
+      <div class="thoughts-header">
         <div class="section-header" style="margin-bottom:0;">
           <span class="section-number">{lifePage.sectionNumber}</span>
           <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);">
@@ -51,7 +43,7 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
           </h1>
           <div class="section-line"></div>
         </div>
-        <p class="life-hero-copy">
+        <p style="color:var(--color-text-muted); margin-top:16px; max-width:640px;">
           <I18nText zh={lifePage.intro} en={lifePage.introEn ?? lifePage.intro} />
         </p>
       </div>
@@ -91,14 +83,14 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
           })}
         </div>
       ) : (
-        <div class="quote-block" style="margin:32px 0;">
+        <div class="quote-block" style="margin:32px 64px;">
           <p class="quote-text"><I18nText zh="当前还没有生活照片内容。" en="No life photo posts yet." /></p>
         </div>
       )}
     </div>
 
-    <aside class="life-sidebar">
-      <div class="sidebar-widget life-timeline-widget">
+    <aside class="thoughts-sidebar">
+      <div class="sidebar-widget">
         <div class="widget-title"><I18nText zh={site.recentTitle ?? '最近在做'} en={site.recentTitleEn ?? site.recentTitle ?? 'Recently Doing'} /></div>
         {timelineItems.length > 0 ? (
           <div class="life-timeline-list">
@@ -125,7 +117,7 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
             })}
           </div>
         ) : (
-          <div class="quote-block" style="margin:16px 0 0;">
+          <div class="quote-block" style="margin:0;">
             <p class="quote-text"><I18nText zh="这里还没有最近在做的内容。" en="No recent items yet." /></p>
           </div>
         )}
@@ -134,33 +126,8 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
   </div>
 
   <style>
-    .life-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.75fr);
-      gap: 40px;
-      align-items: start;
-    }
-
-    .life-main {
-      min-width: 0;
-    }
-
-    .life-header {
-      margin-bottom: 36px;
-    }
-
-    .life-sidebar {
-      position: sticky;
-      top: 32px;
-    }
-
-    .life-hero-copy {
-      margin-top: 16px;
-      max-width: 640px;
-      color: var(--color-text-muted);
-    }
-
     .life-feed {
+      padding: 32px 64px 64px;
       display: grid;
       gap: 24px;
     }
@@ -264,6 +231,7 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
       margin: 8px 0 0;
       color: var(--color-text-muted);
       font-size: 14px;
+      line-height: 1.65;
     }
 
     .life-timeline-state {
@@ -294,19 +262,9 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
       box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
     }
 
-    @media (max-width: 1024px) {
-      .life-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .life-main {
-        padding-right: 0;
-        border-right: 0;
-      }
-
-      .life-sidebar {
-        position: static;
-        margin-top: 40px;
+    @media (max-width: 768px) {
+      .life-feed {
+        padding: 24px 20px 40px;
       }
     }
   </style>

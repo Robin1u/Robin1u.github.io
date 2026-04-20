@@ -1,30 +1,9 @@
 ---
-import { readdirSync } from 'node:fs';
 import { getCollection } from 'astro:content';
 import I18nText from '../components/I18nText.astro';
 import { formatLocalizedDate } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
-
-function hasMarkdownEntries(relativeDir) {
-  try {
-    return readdirSync(new URL(relativeDir, import.meta.url)).some((file) => file.endsWith('.md'));
-  } catch {
-    return false;
-  }
-}
-
-async function safeGetCollection(name, shouldLoad = true) {
-  if (!shouldLoad) {
-    return [];
-  }
-  try {
-    return await getCollection(name, ({ data }) => !data.draft);
-  } catch {
-    return [];
-  }
-}
-
-const thoughts = (await safeGetCollection('thoughts', hasMarkdownEntries('../content/thoughts')))
+const thoughts = (await getCollection('thoughts', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const [pagesEntry] = await getCollection('sitePages').catch(() => []);
 const thoughtsPage = pagesEntry?.data?.thoughts ?? {
