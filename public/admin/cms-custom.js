@@ -25,6 +25,15 @@
   const LIVE_PREVIEW_STYLE_ID = 'cms-bilingual-live-preview-style';
   const LIVE_PREVIEW_CARD_CLASS = 'cms-bilingual-live-preview';
   let activeTextarea = null;
+  let isApplyingLiveSync = false;
+  const FIELD_LABELS = {
+    title: ['标题 (Title)', '标题'],
+    titleEn: ['英文标题 (English Title)', '英文标题'],
+    description: ['摘要 (Description)', '描述 (Description)', '摘要', '描述'],
+    descriptionEn: ['英文摘要 (English Description)', '英文描述 (English Description)', '英文摘要', '英文描述'],
+    body: ['中文正文 (Chinese Body)', '中文正文', '正文内容 (Body)'],
+    bodyEn: ['英文正文（支持 Markdown）', '英文正文 (English Body)', '英文正文'],
+  };
 
   function normalizeLineEndings(value) {
     return String(value ?? '').replace(/\r\n?/g, '\n');
@@ -266,6 +275,63 @@
     return textarea?.parentElement ?? null;
   }
 
+  function textIncludesLabel(text, labels) {
+    return labels.some((label) => text.includes(label));
+  }
+
+  function findFieldControl(fieldName) {
+    const labels = FIELD_LABELS[fieldName] ?? [];
+    if (labels.length === 0) return null;
+
+    const controls = [...document.querySelectorAll('input, textarea')];
+    for (const control of controls) {
+      if (control === activeTextarea) continue;
+
+      let current = control.parentElement;
+      while (current && current !== document.body) {
+        const text = candidateTextForElement(current);
+        if (textIncludesLabel(text, labels) && !text.includes(SOURCE_LABEL)) {
+          return control;
+        }
+        current = current.parentElement;
+      }
+    }
+
+    return null;
+  }
+
+  function setControlValue(control, value) {
+    if (!control) return;
+
+    const nextValue = String(value ?? '');
+    if (control.value === nextValue) return;
+
+    control.value = nextValue;
+    control.dispatchEvent(new Event('input', { bubbles: true }));
+    control.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  function syncParsedFieldsToEditor(parsed) {
+    if (!parsed || isApplyingLiveSync) return;
+
+    isApplyingLiveSync = true;
+
+    try {
+      Object.keys(FIELD_LABELS).forEach((fieldName) => {
+        const control = findFieldControl(fieldName);
+        const value = parsed[fieldName];
+
+        if (typeof value === 'string' && value.trim()) {
+          setControlValue(control, value.trim());
+        } else if (fieldName === 'description' || fieldName === 'descriptionEn') {
+          setControlValue(control, '');
+        }
+      });
+    } finally {
+      isApplyingLiveSync = false;
+    }
+  }
+
   function findRightPreviewHost() {
     const nodes = [...document.querySelectorAll('h1, h2, h3, h4, span, div')];
     const previewTitle = nodes.find((node) => candidateTextForElement(node) === 'Preview');
@@ -290,6 +356,7 @@
     if (String(rawSource ?? '').trim()) {
       try {
         parsed = parseTaggedSource(rawSource);
+        syncParsedFieldsToEditor(parsed);
       } catch (error) {
         errorMessage = error instanceof Error ? error.message : String(error);
       }
