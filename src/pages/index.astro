@@ -2,7 +2,7 @@
 import { readdirSync } from 'node:fs';
 import { getCollection } from 'astro:content';
 import I18nText from '../components/I18nText.astro';
-import { projectCategoryLabels, recentCategoryLabels } from '../lib/i18n';
+import { formatWeekLabel, projectCategoryLabels, recentCategoryLabels } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 function hasMarkdownEntries(relativeDir) {
@@ -48,7 +48,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const thoughts = (await safeGetCollection('thoughts', hasMarkdownEntries('../content/thoughts')))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const life = (await getCollection('life'))
+const life = (await safeGetCollection('life', true))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const featuredProjects = projects.filter((project) => project.data.featured).length > 0
@@ -134,14 +134,20 @@ const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` :
           <div class="now-list">
             {recentItemsPreview.map((item) => {
               const categoryCopy = recentCategoryLabels[item.category];
+              const weekCopy = formatWeekLabel(item.date);
 
               return (
                 <article class:list={['now-card', { done: item.done }]}>
                   <div class="now-card-meta">
-                    <span class="now-card-label">
-                      <I18nText zh={categoryCopy.zh} en={categoryCopy.en} />
-                    </span>
-                    {item.done && <span class="now-card-done"><I18nText zh="已完成" en="Done" /></span>}
+                <span class="now-card-label">
+                  <I18nText zh={categoryCopy.zh} en={categoryCopy.en} />
+                </span>
+                    <div class="now-card-badges">
+                      <span class="now-card-week">
+                        <I18nText zh={weekCopy.zh} en={weekCopy.en} />
+                      </span>
+                      {item.done && <span class="now-card-done"><I18nText zh="已完成" en="Done" /></span>}
+                    </div>
                   </div>
                   <h3 class="now-card-title"><I18nText zh={item.title} en={item.titleEn ?? item.title} /></h3>
                   {item.subtitle && (
@@ -275,12 +281,26 @@ const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` :
       margin-bottom: 10px;
     }
 
+    .now-card-badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
     .now-card-label {
       font-size: 10px;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--color-text-subtle);
       font-weight: 700;
+    }
+
+    .now-card-week {
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-subtle);
     }
 
     .now-card-done {

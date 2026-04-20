@@ -72,8 +72,8 @@ collections:
                   - {label: "做项目", value: "project"}
               - {label: "标题（中文）", name: "title", widget: "string"}
               - {label: "标题（英文）", name: "titleEn", widget: "string", required: false}
-              - {label: "副标题（中文）", name: "subtitle", widget: "string", required: false}
-              - {label: "副标题（英文）", name: "subtitleEn", widget: "string", required: false}
+              - {label: "想法 / 备注（中文）", name: "subtitle", widget: "string", required: false}
+              - {label: "想法 / 备注（英文）", name: "subtitleEn", widget: "string", required: false}
               - label: "日期（页面会自动显示为 KW）"
                 name: "date"
                 widget: "datetime"
@@ -89,10 +89,6 @@ collections:
         file: "src/content/site/channel.json"
         format: "json"
         fields:
-          - {label: "页面标题（中文）", name: "pageTitle", widget: "string", required: false}
-          - {label: "页面标题（英文）", name: "pageTitleEn", widget: "string", required: false}
-          - {label: "页面说明（中文）", name: "intro", widget: "text", required: false}
-          - {label: "页面说明（英文）", name: "introEn", widget: "text", required: false}
           - label: "频道链接"
             name: "channels"
             widget: "list"
@@ -108,6 +104,65 @@ collections:
               - {label: "链接 URL", name: "url", widget: "string", required: false}
               - {label: "描述（中文）", name: "description", widget: "text", required: false}
               - {label: "描述（英文）", name: "descriptionEn", widget: "text", required: false}
+
+  - name: "page_settings"
+    label: "页面设置 (Pages)"
+    files:
+      - name: "pages"
+        label: "页面标题与导航"
+        file: "src/content/site/pages.json"
+        format: "json"
+        fields:
+          - label: "首页"
+            name: "home"
+            widget: "object"
+            fields:
+              - {label: "导航名称（中文）", name: "navLabel", widget: "string"}
+              - {label: "导航名称（英文）", name: "navLabelEn", widget: "string", required: false}
+          - label: "作品集"
+            name: "portfolio"
+            widget: "object"
+            fields:
+              - {label: "编号", name: "sectionNumber", widget: "string"}
+              - {label: "导航名称（中文）", name: "navLabel", widget: "string"}
+              - {label: "导航名称（英文）", name: "navLabelEn", widget: "string", required: false}
+              - {label: "页面标题（中文）", name: "pageTitle", widget: "string"}
+              - {label: "页面标题（英文）", name: "pageTitleEn", widget: "string", required: false}
+              - {label: "页面说明（中文）", name: "intro", widget: "text", required: false}
+              - {label: "页面说明（英文）", name: "introEn", widget: "text", required: false}
+          - label: "想法"
+            name: "thoughts"
+            widget: "object"
+            fields:
+              - {label: "编号", name: "sectionNumber", widget: "string"}
+              - {label: "导航名称（中文）", name: "navLabel", widget: "string"}
+              - {label: "导航名称（英文）", name: "navLabelEn", widget: "string", required: false}
+              - {label: "页面标题（中文）", name: "pageTitle", widget: "string"}
+              - {label: "页面标题（英文）", name: "pageTitleEn", widget: "string", required: false}
+              - {label: "页面说明（中文）", name: "intro", widget: "text", required: false}
+              - {label: "页面说明（英文）", name: "introEn", widget: "text", required: false}
+          - label: "生活"
+            name: "life"
+            widget: "object"
+            fields:
+              - {label: "编号", name: "sectionNumber", widget: "string"}
+              - {label: "导航名称（中文）", name: "navLabel", widget: "string"}
+              - {label: "导航名称（英文）", name: "navLabelEn", widget: "string", required: false}
+              - {label: "页面标题（中文）", name: "pageTitle", widget: "string"}
+              - {label: "页面标题（英文）", name: "pageTitleEn", widget: "string", required: false}
+              - {label: "页面说明（中文）", name: "intro", widget: "text", required: false}
+              - {label: "页面说明（英文）", name: "introEn", widget: "text", required: false}
+          - label: "频道"
+            name: "channel"
+            widget: "object"
+            fields:
+              - {label: "编号", name: "sectionNumber", widget: "string"}
+              - {label: "导航名称（中文）", name: "navLabel", widget: "string"}
+              - {label: "导航名称（英文）", name: "navLabelEn", widget: "string", required: false}
+              - {label: "页面标题（中文）", name: "pageTitle", widget: "string"}
+              - {label: "页面标题（英文）", name: "pageTitleEn", widget: "string", required: false}
+              - {label: "页面说明（中文）", name: "intro", widget: "text", required: false}
+              - {label: "页面说明（英文）", name: "introEn", widget: "text", required: false}
 
   - name: "projects"
     label: "作品集 (Projects)"

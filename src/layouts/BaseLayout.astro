@@ -22,12 +22,20 @@ const pageTitleZh = `${title} · Robin Lu`;
 const pageTitleEn = `${titleEn} · Robin Lu`;
 
 const [homeEntry] = await getCollection('siteHome').catch(() => []);
+const [pagesEntry] = await getCollection('sitePages').catch(() => []);
 const siteSettings = homeEntry?.data ?? {
   name: 'Robin Lu',
   nameEn: 'Robin Lu',
   roles: [],
   contactEmail: '',
   findMeLinks: [],
+};
+const pageSettings = pagesEntry?.data ?? {
+  home: { navLabel: '首页', navLabelEn: 'Home' },
+  portfolio: { navLabel: '作品集', navLabelEn: 'Portfolio' },
+  thoughts: { navLabel: '想法', navLabelEn: 'Thoughts' },
+  life: { navLabel: '生活', navLabelEn: 'Life' },
+  channel: { navLabel: '频道', navLabelEn: 'Channels' },
 };
 
 const sidebarNameZh = siteSettings.name;
@@ -151,23 +159,23 @@ const socialPlatformLabels = {
           </div>
           <a href="/" class:list={['nav-link', { active: activePage === 'home' }]}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            <I18nText zh="首页" en="Home" />
+            <I18nText zh={pageSettings.home.navLabel} en={pageSettings.home.navLabelEn ?? pageSettings.home.navLabel} />
           </a>
           <a href="/portfolio" class:list={['nav-link', { active: activePage === 'portfolio' }]}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            <I18nText zh="作品集" en="Portfolio" />
+            <I18nText zh={pageSettings.portfolio.navLabel} en={pageSettings.portfolio.navLabelEn ?? pageSettings.portfolio.navLabel} />
           </a>
           <a href="/thoughts" class:list={['nav-link', { active: activePage === 'thoughts' }]}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            <I18nText zh="想法" en="Thoughts" />
+            <I18nText zh={pageSettings.thoughts.navLabel} en={pageSettings.thoughts.navLabelEn ?? pageSettings.thoughts.navLabel} />
           </a>
           <a href="/life" class:list={['nav-link', { active: activePage === 'life' }]}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><circle cx="9" cy="10" r="1.5"/><path d="m13 15 2.5-3 3.5 4"/></svg>
-            <I18nText zh="生活" en="Life" />
+            <I18nText zh={pageSettings.life.navLabel} en={pageSettings.life.navLabelEn ?? pageSettings.life.navLabel} />
           </a>
           <a href="/channel" class:list={['nav-link', { active: activePage === 'channel' }]}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-            <I18nText zh="频道" en="Channels" />
+            <I18nText zh={pageSettings.channel.navLabel} en={pageSettings.channel.navLabelEn ?? pageSettings.channel.navLabel} />
           </a>
         </div>
 
@@ -175,10 +183,6 @@ const socialPlatformLabels = {
           <div class="nav-section-label">
             <I18nText zh="联系" en="Contact" />
           </div>
-          <a href="/channel" class="nav-link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <I18nText zh="合作方式" en="Ways to Work Together" />
-          </a>
           {contactEmail ? (
             <a href={`mailto:${contactEmail}`} class="nav-link">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>

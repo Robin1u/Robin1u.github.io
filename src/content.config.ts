@@ -43,13 +43,55 @@ const siteHome = defineCollection({
   }),
 });
 
+const sitePages = defineCollection({
+  loader: glob({ pattern: 'pages.json', base: './src/content/site' }),
+  schema: z.object({
+    home: z.object({
+      navLabel: z.string().default('首页'),
+      navLabelEn: z.string().optional(),
+    }),
+    portfolio: z.object({
+      sectionNumber: z.string().default('02'),
+      navLabel: z.string().default('作品集'),
+      navLabelEn: z.string().optional(),
+      pageTitle: z.string().default('作品集'),
+      pageTitleEn: z.string().optional(),
+      intro: z.string().default('保留当前项目内容，使用新的列表框架与路由结构。'),
+      introEn: z.string().optional(),
+    }),
+    thoughts: z.object({
+      sectionNumber: z.string().default('03'),
+      navLabel: z.string().default('想法'),
+      navLabelEn: z.string().optional(),
+      pageTitle: z.string().default('想法'),
+      pageTitleEn: z.string().optional(),
+      intro: z.string().default('这里专门放文字内容、观点整理和方法记录。'),
+      introEn: z.string().optional(),
+    }),
+    life: z.object({
+      sectionNumber: z.string().default('04'),
+      navLabel: z.string().default('生活'),
+      navLabelEn: z.string().optional(),
+      pageTitle: z.string().default('生活记录'),
+      pageTitleEn: z.string().optional(),
+      intro: z.string().default('这里只保留生活痕迹本身：照片、片段、当下的场景与一句说明。'),
+      introEn: z.string().optional(),
+    }),
+    channel: z.object({
+      sectionNumber: z.string().default('05'),
+      navLabel: z.string().default('频道'),
+      navLabelEn: z.string().optional(),
+      pageTitle: z.string().default('频道'),
+      pageTitleEn: z.string().optional(),
+      intro: z.string().default('这里适合作为平台入口页：放账号链接、简短介绍和更新方向。'),
+      introEn: z.string().optional(),
+    }),
+  }),
+});
+
 const siteChannel = defineCollection({
   loader: glob({ pattern: 'channel.json', base: './src/content/site' }),
   schema: z.object({
-    pageTitle: z.string().default('频道'),
-    pageTitleEn: z.string().optional(),
-    intro: z.string().optional(),
-    introEn: z.string().optional(),
     channels: z.array(z.object({
       platform: z.enum(['bilibili', 'xiaohongshu', 'github']),
       title: z.string().optional(),
@@ -112,4 +154,4 @@ const life = defineCollection({
 });
 
 // 记得导出 collections
-export const collections = { siteHome, siteChannel, projects, thoughts, life };
+export const collections = { siteHome, sitePages, siteChannel, projects, thoughts, life };

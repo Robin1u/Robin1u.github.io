@@ -6,6 +6,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const [pagesEntry] = await getCollection('sitePages').catch(() => []);
+const portfolioPage = pagesEntry?.data?.portfolio ?? {
+  sectionNumber: '02',
+  pageTitle: '作品集',
+  pageTitleEn: 'Portfolio',
+  intro: '保留当前项目内容，使用新的列表框架与路由结构。',
+  introEn: 'Existing project content, reorganized with a cleaner list layout and route structure.',
+};
 
 const categories = [
   { key: 'all', label: projectCategoryLabels.all },
@@ -16,18 +24,24 @@ const categories = [
 ];
 ---
 <BaseLayout
-  title="作品集"
-  titleEn="Portfolio"
+  title={portfolioPage.pageTitle}
+  titleEn={portfolioPage.pageTitleEn ?? portfolioPage.pageTitle}
   description="Robin Lu 的项目与作品集"
   descriptionEn="Projects and selected work by Robin Lu"
   activePage="portfolio"
 >
   <section class="page-hero">
-    <h1><I18nText zh="作品集" en="Portfolio" /></h1>
-    <p>
+    <div class="section-header" style="margin-bottom:0;">
+      <span class="section-number">{portfolioPage.sectionNumber}</span>
+      <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);">
+        <I18nText zh={portfolioPage.pageTitle} en={portfolioPage.pageTitleEn ?? portfolioPage.pageTitle} />
+      </h1>
+      <div class="section-line"></div>
+    </div>
+    <p style="margin-top:16px;">
       <I18nText
-        zh="保留当前项目内容，使用新的列表框架与路由结构。"
-        en="Existing project content, reorganized with a cleaner list layout and route structure."
+        zh={portfolioPage.intro}
+        en={portfolioPage.introEn ?? portfolioPage.intro}
       />
     </p>
   </section>

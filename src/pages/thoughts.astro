@@ -26,10 +26,18 @@ async function safeGetCollection(name, shouldLoad = true) {
 
 const thoughts = (await safeGetCollection('thoughts', hasMarkdownEntries('../content/thoughts')))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const [pagesEntry] = await getCollection('sitePages').catch(() => []);
+const thoughtsPage = pagesEntry?.data?.thoughts ?? {
+  sectionNumber: '03',
+  pageTitle: '想法',
+  pageTitleEn: 'Thoughts',
+  intro: '这里专门放文字内容、观点整理和方法记录。',
+  introEn: 'This page is dedicated to writing, reflections, and methods.',
+};
 ---
 <BaseLayout
-  title="想法"
-  titleEn="Thoughts"
+  title={thoughtsPage.pageTitle}
+  titleEn={thoughtsPage.pageTitleEn ?? thoughtsPage.pageTitle}
   description="Robin Lu 的想法与文章"
   descriptionEn="Thoughts and writing from Robin Lu"
   activePage="thoughts"
@@ -37,11 +45,17 @@ const thoughts = (await safeGetCollection('thoughts', hasMarkdownEntries('../con
   <div class="thoughts-layout">
     <div class="thoughts-main">
       <div class="thoughts-header">
-        <h1 style="font-size: clamp(28px,3vw,42px); font-weight:800; color:var(--color-white); letter-spacing:-0.03em;"><I18nText zh="想法" en="Thoughts" /></h1>
-        <p style="color:var(--color-text-muted); margin-top:12px;">
+        <div class="section-header" style="margin-bottom:0;">
+          <span class="section-number">{thoughtsPage.sectionNumber}</span>
+          <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);">
+            <I18nText zh={thoughtsPage.pageTitle} en={thoughtsPage.pageTitleEn ?? thoughtsPage.pageTitle} />
+          </h1>
+          <div class="section-line"></div>
+        </div>
+        <p style="color:var(--color-text-muted); margin-top:16px;">
           <I18nText
-            zh="这里专门放文字内容、观点整理和方法记录。生活时间线与最近在做的事项，统一放到“生活”页面。"
-            en="This page is dedicated to writing, reflections, and methods. Everyday updates and the ongoing timeline now live on the Life page."
+            zh={thoughtsPage.intro}
+            en={thoughtsPage.introEn ?? thoughtsPage.intro}
           />
         </p>
       </div>

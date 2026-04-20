@@ -22,34 +22,38 @@ const platformMeta = {
 };
 
 const [channelEntry] = await getCollection('siteChannel').catch(() => []);
+const [pagesEntry] = await getCollection('sitePages').catch(() => []);
 const channelSettings = channelEntry?.data ?? {
+  channels: [],
+};
+const channelPage = pagesEntry?.data?.channel ?? {
+  sectionNumber: '05',
   pageTitle: '频道',
   pageTitleEn: 'Channels',
   intro: '这里适合作为平台入口页，集中放置账号链接、简短介绍和更新方向。',
   introEn: 'This page works best as a hub for profile links, short intros, and the direction of your ongoing work.',
-  channels: [],
 };
 const channels = channelSettings.channels ?? [];
 ---
 <BaseLayout
-  title={channelSettings.pageTitle ?? '频道'}
-  titleEn={channelSettings.pageTitleEn ?? channelSettings.pageTitle ?? 'Channels'}
+  title={channelPage.pageTitle}
+  titleEn={channelPage.pageTitleEn ?? channelPage.pageTitle}
   description="Robin Lu 的频道与平台数据"
   descriptionEn="Channel and platform links for Robin Lu"
   activePage="channel"
 >
   <section class="channel-hero">
     <div class="section-header" style="margin-bottom:0;">
-      <span class="section-number">03</span>
+      <span class="section-number">{channelPage.sectionNumber}</span>
       <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);">
-        <I18nText zh={channelSettings.pageTitle ?? '频道'} en={channelSettings.pageTitleEn ?? channelSettings.pageTitle ?? 'Channels'} />
+        <I18nText zh={channelPage.pageTitle} en={channelPage.pageTitleEn ?? channelPage.pageTitle} />
       </h1>
       <div class="section-line"></div>
     </div>
     <p style="margin-top:16px; max-width:620px; color:var(--color-text-muted);">
       <I18nText
-        zh={channelSettings.intro ?? '这里适合作为平台入口页，集中放置账号链接、简短介绍和更新方向。'}
-        en={channelSettings.introEn ?? channelSettings.intro ?? 'This page works best as a hub for profile links, short intros, and the direction of your ongoing work.'}
+        zh={channelPage.intro}
+        en={channelPage.introEn ?? channelPage.intro}
       />
     </p>
   </section>
