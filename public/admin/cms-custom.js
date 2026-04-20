@@ -24,6 +24,7 @@
   const WAIT_MS = 120;
   const LIVE_PREVIEW_STYLE_ID = 'cms-bilingual-live-preview-style';
   const LIVE_PREVIEW_CARD_CLASS = 'cms-bilingual-live-preview';
+  const LIVE_PREVIEW_INLINE_ATTR = 'data-live-preview-inline';
   let activeTextarea = null;
   let isApplyingLiveSync = false;
   const FIELD_LABELS = {
@@ -182,6 +183,10 @@
         white-space: pre-wrap;
         word-break: break-word;
       }
+
+      .${LIVE_PREVIEW_CARD_CLASS}[${LIVE_PREVIEW_INLINE_ATTR}="true"] {
+        margin-bottom: 20px;
+      }
     `;
 
     document.head.appendChild(style);
@@ -229,14 +234,13 @@
     `;
   }
 
-  function getOrCreatePreviewCard(host, kind) {
-    const attr = `data-live-preview-${kind}`;
-    let card = host.querySelector(`[${attr}]`);
+  function getOrCreatePreviewCard(host, attrName, attrValue) {
+    let card = host.querySelector(`[${attrName}="${attrValue}"]`);
 
     if (!card) {
       card = document.createElement('section');
       card.className = LIVE_PREVIEW_CARD_CLASS;
-      card.setAttribute(attr, 'true');
+      card.setAttribute(attrName, attrValue);
       host.appendChild(card);
     }
 
@@ -365,16 +369,12 @@
     const textarea = findSourceTextarea();
     if (!textarea) return;
 
-    const editHost = findEditPreviewHost(textarea);
-    const rightHost = findRightPreviewHost();
     const html = renderLivePreview(parsed, errorMessage);
 
-    if (editHost) {
-      getOrCreatePreviewCard(editHost, 'edit').innerHTML = html;
-    }
-
-    if (rightHost) {
-      getOrCreatePreviewCard(rightHost, 'side').innerHTML = html;
+    const inlineHost = textarea.parentElement;
+    if (inlineHost) {
+      const inlineCard = getOrCreatePreviewCard(inlineHost, LIVE_PREVIEW_INLINE_ATTR, 'true');
+      inlineCard.innerHTML = html;
     }
   }
 
