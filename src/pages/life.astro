@@ -43,7 +43,7 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
 >
   <div class="life-layout">
     <div class="life-main">
-      <section class="life-hero">
+      <div class="life-header">
         <div class="section-header" style="margin-bottom:0;">
           <span class="section-number">{lifePage.sectionNumber}</span>
           <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);">
@@ -54,7 +54,7 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
         <p class="life-hero-copy">
           <I18nText zh={lifePage.intro} en={lifePage.introEn ?? lifePage.intro} />
         </p>
-      </section>
+      </div>
 
       {sortedPhotos.length > 0 ? (
         <div class="life-feed">
@@ -112,6 +112,7 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
                     <p class="life-timeline-subtitle"><I18nText zh={item.subtitle} en={item.subtitleEn ?? item.subtitle} /></p>
                   )}
                   <div class:list={['life-timeline-state', { done: item.done, active: !item.done }]}>
+                    <span class="life-timeline-state-dot" aria-hidden="true"></span>
                     <I18nText zh={item.done ? '已完成' : '进行中'} en={item.done ? 'Done' : 'In Progress'} />
                   </div>
                 </article>
@@ -139,14 +140,13 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
       min-width: 0;
     }
 
-    .life-sidebar {
-      padding-top: 96px;
-      position: sticky;
-      top: 32px;
+    .life-header {
+      margin-bottom: 36px;
     }
 
-    .life-hero {
-      margin-bottom: 36px;
+    .life-sidebar {
+      position: sticky;
+      top: 32px;
     }
 
     .life-hero-copy {
@@ -205,10 +205,6 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
       line-height: 1.8;
     }
 
-    .life-timeline-widget {
-      padding-top: 72px;
-    }
-
     .life-timeline-list {
       display: grid;
       gap: 14px;
@@ -241,6 +237,12 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
       color: var(--color-text-muted);
     }
 
+    .life-timeline-week {
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
     .life-timeline-title {
       margin: 0;
       font-size: 24px;
@@ -257,22 +259,28 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
       margin-top: 12px;
       display: inline-flex;
       align-items: center;
-      border-radius: 999px;
-      padding: 5px 10px;
-      border: 1px solid var(--color-border);
-      background: var(--color-surface-2);
+      gap: 8px;
     }
 
     .life-timeline-state.active {
       color: #7be495;
-      border-color: rgba(123, 228, 149, 0.34);
-      background: rgba(123, 228, 149, 0.08);
     }
 
     .life-timeline-state.done {
       color: var(--color-text-muted);
-      background: #111111;
-      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .life-timeline-state-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #7be495;
+      box-shadow: 0 0 0 4px rgba(123, 228, 149, 0.08);
+    }
+
+    .life-timeline-state.done .life-timeline-state-dot {
+      background: #121212;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
     }
 
     @media (max-width: 1024px) {
@@ -287,12 +295,7 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
 
       .life-sidebar {
         position: static;
-        padding-top: 0;
         margin-top: 40px;
-      }
-
-      .life-timeline-widget {
-        padding-top: 0;
       }
     }
   </style>
