@@ -76,6 +76,11 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
                 </div>
                 <div class="life-story-body">
                   <time class="life-story-date"><I18nText zh={dateCopy.zh} en={dateCopy.en} /></time>
+                  {photo.data.location && (
+                    <div class="life-story-location">
+                      <I18nText zh={photo.data.location} en={photo.data.locationEn ?? photo.data.location} />
+                    </div>
+                  )}
                   <h2 class="life-story-title"><I18nText zh={photo.data.title} en={titleEn} /></h2>
                   {photo.data.caption && (
                     <p class="life-story-caption"><I18nText zh={photo.data.caption} en={captionEn ?? photo.data.caption} /></p>
@@ -188,7 +193,13 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
       display: block;
       font-size: 12px;
       color: var(--color-text-subtle);
-      margin-bottom: 10px;
+      margin-bottom: 6px;
+    }
+
+    .life-story-location {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-bottom: 12px;
     }
 
     .life-story-title {

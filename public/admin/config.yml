@@ -267,6 +267,8 @@ collections:
       - {label: "标题 (Title)", name: "title", widget: "string"}
       - {label: "英文标题 (English Title)", name: "titleEn", widget: "string", required: false}
       - {label: "日期 (Date)", name: "date", widget: "datetime"}
+      - {label: "地点 (Location)", name: "location", widget: "string", required: false}
+      - {label: "英文地点 (English Location)", name: "locationEn", widget: "string", required: false}
       - {label: "图片 (Image)", name: "image", widget: "image"}
       - {label: "说明文字 (Caption)", name: "caption", widget: "string", required: false}
       - {label: "英文说明 (English Caption)", name: "captionEn", widget: "string", required: false}

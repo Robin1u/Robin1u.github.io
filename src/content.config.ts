@@ -146,6 +146,8 @@ const life = defineCollection({
     titleEn: z.string().optional(),
     caption: z.string().optional(),
     captionEn: z.string().optional(),
+    location: z.string().optional(),
+    locationEn: z.string().optional(),
     image: z.string(),
     date: z.coerce.date(),
     wide: z.boolean().default(false),
