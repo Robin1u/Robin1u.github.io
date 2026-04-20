@@ -33,30 +33,14 @@
   "recentTitleEn": "Recently Doing",
   "recentItems": [
     {
-      "label": "阅读",
-      "labelEn": "Reading",
-      "title": "《设计心理学》",
-      "titleEn": "The Design of Everyday Things",
-      "subtitle": "Don Norman",
-      "subtitleEn": "Don Norman",
-      "done": false
-    },
-    {
-      "label": "开发",
-      "labelEn": "Building",
-      "title": "个人网站 v3",
-      "titleEn": "Personal Website v3",
-      "subtitle": "HTML / CSS / JS",
-      "subtitleEn": "HTML / CSS / JS",
-      "done": false
-    },
-    {
-      "label": "在听",
-      "labelEn": "Listening",
-      "title": "My Chemical Romance",
-      "titleEn": "My Chemical Romance",
-      "subtitle": "The Black Parade",
-      "subtitleEn": "The Black Parade",
+      "category": "certification",
+      "label": "",
+      "labelEn": "",
+      "title": "驾照",
+      "titleEn": "Driving License",
+      "subtitle": "",
+      "subtitleEn": "",
+      "date": "2026-03-24T21:52:00",
       "done": false
     }
   ]
