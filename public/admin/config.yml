@@ -166,6 +166,7 @@ collections:
         name: "bilingualSource"
         widget: "text"
         required: false
+        preview: false
         hint: "把双语原稿按标签贴在这里，保存时会自动拆到对应字段。必填标签：[ZH_TITLE] [EN_TITLE] [ZH_BODY] [EN_BODY]；可选标签：[ZH_DESC] [EN_DESC]。保存成功后此字段不会写入文件。"
       - {label: "标题 (Title)", name: "title", widget: "string"}
       - {label: "英文标题 (English Title)", name: "titleEn", widget: "string", required: false}
@@ -217,6 +218,7 @@ collections:
         name: "bilingualSource"
         widget: "text"
         required: false
+        preview: false
         hint: "把双语原稿按标签贴在这里，保存时会自动拆到对应字段。必填标签：[ZH_TITLE] [EN_TITLE] [ZH_BODY] [EN_BODY]；可选标签：[ZH_DESC] [EN_DESC]。保存成功后此字段不会写入文件。"
       - {label: "标题 (Title)", name: "title", widget: "string"}
       - {label: "英文标题 (English Title)", name: "titleEn", widget: "string", required: false}
