@@ -1,15 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import I18nText from '../components/I18nText.astro';
-import { formatLocalizedDate } from '../lib/i18n';
+import { formatLocalizedDate, formatWeekLabel, recentCategoryLabels } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
-
-const recentCategoryLabels = {
-  learning: { zh: '学习新的技能', en: 'Learning' },
-  certification: { zh: '考证', en: 'Certification' },
-  reading: { zh: '阅读', en: 'Reading' },
-  project: { zh: '做项目', en: 'Project' },
-};
 
 const [homeEntry] = await getCollection('siteHome').catch(() => []);
 const site = homeEntry?.data ?? {
@@ -19,22 +12,8 @@ const site = homeEntry?.data ?? {
 };
 
 const timelineItems = site.recentItems
-  .map((item, index) => ({ ...item, sortIndex: index }))
-  .sort((a, b) => {
-    if (a.date && b.date) {
-      return b.date.valueOf() - a.date.valueOf();
-    }
-    if (a.date) {
-      return -1;
-    }
-    if (b.date) {
-      return 1;
-    }
-    return a.sortIndex - b.sortIndex;
-  });
-
-const currentCount = timelineItems.filter((item) => !item.done).length;
-const completedCount = timelineItems.filter((item) => item.done).length;
+  .slice()
+  .sort((a, b) => b.date.valueOf() - a.date.valueOf());
 
 const allLifePhotos = await getCollection('life');
 const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
@@ -42,255 +21,233 @@ const sortedPhotos = allLifePhotos.sort((a, b) => new Date(b.data.date).valueOf(
 <BaseLayout
   title="生活记录"
   titleEn="Life"
-  description="Robin Lu 的生活记录与时间线"
-  descriptionEn="Life timeline and everyday logs from Robin Lu"
+  description="Robin Lu 的生活照片与日常痕迹"
+  descriptionEn="Life photos and everyday traces from Robin Lu"
   activePage="life"
 >
-  <section class="page-hero">
-    <h1><I18nText zh="生活记录" en="Life" /></h1>
-    <p>
-      <I18nText
-        zh="这里汇总正在进行的事情、已经完成的事项，以及日常碎片的记录。"
-        en="This page brings together ongoing work, completed milestones, and everyday moments."
-      />
-    </p>
-  </section>
+  <div class="life-layout">
+    <div class="life-main">
+      <section class="page-hero">
+        <h1><I18nText zh="生活记录" en="Life" /></h1>
+        <p>
+          <I18nText
+            zh="这里只保留生活痕迹本身：照片、片段、当下的场景与一句说明。"
+            en="This page is reserved for the traces of everyday life itself: photos, moments, and a short note for each one."
+          />
+        </p>
+      </section>
 
-  <section class="life-section">
-    <div class="section-header">
-      <span class="section-number">01</span>
-      <h2 class="section-title"><I18nText zh={site.recentTitle ?? '最近在做'} en={site.recentTitleEn ?? site.recentTitle ?? 'Recently Doing'} /></h2>
-      <div class="section-line"></div>
-    </div>
+      {sortedPhotos.length > 0 ? (
+        <div class="life-feed">
+          {sortedPhotos.map((photo) => {
+            const titleEn = photo.data.titleEn ?? photo.data.title;
+            const captionEn = photo.data.captionEn ?? photo.data.caption;
+            const dateCopy = formatLocalizedDate(photo.data.date);
 
-    <div class="timeline-summary">
-      <div class="timeline-summary-item">
-        <span class="timeline-summary-number">{currentCount}</span>
-        <span class="timeline-summary-label"><I18nText zh="进行中" en="In Progress" /></span>
-      </div>
-      <div class="timeline-summary-item">
-        <span class="timeline-summary-number">{completedCount}</span>
-        <span class="timeline-summary-label"><I18nText zh="已完成" en="Completed" /></span>
-      </div>
-      <div class="timeline-summary-item">
-        <span class="timeline-summary-number">{timelineItems.length}</span>
-        <span class="timeline-summary-label"><I18nText zh="总计" en="Total" /></span>
-      </div>
-    </div>
-
-    {timelineItems.length > 0 ? (
-      <div class="timeline-list">
-        {timelineItems.map((item) => {
-          const categoryCopy = item.category ? recentCategoryLabels[item.category] : undefined;
-          const dateCopy = item.date ? formatLocalizedDate(item.date) : null;
-
-          return (
-            <article class:list={['timeline-card', { done: item.done }]}>
-              <div class="timeline-card-top">
-                <div class="timeline-card-meta">
-                  <span class="timeline-card-category">
-                    <I18nText
-                      zh={categoryCopy?.zh ?? item.label ?? '最近在做'}
-                      en={categoryCopy?.en ?? item.labelEn ?? item.label ?? 'Recent'}
-                    />
-                  </span>
-                  <span class:list={['timeline-card-state', { done: item.done }]}>
-                    <I18nText zh={item.done ? '已完成' : '进行中'} en={item.done ? 'Done' : 'In Progress'} />
-                  </span>
+            return (
+              <article class="life-story-card">
+                <div class="life-story-image">
+                  <img
+                    src={photo.data.image}
+                    alt={photo.data.title}
+                    data-i18n-alt-zh={photo.data.title}
+                    data-i18n-alt-en={titleEn}
+                    loading="lazy"
+                  />
                 </div>
-                {dateCopy && (
-                  <time class="timeline-card-date">
-                    <I18nText zh={dateCopy.zh} en={dateCopy.en} />
-                  </time>
-                )}
-              </div>
-              <h3 class="timeline-card-title"><I18nText zh={item.title} en={item.titleEn ?? item.title} /></h3>
-              {item.subtitle && (
-                <p class="timeline-card-subtitle">
-                  <I18nText zh={item.subtitle} en={item.subtitleEn ?? item.subtitle} />
-                </p>
-              )}
-            </article>
-          );
-        })}
-      </div>
-    ) : (
-      <div class="quote-block" style="margin:32px 0;">
-        <p class="quote-text"><I18nText zh="当前还没有时间线内容。" en="No timeline items yet." /></p>
-      </div>
-    )}
-  </section>
-
-  <section class="life-section">
-    <div class="section-header">
-      <span class="section-number">02</span>
-      <h2 class="section-title"><I18nText zh="日常碎片" en="Daily Fragments" /></h2>
-      <div class="section-line"></div>
+                <div class="life-story-body">
+                  <time class="life-story-date"><I18nText zh={dateCopy.zh} en={dateCopy.en} /></time>
+                  <h2 class="life-story-title"><I18nText zh={photo.data.title} en={titleEn} /></h2>
+                  {photo.data.caption && (
+                    <p class="life-story-caption"><I18nText zh={photo.data.caption} en={captionEn ?? photo.data.caption} /></p>
+                  )}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      ) : (
+        <div class="quote-block" style="margin:32px 0;">
+          <p class="quote-text"><I18nText zh="当前还没有生活照片内容。" en="No life photo posts yet." /></p>
+        </div>
+      )}
     </div>
 
-    {sortedPhotos.length > 0 ? (
-      <div class="life-grid">
-        {sortedPhotos.map((photo) => {
-          const titleEn = photo.data.titleEn ?? photo.data.title;
-          const captionEn = photo.data.captionEn ?? photo.data.caption;
-          const dateCopy = formatLocalizedDate(photo.data.date);
+    <aside class="life-sidebar">
+      <div class="sidebar-widget life-timeline-widget">
+        <div class="widget-title"><I18nText zh={site.recentTitle ?? '最近在做'} en={site.recentTitleEn ?? site.recentTitle ?? 'Recently Doing'} /></div>
+        {timelineItems.length > 0 ? (
+          <div class="life-timeline-list">
+            {timelineItems.map((item) => {
+              const categoryCopy = recentCategoryLabels[item.category];
+              const weekCopy = formatWeekLabel(item.date);
 
-          return (
-            <article class:list={['life-card', { wide: photo.data.wide, tall: photo.data.tall }]}>
-              <img
-                src={photo.data.image}
-                alt={photo.data.title}
-                data-i18n-alt-zh={photo.data.title}
-                data-i18n-alt-en={titleEn}
-                loading="lazy"
-              />
-              <div class="life-card-info">
-                <h3><I18nText zh={photo.data.title} en={titleEn} /></h3>
-                {photo.data.caption && captionEn && <p><I18nText zh={photo.data.caption} en={captionEn} /></p>}
-                <time><I18nText zh={dateCopy.zh} en={dateCopy.en} /></time>
-              </div>
-            </article>
-          );
-        })}
+              return (
+                <article class:list={['life-timeline-item', { done: item.done }]}>
+                  <div class="life-timeline-top">
+                    <span class="life-timeline-category"><I18nText zh={categoryCopy.zh} en={categoryCopy.en} /></span>
+                    <span class="life-timeline-week"><I18nText zh={weekCopy.zh} en={weekCopy.en} /></span>
+                  </div>
+                  <h3 class="life-timeline-title"><I18nText zh={item.title} en={item.titleEn ?? item.title} /></h3>
+                  {item.subtitle && (
+                    <p class="life-timeline-subtitle"><I18nText zh={item.subtitle} en={item.subtitleEn ?? item.subtitle} /></p>
+                  )}
+                  <div class="life-timeline-state">
+                    <I18nText zh={item.done ? '已完成' : '进行中'} en={item.done ? 'Done' : 'In Progress'} />
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <div class="quote-block" style="margin:16px 0 0;">
+            <p class="quote-text"><I18nText zh="这里还没有最近在做的内容。" en="No recent items yet." /></p>
+          </div>
+        )}
       </div>
-    ) : (
-      <div class="quote-block" style="margin:32px 0;">
-        <p class="quote-text"><I18nText zh="当前还没有生活记录。" en="No life updates yet." /></p>
-      </div>
-    )}
-  </section>
+    </aside>
+  </div>
 
   <style>
-    .life-section + .life-section {
-      margin-top: 72px;
+    .life-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.75fr);
+      gap: 0;
+      align-items: start;
+      border-top: 1px solid var(--color-border);
     }
 
-    .timeline-summary {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
+    .life-main {
+      padding-right: 64px;
+      border-right: 1px solid var(--color-border);
     }
 
-    .timeline-summary-item {
-      min-width: 120px;
-      padding: 16px 18px;
+    .life-sidebar {
+      padding-left: 32px;
+      position: sticky;
+      top: 32px;
+    }
+
+    .life-feed {
+      display: grid;
+      gap: 24px;
+    }
+
+    .life-story-card {
       border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
+      overflow: hidden;
       background: var(--color-surface);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
     }
 
-    .timeline-summary-number {
-      font-size: 24px;
-      font-weight: 800;
-      color: var(--color-white);
+    .life-story-image {
+      aspect-ratio: 16 / 9;
+      background: var(--color-surface-2);
+      overflow: hidden;
     }
 
-    .timeline-summary-label {
+    .life-story-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .life-story-body {
+      padding: 18px 20px 20px;
+    }
+
+    .life-story-date {
+      display: block;
       font-size: 12px;
-      color: var(--color-text-muted);
+      color: var(--color-text-subtle);
+      margin-bottom: 10px;
     }
 
-    .timeline-list {
+    .life-story-title {
+      margin: 0;
+      font-size: clamp(22px, 2vw, 30px);
+      color: var(--color-white);
+      letter-spacing: -0.03em;
+    }
+
+    .life-story-caption {
+      margin: 12px 0 0;
+      color: var(--color-text-muted);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .life-timeline-widget {
+      padding-top: 72px;
+    }
+
+    .life-timeline-list {
       display: grid;
       gap: 14px;
+      margin-top: 14px;
     }
 
-    .timeline-card {
+    .life-timeline-item {
       border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
       background: var(--color-surface);
-      padding: 20px;
+      padding: 16px;
     }
 
-    .timeline-card.done {
-      opacity: 0.82;
+    .life-timeline-item.done {
+      opacity: 0.78;
     }
 
-    .timeline-card-top {
+    .life-timeline-top {
       display: flex;
       justify-content: space-between;
       gap: 12px;
-      align-items: flex-start;
-      margin-bottom: 12px;
-    }
-
-    .timeline-card-meta {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
       align-items: center;
+      margin-bottom: 10px;
     }
 
-    .timeline-card-category,
-    .timeline-card-state,
-    .timeline-card-date {
+    .life-timeline-category,
+    .life-timeline-week,
+    .life-timeline-state {
       font-size: 12px;
       color: var(--color-text-muted);
     }
 
-    .timeline-card-state {
-      border: 1px solid var(--color-border);
-      border-radius: 999px;
-      padding: 4px 8px;
-    }
-
-    .timeline-card-state.done {
-      color: var(--color-accent);
-      border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
-    }
-
-    .timeline-card-title {
+    .life-timeline-title {
       margin: 0;
       font-size: 24px;
       color: var(--color-white);
     }
 
-    .timeline-card-subtitle {
-      margin: 10px 0 0;
+    .life-timeline-subtitle {
+      margin: 8px 0 0;
       color: var(--color-text-muted);
-      font-size: 15px;
+      font-size: 14px;
     }
 
-    .life-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 1rem;
+    .life-timeline-state {
+      margin-top: 12px;
     }
 
-    .life-card img {
-      width: 100%;
-      height: auto;
-      border-radius: 8px;
-      object-fit: cover;
-    }
+    @media (max-width: 1024px) {
+      .life-layout {
+        grid-template-columns: 1fr;
+      }
 
-    .life-card-info {
-      margin-top: 0.75rem;
-    }
+      .life-main {
+        padding-right: 0;
+        border-right: 0;
+      }
 
-    .life-card-info h3 {
-      font-size: 1rem;
-      margin: 0;
-    }
+      .life-sidebar {
+        position: static;
+        padding-left: 0;
+        margin-top: 40px;
+      }
 
-    .life-card-info p {
-      font-size: 0.875rem;
-      color: var(--color-text-muted);
-      margin: 0.35rem 0;
-    }
-
-    .life-card-info time {
-      font-size: 0.75rem;
-      color: var(--color-text-subtle);
-    }
-
-    @media (max-width: 720px) {
-      .timeline-card-top {
-        flex-direction: column;
+      .life-timeline-widget {
+        padding-top: 0;
       }
     }
   </style>

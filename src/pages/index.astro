@@ -2,7 +2,7 @@
 import { readdirSync } from 'node:fs';
 import { getCollection } from 'astro:content';
 import I18nText from '../components/I18nText.astro';
-import { projectCategoryLabels } from '../lib/i18n';
+import { projectCategoryLabels, recentCategoryLabels } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 function hasMarkdownEntries(relativeDir) {
@@ -23,13 +23,6 @@ async function safeGetCollection(name, shouldLoad = true) {
     return [];
   }
 }
-
-const recentCategoryLabels = {
-  learning: { zh: '学习新的技能', en: 'Learning' },
-  certification: { zh: '考证', en: 'Certification' },
-  reading: { zh: '阅读', en: 'Reading' },
-  project: { zh: '做项目', en: 'Project' },
-};
 
 const [siteEntry] = await getCollection('siteHome').catch(() => []);
 const site = siteEntry?.data ?? {
@@ -137,31 +130,34 @@ const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` :
         <div class="widget-title" style="margin-bottom:16px;">
           <I18nText zh={site.recentTitle} en={site.recentTitleEn ?? site.recentTitle} />
         </div>
-        <div class="now-list">
-          {recentItemsPreview.map((item) => {
-            const categoryCopy = item.category ? recentCategoryLabels[item.category] : undefined;
+        {recentItemsPreview.length > 0 ? (
+          <div class="now-list">
+            {recentItemsPreview.map((item) => {
+              const categoryCopy = recentCategoryLabels[item.category];
 
-            return (
-            <article class:list={['now-card', { done: item.done }]}>
-              <div class="now-card-meta">
-                <span class="now-card-label">
-                  <I18nText
-                    zh={categoryCopy?.zh ?? item.label ?? ''}
-                    en={categoryCopy?.en ?? item.labelEn ?? item.label ?? categoryCopy?.zh ?? ''}
-                  />
-                </span>
-                {item.done && <span class="now-card-done"><I18nText zh="已完成" en="Done" /></span>}
-              </div>
-              <h3 class="now-card-title"><I18nText zh={item.title} en={item.titleEn ?? item.title} /></h3>
-              {item.subtitle && (
-                <p class="now-card-subtitle">
-                  <I18nText zh={item.subtitle} en={item.subtitleEn ?? item.subtitle} />
-                </p>
-              )}
-            </article>
-            );
-          })}
-        </div>
+              return (
+                <article class:list={['now-card', { done: item.done }]}>
+                  <div class="now-card-meta">
+                    <span class="now-card-label">
+                      <I18nText zh={categoryCopy.zh} en={categoryCopy.en} />
+                    </span>
+                    {item.done && <span class="now-card-done"><I18nText zh="已完成" en="Done" /></span>}
+                  </div>
+                  <h3 class="now-card-title"><I18nText zh={item.title} en={item.titleEn ?? item.title} /></h3>
+                  {item.subtitle && (
+                    <p class="now-card-subtitle">
+                      <I18nText zh={item.subtitle} en={item.subtitleEn ?? item.subtitle} />
+                    </p>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <div class="quote-block" style="margin:0;">
+            <p class="quote-text"><I18nText zh="这里还没有最近在做的内容。" en="No recent items yet." /></p>
+          </div>
+        )}
       </div>
     </div>
   </section>

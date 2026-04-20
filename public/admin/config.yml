@@ -32,6 +32,22 @@ collections:
               - {label: "英文", name: "en", widget: "string", required: false}
           - {label: "关于我标题（中文）", name: "aboutTitle", widget: "string", required: false}
           - {label: "关于我标题（英文）", name: "aboutTitleEn", widget: "string", required: false}
+          - {label: "联系邮箱", name: "contactEmail", widget: "string", required: false, hint: "用于侧栏“发送邮件” mailto 链接"}
+          - label: "在这里找到我"
+            name: "findMeLinks"
+            widget: "list"
+            summary: "{{fields.platform}}"
+            fields:
+              - label: "平台"
+                name: "platform"
+                widget: "select"
+                options:
+                  - {label: "GitHub", value: "github"}
+                  - {label: "LinkedIn", value: "linkedin"}
+                  - {label: "Hugging Face", value: "huggingface"}
+                  - {label: "其他网站", value: "website"}
+              - {label: "显示名称（可选）", name: "label", widget: "string", required: false}
+              - {label: "链接 URL", name: "url", widget: "string", required: false}
           - label: "关于我段落"
             name: "aboutParagraphs"
             widget: "list"
@@ -44,24 +60,25 @@ collections:
           - label: "最近在做"
             name: "recentItems"
             widget: "list"
-            summary: "{{fields.title}}"
+            summary: "{{fields.category}} · {{fields.title}}"
             fields:
               - label: "分类"
                 name: "category"
                 widget: "select"
-                required: false
                 options:
                   - {label: "学习新的技能", value: "learning"}
                   - {label: "考证", value: "certification"}
                   - {label: "阅读", value: "reading"}
                   - {label: "做项目", value: "project"}
-              - {label: "旧分类文案（兼容旧数据）", name: "label", widget: "string", required: false}
-              - {label: "旧分类文案英文（兼容旧数据）", name: "labelEn", widget: "string", required: false}
               - {label: "标题（中文）", name: "title", widget: "string"}
               - {label: "标题（英文）", name: "titleEn", widget: "string", required: false}
               - {label: "副标题（中文）", name: "subtitle", widget: "string", required: false}
               - {label: "副标题（英文）", name: "subtitleEn", widget: "string", required: false}
-              - {label: "时间（用于生活页时间线）", name: "date", widget: "datetime", required: false}
+              - label: "日期（页面会自动显示为 KW）"
+                name: "date"
+                widget: "datetime"
+                date_format: "YYYY-MM-DD"
+                time_format: false
               - {label: "已完成", name: "done", widget: "boolean", default: false, required: false}
 
   - name: "channel_settings"

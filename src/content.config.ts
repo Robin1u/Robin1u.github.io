@@ -25,15 +25,19 @@ const siteHome = defineCollection({
     })).default([]),
     recentTitle: z.string().default('最近在做'),
     recentTitleEn: z.string().optional(),
-    recentItems: z.array(z.object({
-      category: z.enum(['learning', 'certification', 'reading', 'project']).optional(),
+    contactEmail: z.string().optional(),
+    findMeLinks: z.array(z.object({
+      platform: z.enum(['github', 'linkedin', 'huggingface', 'website']),
       label: z.string().optional(),
-      labelEn: z.string().optional(),
+      url: z.string().optional(),
+    })).default([]),
+    recentItems: z.array(z.object({
+      category: z.enum(['learning', 'certification', 'reading', 'project']),
       title: z.string(),
       titleEn: z.string().optional(),
       subtitle: z.string().optional(),
       subtitleEn: z.string().optional(),
-      date: z.coerce.date().optional(),
+      date: z.coerce.date(),
       done: z.boolean().default(false),
     })).default([]),
   }),

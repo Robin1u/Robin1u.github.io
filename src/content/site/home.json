@@ -15,6 +15,24 @@
   ],
   "aboutTitle": "关于我",
   "aboutTitleEn": "About Me",
+  "contactEmail": "",
+  "findMeLinks": [
+    {
+      "platform": "github",
+      "label": "GitHub",
+      "url": "https://github.com/robin1u"
+    },
+    {
+      "platform": "linkedin",
+      "label": "LinkedIn",
+      "url": ""
+    },
+    {
+      "platform": "huggingface",
+      "label": "Hugging Face",
+      "url": ""
+    }
+  ],
   "aboutParagraphs": [
     {
       "zh": "我是一名计算机科学专业的学生，对构建网页世界充满热情。在学校之外，我把空闲时间花在设计界面、编写代码，以及把学到的东西分享到网上。",
@@ -34,8 +52,6 @@
   "recentItems": [
     {
       "category": "certification",
-      "label": "",
-      "labelEn": "",
       "title": "驾照",
       "titleEn": "Driving License",
       "subtitle": "",
