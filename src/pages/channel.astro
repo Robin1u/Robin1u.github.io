@@ -28,16 +28,16 @@ const channelSettings = channelEntry?.data ?? {
 };
 const channelPage = pagesEntry?.data?.channel ?? {
   sectionNumber: '05',
-  pageTitle: '频道',
-  pageTitleEn: 'Channels',
+  navLabel: '频道',
+  navLabelEn: 'Channels',
   intro: '这里适合作为平台入口页，集中放置账号链接、简短介绍和更新方向。',
   introEn: 'This page works best as a hub for profile links, short intros, and the direction of your ongoing work.',
 };
 const channels = channelSettings.channels ?? [];
 ---
 <BaseLayout
-  title={channelPage.pageTitle}
-  titleEn={channelPage.pageTitleEn ?? channelPage.pageTitle}
+  title={channelPage.navLabel}
+  titleEn={channelPage.navLabelEn ?? channelPage.navLabel}
   description="Robin Lu 的频道与平台数据"
   descriptionEn="Channel and platform links for Robin Lu"
   activePage="channel"
@@ -46,7 +46,7 @@ const channels = channelSettings.channels ?? [];
     <div class="section-header" style="margin-bottom:0;">
       <span class="section-number">{channelPage.sectionNumber}</span>
       <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);">
-        <I18nText zh={channelPage.pageTitle} en={channelPage.pageTitleEn ?? channelPage.pageTitle} />
+        <I18nText zh={channelPage.navLabel} en={channelPage.navLabelEn ?? channelPage.navLabel} />
       </h1>
       <div class="section-line"></div>
     </div>

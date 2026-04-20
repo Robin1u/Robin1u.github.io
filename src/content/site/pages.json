@@ -7,8 +7,6 @@
     "sectionNumber": "02",
     "navLabel": "作品集",
     "navLabelEn": "Portfolio",
-    "pageTitle": "作品集",
-    "pageTitleEn": "Portfolio",
     "intro": "保留当前项目内容，使用新的列表框架与路由结构。",
     "introEn": "Existing project content, reorganized with a cleaner list layout and route structure."
   },
@@ -16,8 +14,6 @@
     "sectionNumber": "03",
     "navLabel": "想法",
     "navLabelEn": "Thoughts",
-    "pageTitle": "想法",
-    "pageTitleEn": "Thoughts",
     "intro": "这里专门放文字内容、观点整理和方法记录。",
     "introEn": "This page is dedicated to writing, reflections, and methods."
   },
@@ -25,8 +21,6 @@
     "sectionNumber": "04",
     "navLabel": "生活",
     "navLabelEn": "Life",
-    "pageTitle": "生活记录",
-    "pageTitleEn": "Life",
     "intro": "这里只保留生活痕迹本身：照片、片段、当下的场景与一句说明。",
     "introEn": "This page is reserved for the traces of everyday life itself: photos, moments, and a short note for each one."
   },
@@ -34,8 +28,6 @@
     "sectionNumber": "05",
     "navLabel": "频道",
     "navLabelEn": "Channels",
-    "pageTitle": "频道",
-    "pageTitleEn": "Channels",
     "intro": "这里更适合做平台入口页：放账号链接、简短介绍和更新方向。先把 B 站和小红书集中在这里，后续如果 ADHDer 内容沉淀成体系，再拆出独立专题页会更清晰。",
     "introEn": "This page works best as a platform hub for profile links, short introductions, and the latest direction of your work. Keep Bilibili and Xiaohongshu here first, then create a dedicated topic page later if your ADHDer content grows into a bigger knowledge base."
   }

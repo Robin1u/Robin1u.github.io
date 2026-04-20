@@ -24,18 +24,18 @@ const site = siteEntry?.data ?? {
 const sitePages = pagesEntry?.data ?? {
   portfolio: {
     sectionNumber: '02',
-    pageTitle: '作品集',
-    pageTitleEn: 'Portfolio',
+    navLabel: '作品集',
+    navLabelEn: 'Portfolio',
   },
   thoughts: {
     sectionNumber: '03',
-    pageTitle: '想法',
-    pageTitleEn: 'Thoughts',
+    navLabel: '想法',
+    navLabelEn: 'Thoughts',
   },
   life: {
     sectionNumber: '04',
-    pageTitle: '生活',
-    pageTitleEn: 'Life',
+    navLabel: '生活',
+    navLabelEn: 'Life',
   },
 };
 
@@ -181,8 +181,8 @@ const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` :
         <span class="section-number">{sitePages.portfolio.sectionNumber}</span>
         <h2 class="section-title">
           <I18nText
-            zh={sitePages.portfolio.pageTitle}
-            en={sitePages.portfolio.pageTitleEn ?? sitePages.portfolio.pageTitle}
+            zh={sitePages.portfolio.navLabel}
+            en={sitePages.portfolio.navLabelEn ?? sitePages.portfolio.navLabel}
           />
         </h2>
         <div class="section-line"></div>
@@ -239,8 +239,8 @@ const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` :
         <span class="section-number">{sitePages.thoughts.sectionNumber}</span>
         <h2 class="section-title">
           <I18nText
-            zh={sitePages.thoughts.pageTitle}
-            en={sitePages.thoughts.pageTitleEn ?? sitePages.thoughts.pageTitle}
+            zh={sitePages.thoughts.navLabel}
+            en={sitePages.thoughts.navLabelEn ?? sitePages.thoughts.navLabel}
           />
         </h2>
         <div class="section-line"></div>
@@ -285,8 +285,8 @@ const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` :
         <span class="section-number">{sitePages.life.sectionNumber}</span>
         <h2 class="section-title">
           <I18nText
-            zh={sitePages.life.pageTitle}
-            en={sitePages.life.pageTitleEn ?? sitePages.life.pageTitle}
+            zh={sitePages.life.navLabel}
+            en={sitePages.life.navLabelEn ?? sitePages.life.navLabel}
           />
         </h2>
         <div class="section-line"></div>

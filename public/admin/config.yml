@@ -126,8 +126,6 @@ collections:
               - {label: "编号", name: "sectionNumber", widget: "string"}
               - {label: "导航名称（中文）", name: "navLabel", widget: "string"}
               - {label: "导航名称（英文）", name: "navLabelEn", widget: "string", required: false}
-              - {label: "页面标题（中文）", name: "pageTitle", widget: "string"}
-              - {label: "页面标题（英文）", name: "pageTitleEn", widget: "string", required: false}
               - {label: "页面说明（中文）", name: "intro", widget: "text", required: false}
               - {label: "页面说明（英文）", name: "introEn", widget: "text", required: false}
           - label: "想法"
@@ -137,8 +135,6 @@ collections:
               - {label: "编号", name: "sectionNumber", widget: "string"}
               - {label: "导航名称（中文）", name: "navLabel", widget: "string"}
               - {label: "导航名称（英文）", name: "navLabelEn", widget: "string", required: false}
-              - {label: "页面标题（中文）", name: "pageTitle", widget: "string"}
-              - {label: "页面标题（英文）", name: "pageTitleEn", widget: "string", required: false}
               - {label: "页面说明（中文）", name: "intro", widget: "text", required: false}
               - {label: "页面说明（英文）", name: "introEn", widget: "text", required: false}
           - label: "生活"
@@ -148,8 +144,6 @@ collections:
               - {label: "编号", name: "sectionNumber", widget: "string"}
               - {label: "导航名称（中文）", name: "navLabel", widget: "string"}
               - {label: "导航名称（英文）", name: "navLabelEn", widget: "string", required: false}
-              - {label: "页面标题（中文）", name: "pageTitle", widget: "string"}
-              - {label: "页面标题（英文）", name: "pageTitleEn", widget: "string", required: false}
               - {label: "页面说明（中文）", name: "intro", widget: "text", required: false}
               - {label: "页面说明（英文）", name: "introEn", widget: "text", required: false}
           - label: "频道"
@@ -159,8 +153,6 @@ collections:
               - {label: "编号", name: "sectionNumber", widget: "string"}
               - {label: "导航名称（中文）", name: "navLabel", widget: "string"}
               - {label: "导航名称（英文）", name: "navLabelEn", widget: "string", required: false}
-              - {label: "页面标题（中文）", name: "pageTitle", widget: "string"}
-              - {label: "页面标题（英文）", name: "pageTitleEn", widget: "string", required: false}
               - {label: "页面说明（中文）", name: "intro", widget: "text", required: false}
               - {label: "页面说明（英文）", name: "introEn", widget: "text", required: false}
 

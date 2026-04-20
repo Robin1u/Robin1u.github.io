@@ -10,15 +10,15 @@ const tagCount = new Set(thoughts.flatMap((post) => post.data.tags ?? [])).size;
 const [pagesEntry] = await getCollection('sitePages').catch(() => []);
 const thoughtsPage = pagesEntry?.data?.thoughts ?? {
   sectionNumber: '03',
-  pageTitle: '想法',
-  pageTitleEn: 'Thoughts',
+  navLabel: '想法',
+  navLabelEn: 'Thoughts',
   intro: '这里专门放文字内容、观点整理和方法记录。',
   introEn: 'This page is dedicated to writing, reflections, and methods.',
 };
 ---
 <BaseLayout
-  title={thoughtsPage.pageTitle}
-  titleEn={thoughtsPage.pageTitleEn ?? thoughtsPage.pageTitle}
+  title={thoughtsPage.navLabel}
+  titleEn={thoughtsPage.navLabelEn ?? thoughtsPage.navLabel}
   description="Robin Lu 的想法与文章"
   descriptionEn="Thoughts and writing from Robin Lu"
   activePage="thoughts"
@@ -29,7 +29,7 @@ const thoughtsPage = pagesEntry?.data?.thoughts ?? {
         <div class="section-header" style="margin-bottom:0;">
           <span class="section-number">{thoughtsPage.sectionNumber}</span>
           <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);">
-            <I18nText zh={thoughtsPage.pageTitle} en={thoughtsPage.pageTitleEn ?? thoughtsPage.pageTitle} />
+            <I18nText zh={thoughtsPage.navLabel} en={thoughtsPage.navLabelEn ?? thoughtsPage.navLabel} />
           </h1>
           <div class="section-line"></div>
         </div>

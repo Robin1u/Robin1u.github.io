@@ -9,8 +9,8 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
 const [pagesEntry] = await getCollection('sitePages').catch(() => []);
 const portfolioPage = pagesEntry?.data?.portfolio ?? {
   sectionNumber: '02',
-  pageTitle: '作品集',
-  pageTitleEn: 'Portfolio',
+  navLabel: '作品集',
+  navLabelEn: 'Portfolio',
   intro: '保留当前项目内容，使用新的列表框架与路由结构。',
   introEn: 'Existing project content, reorganized with a cleaner list layout and route structure.',
 };
@@ -24,8 +24,8 @@ const categories = [
 ];
 ---
 <BaseLayout
-  title={portfolioPage.pageTitle}
-  titleEn={portfolioPage.pageTitleEn ?? portfolioPage.pageTitle}
+  title={portfolioPage.navLabel}
+  titleEn={portfolioPage.navLabelEn ?? portfolioPage.navLabel}
   description="Robin Lu 的项目与作品集"
   descriptionEn="Projects and selected work by Robin Lu"
   activePage="portfolio"
@@ -34,7 +34,7 @@ const categories = [
     <div class="section-header" style="margin-bottom:0;">
       <span class="section-number">{portfolioPage.sectionNumber}</span>
       <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);">
-        <I18nText zh={portfolioPage.pageTitle} en={portfolioPage.pageTitleEn ?? portfolioPage.pageTitle} />
+        <I18nText zh={portfolioPage.navLabel} en={portfolioPage.navLabelEn ?? portfolioPage.navLabel} />
       </h1>
       <div class="section-line"></div>
     </div>
