@@ -1,30 +1,11 @@
 ---
-import { readdirSync } from 'node:fs';
 import { getCollection } from 'astro:content';
 import I18nText from '../components/I18nText.astro';
-import { formatWeekLabel, projectCategoryLabels, recentCategoryLabels } from '../lib/i18n';
+import { formatLocalizedDate, formatWeekLabel, projectCategoryLabels, recentCategoryLabels } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-function hasMarkdownEntries(relativeDir) {
-  try {
-    return readdirSync(new URL(relativeDir, import.meta.url)).some((file) => file.endsWith('.md'));
-  } catch {
-    return false;
-  }
-}
-
-async function safeGetCollection(name, shouldLoad = true) {
-  if (!shouldLoad) {
-    return [];
-  }
-  try {
-    return await getCollection(name, ({ data }) => !data.draft);
-  } catch {
-    return [];
-  }
-}
-
 const [siteEntry] = await getCollection('siteHome').catch(() => []);
+const [pagesEntry] = await getCollection('sitePages').catch(() => []);
 const site = siteEntry?.data ?? {
   name: 'Robin Lu',
   nameEn: 'Robin Lu',
@@ -40,6 +21,23 @@ const site = siteEntry?.data ?? {
   recentTitleEn: 'Recently Doing',
   recentItems: [],
 };
+const sitePages = pagesEntry?.data ?? {
+  portfolio: {
+    sectionNumber: '02',
+    pageTitle: '作品集',
+    pageTitleEn: 'Portfolio',
+  },
+  thoughts: {
+    sectionNumber: '03',
+    pageTitle: '想法',
+    pageTitleEn: 'Thoughts',
+  },
+  life: {
+    sectionNumber: '04',
+    pageTitle: '生活',
+    pageTitleEn: 'Life',
+  },
+};
 
 const activeRecentItems = site.recentItems.filter((item) => !item.done);
 const recentItemsPreview = activeRecentItems.length > 0
@@ -48,14 +46,18 @@ const recentItemsPreview = activeRecentItems.length > 0
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const thoughts = (await safeGetCollection('thoughts', hasMarkdownEntries('../content/thoughts')))
+const thoughts = (await getCollection('thoughts', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const life = (await safeGetCollection('life', true))
+const life = (await getCollection('life'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const featuredProjects = projects.filter((project) => project.data.featured).length > 0
   ? projects.filter((project) => project.data.featured).slice(0, 3)
   : projects.slice(0, 3);
+const featuredThoughts = thoughts.filter((post) => post.data.featured).length > 0
+  ? thoughts.filter((post) => post.data.featured).slice(0, 2)
+  : thoughts.slice(0, 2);
+const featuredLife = life.slice(0, 2);
 
 const rolesZh = site.roles.map((role) => role.zh).join(' / ');
 const rolesEn = site.roles.map((role) => role.en ?? role.zh).join(' / ');
@@ -176,8 +178,13 @@ const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` :
   {featuredProjects.length > 0 && (
     <section class="works-preview" aria-label="最新项目">
       <div class="section-header">
-        <span class="section-number">02</span>
-        <h2 class="section-title"><I18nText zh="作品集" en="Portfolio" /></h2>
+        <span class="section-number">{sitePages.portfolio.sectionNumber}</span>
+        <h2 class="section-title">
+          <I18nText
+            zh={sitePages.portfolio.pageTitle}
+            en={sitePages.portfolio.pageTitleEn ?? sitePages.portfolio.pageTitle}
+          />
+        </h2>
         <div class="section-line"></div>
       </div>
 
@@ -221,6 +228,108 @@ const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` :
 
       <a href="/portfolio" class="view-all-link">
         <I18nText zh="查看全部项目" en="View All Projects" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </section>
+  )}
+
+  {featuredThoughts.length > 0 && (
+    <section class="content-preview" aria-label="最新文章">
+      <div class="section-header">
+        <span class="section-number">{sitePages.thoughts.sectionNumber}</span>
+        <h2 class="section-title">
+          <I18nText
+            zh={sitePages.thoughts.pageTitle}
+            en={sitePages.thoughts.pageTitleEn ?? sitePages.thoughts.pageTitle}
+          />
+        </h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="content-grid">
+        {featuredThoughts.map((post) => {
+          const dateCopy = formatLocalizedDate(post.data.date);
+
+          return (
+            <a href={`/thoughts/${post.id}`} class="content-card content-card-text">
+              <div class="content-card-meta">
+                <span><I18nText zh={dateCopy.zh} en={dateCopy.en} /></span>
+                {post.data.category && <span class="content-chip">{post.data.category}</span>}
+              </div>
+              <h3 class="content-card-title"><I18nText zh={post.data.title} en={post.data.titleEn ?? post.data.title} /></h3>
+              {post.data.description && (
+                <p class="content-card-desc">
+                  <I18nText zh={post.data.description} en={post.data.descriptionEn ?? post.data.description} />
+                </p>
+              )}
+              {(post.data.tags ?? []).length > 0 && (
+                <div class="content-card-tags">
+                  {(post.data.tags ?? []).slice(0, 3).map((tag) => <span class="content-chip">{tag}</span>)}
+                </div>
+              )}
+            </a>
+          );
+        })}
+      </div>
+
+      <a href="/thoughts" class="view-all-link">
+        <I18nText zh="查看全部文章" en="View All Posts" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </section>
+  )}
+
+  {featuredLife.length > 0 && (
+    <section class="content-preview" aria-label="最新生活记录">
+      <div class="section-header">
+        <span class="section-number">{sitePages.life.sectionNumber}</span>
+        <h2 class="section-title">
+          <I18nText
+            zh={sitePages.life.pageTitle}
+            en={sitePages.life.pageTitleEn ?? sitePages.life.pageTitle}
+          />
+        </h2>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="content-grid">
+        {featuredLife.map((entry) => {
+          const dateCopy = formatLocalizedDate(entry.data.date);
+
+          return (
+            <a href="/life" class="content-card content-card-photo">
+              <div class="content-card-image">
+                <img
+                  src={entry.data.image}
+                  alt={entry.data.title}
+                  data-i18n-alt-zh={entry.data.title}
+                  data-i18n-alt-en={entry.data.titleEn ?? entry.data.title}
+                  loading="lazy"
+                />
+              </div>
+              <div class="content-card-body">
+                <div class="content-card-meta">
+                  <span><I18nText zh={dateCopy.zh} en={dateCopy.en} /></span>
+                  {entry.data.location && (
+                    <span class="content-chip">
+                      <I18nText zh={entry.data.location} en={entry.data.locationEn ?? entry.data.location} />
+                    </span>
+                  )}
+                </div>
+                <h3 class="content-card-title"><I18nText zh={entry.data.title} en={entry.data.titleEn ?? entry.data.title} /></h3>
+                {entry.data.caption && (
+                  <p class="content-card-desc">
+                    <I18nText zh={entry.data.caption} en={entry.data.captionEn ?? entry.data.caption} />
+                  </p>
+                )}
+              </div>
+            </a>
+          );
+        })}
+      </div>
+
+      <a href="/life" class="view-all-link">
+        <I18nText zh="查看全部生活记录" en="View All Life Posts" />
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
     </section>
@@ -336,7 +445,113 @@ const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` :
       box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
     }
 
+    .content-preview {
+      padding: 72px 64px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .content-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      overflow: hidden;
+      transition: border-color var(--transition), transform var(--transition);
+    }
+
+    .content-card:hover {
+      border-color: var(--color-text-subtle);
+      transform: translateY(-2px);
+    }
+
+    .content-card-text {
+      padding: 22px 22px 20px;
+      justify-content: space-between;
+    }
+
+    .content-card-meta,
+    .content-card-tags {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .content-card-meta {
+      font-size: 12px;
+      color: var(--color-text-subtle);
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .content-card-title {
+      margin: 0;
+      font-size: clamp(22px, 2vw, 30px);
+      line-height: 1.15;
+      color: var(--color-white);
+      letter-spacing: -0.03em;
+    }
+
+    .content-card-desc {
+      margin: 12px 0 0;
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--color-text-muted);
+    }
+
+    .content-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 0 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--color-text-subtle);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .content-card-tags {
+      margin-top: 18px;
+    }
+
+    .content-card-image {
+      aspect-ratio: 16 / 10;
+      background: var(--color-surface-2);
+      overflow: hidden;
+    }
+
+    .content-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .content-card-body {
+      padding: 18px 20px 20px;
+    }
+
     @media (max-width: 768px) {
+      .content-preview {
+        padding: 56px 24px;
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
       .now-card-title {
         font-size: 18px;
       }

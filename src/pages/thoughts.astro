@@ -5,6 +5,8 @@ import { formatLocalizedDate } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 const thoughts = (await getCollection('thoughts', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const categoryCount = new Set(thoughts.map((post) => post.data.category).filter(Boolean)).size;
+const tagCount = new Set(thoughts.flatMap((post) => post.data.tags ?? [])).size;
 const [pagesEntry] = await getCollection('sitePages').catch(() => []);
 const thoughtsPage = pagesEntry?.data?.thoughts ?? {
   sectionNumber: '03',
@@ -76,10 +78,13 @@ const thoughtsPage = pagesEntry?.data?.thoughts ?? {
       <div class="sidebar-widget">
         <div class="widget-title"><I18nText zh="统计" en="Stats" /></div>
         <div class="topic-list">
-          <div class="topic-item"><I18nText zh="文章 " en="Posts " /><span class="topic-count">{thoughts.length}</span></div>
-          <a href="/life" class="topic-item" style="text-decoration:none;">
-            <I18nText zh="查看生活页面" en="Open Life page" />
-          </a>
+          <div class="topic-item"><I18nText zh="文章" en="Posts" /><span class="topic-count">{thoughts.length}</span></div>
+          {categoryCount > 0 && (
+            <div class="topic-item"><I18nText zh="分类" en="Categories" /><span class="topic-count">{categoryCount}</span></div>
+          )}
+          {tagCount > 0 && (
+            <div class="topic-item"><I18nText zh="标签" en="Tags" /><span class="topic-count">{tagCount}</span></div>
+          )}
         </div>
       </div>
     </aside>
