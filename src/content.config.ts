@@ -55,22 +55,6 @@ const siteHome = defineCollection({
   }),
 });
 
-const siteSecret = defineCollection({
-  loader: glob({ pattern: 'secret.json', base: './src/content/site' }),
-  schema: z.object({
-    pageTitle: z.string().default('猫猫彩蛋'),
-    pageTitleEn: z.string().optional(),
-    intro: z.string().default('给愿意停下来看看猫咪的人。'),
-    introEn: z.string().optional(),
-    emptyTitle: z.string().default('猫咪还在路上'),
-    emptyTitleEn: z.string().optional(),
-    emptyDescription: z.string().default('第一张猫猫照片还没有放进来，等它们慢慢把这个角落占领。'),
-    emptyDescriptionEn: z.string().optional(),
-    secretLinkLabel: z.string().default('猫咪入口'),
-    secretLinkLabelEn: z.string().optional(),
-  }),
-});
-
 const sitePages = defineCollection({
   loader: glob({ pattern: 'pages.json', base: './src/content/site' }),
   schema: z.object({
@@ -194,4 +178,4 @@ const cats = defineCollection({
 });
 
 // 记得导出 collections
-export const collections = { siteHome, siteSecret, sitePages, siteChannel, projects, thoughts, life, cats };
+export const collections = { siteHome, sitePages, siteChannel, projects, thoughts, life, cats };

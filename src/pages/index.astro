@@ -6,7 +6,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const [siteEntry] = await getCollection('siteHome').catch(() => []);
 const [pagesEntry] = await getCollection('sitePages').catch(() => []);
-const [secretEntry] = await getCollection('siteSecret').catch(() => []);
 const site = siteEntry?.data ?? {
   name: 'Robin Lu',
   nameEn: 'Robin Lu',
@@ -35,10 +34,6 @@ const site = siteEntry?.data ?? {
   recentTitle: '最近在做',
   recentTitleEn: 'Recently Doing',
   recentItems: [],
-};
-const secretPage = secretEntry?.data ?? {
-  secretLinkLabel: '猫咪入口',
-  secretLinkLabelEn: 'Cat Entrance',
 };
 const sitePages = pagesEntry?.data ?? {
   portfolio: {
@@ -217,10 +212,10 @@ const typingWordsEn = JSON.stringify([typingWordEn]);
       <a
         href="/lucky-cat"
         class="secret-cat-link"
-        aria-label={secretPage.secretLinkLabelEn ?? secretPage.secretLinkLabel}
-        data-i18n-title-zh={secretPage.secretLinkLabel}
-        data-i18n-title-en={secretPage.secretLinkLabelEn ?? secretPage.secretLinkLabel}
-        title={secretPage.secretLinkLabel}
+        aria-label="Cat Entrance"
+        data-i18n-title-zh="猫咪入口"
+        data-i18n-title-en="Cat Entrance"
+        title="猫咪入口"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <path d="M6 10.5c0-4 2.8-6.5 6-6.5s6 2.5 6 6.5c0 5-2.5 8.5-6 8.5s-6-3.5-6-8.5z"></path>

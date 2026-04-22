@@ -5,8 +5,7 @@ import I18nText from '../components/I18nText.astro';
 import { formatLocalizedDate } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const [secretEntry] = await getCollection('siteSecret').catch(() => []);
-const secretPage = secretEntry?.data ?? {
+const secretPage = {
   pageTitle: '猫猫彩蛋',
   pageTitleEn: 'Cat Easter Egg',
   intro: '给那些愿意停下来看看猫咪的人。这里收着一些关于猫的照片、瞬间和小备注。',
