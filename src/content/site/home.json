@@ -18,7 +18,7 @@
   "heroTypingWord": "学生",
   "heroTypingWordEn": "student",
   "heroLeadSuffix": "，",
-  "heroLeadSuffixEn": " studying Business Psychology in Cologne,",
+  "heroLeadSuffixEn": "studying Business Psychology in Cologne,",
   "heroLeadSecondLine": "也持续把想法做成项目、文字与表达。",
   "heroLeadSecondLineEn": "while continuously turning ideas into projects, writing, and expression.",
   "heroDescriptionParagraphs": [
@@ -83,6 +83,51 @@
       "subtitle": "",
       "subtitleEn": "",
       "date": "2026-03-24T21:52:00",
+      "done": false
+    },
+    {
+      "category": "project",
+      "title": "个人主页立项与设计",
+      "titleEn": "Personal HomePage Set-up and design",
+      "subtitle": "聚合站",
+      "subtitleEn": "multi-purpose station",
+      "date": "2026-04-16",
+      "done": true
+    },
+    {
+      "category": "project",
+      "title": "个人主页上线",
+      "titleEn": "Personal HomePage Launching",
+      "subtitle": "",
+      "subtitleEn": "",
+      "date": "2026-04-22",
+      "done": true
+    },
+    {
+      "category": "project",
+      "title": "个人主页持续更新与维护",
+      "titleEn": "Personal HomePage Updating and Maintaining",
+      "subtitle": "",
+      "subtitleEn": "",
+      "date": "2026-04-22",
+      "done": false
+    },
+    {
+      "category": "certification",
+      "title": "PRINCE2 PM Licence",
+      "titleEn": "PRINCE2 PM Licence",
+      "subtitle": "",
+      "subtitleEn": "",
+      "date": "2026-02-19",
+      "done": false
+    },
+    {
+      "category": "project",
+      "title": "个人Channel更新和运营",
+      "titleEn": "Personal Channel Updating and Operating",
+      "subtitle": "",
+      "subtitleEn": "",
+      "date": "2026-01-25",
       "done": false
     }
   ]
