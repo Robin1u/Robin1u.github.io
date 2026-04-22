@@ -13,6 +13,28 @@
       "en": "Business Psychology Student"
     }
   ],
+  "heroLeadPrefix": "一名在科隆学习商业心理学的",
+  "heroLeadPrefixEn": "A",
+  "heroTypingWords": [
+    {
+      "zh": "学生",
+      "en": "student"
+    }
+  ],
+  "heroLeadSuffix": "，",
+  "heroLeadSuffixEn": " studying Business Psychology in Cologne,",
+  "heroLeadSecondLine": "也持续把想法做成项目、文字与表达。",
+  "heroLeadSecondLineEn": "while continuously turning ideas into projects, writing, and expression.",
+  "heroDescriptionParagraphs": [
+    {
+      "zh": "我关注人的行为、产品体验，以及信息如何被更好地理解。",
+      "en": "I pay attention to human behavior, product experience, and how information can be understood more clearly."
+    },
+    {
+      "zh": "这里记录我的作品、观察，以及日常生活里那些值得被留下来的片段。",
+      "en": "This is where I keep my work, observations, and the fragments of everyday life that feel worth holding onto."
+    }
+  ],
   "aboutTitle": "关于我",
   "aboutTitleEn": "About Me",
   "contactEmail": "",
@@ -35,16 +57,24 @@
   ],
   "aboutParagraphs": [
     {
-      "zh": "我是一名计算机科学专业的学生，对构建网页世界充满热情。在学校之外，我把空闲时间花在设计界面、编写代码，以及把学到的东西分享到网上。",
-      "en": "I am a computer science student who is deeply interested in building thoughtful web experiences. Outside class, I spend my time designing interfaces, writing code, and sharing what I learn online."
+      "zh": "我目前生活在科隆，主修 Business Psychology。相比只停留在概念层面，我更喜欢把想法变成具体的东西：有时是一个小项目，有时是一篇文章，有时只是一次被认真记录下来的观察。",
+      "en": "I currently live in Cologne and study Business Psychology. Rather than leaving ideas at the level of concepts, I prefer turning them into something concrete: sometimes a small project, sometimes an essay, and sometimes simply an observation carefully recorded."
     },
     {
-      "zh": "我的工作处于设计与工程的交汇点。我相信最好的数字体验既是美的，也是实用的。从微型工具到全栈 Web 应用，我都有实战经验。",
-      "en": "My work sits at the intersection of design and engineering. I believe the best digital experiences should feel beautiful and practical at the same time, from small tools to full-stack web products."
+      "zh": "这个网站，是我把不同部分放在同一个地方的方式。这里有我做过的作品与 side projects，也有一些关于产品、技术、城市生活与个人成长的思考，以及那些构成我日常的小片段。",
+      "en": "This website is my way of placing different parts of myself in one place. Here you will find work and side projects I have made, thoughts on products, technology, city life, and personal growth, together with the small fragments that shape my everyday life."
     },
     {
-      "zh": "不在电脑前的时候，你大概能在咖啡馆里找到我 —— 读一本关于产品设计的书、背着相机去徒步，或者在刷太多的科技类视频。这些日常都被我记录在我的频道里。",
-      "en": "When I am away from the computer, you can usually find me in a cafe, on a hike with a camera, or watching too many videos about design and technology. Those everyday fragments often end up in my channel."
+      "zh": "我一直在意的，是把复杂的事情讲清楚，把零散的信息整理出秩序，也尽可能做出一些真实、有用、并且能被感受到温度的内容。无论是写作、设计，还是搭建一个页面，我都希望表达是简单而诚实的。",
+      "en": "What I care about most is explaining complex things clearly, bringing order to scattered information, and making things that feel real, useful, and warm. Whether I am writing, designing, or building a page, I hope the expression stays simple and honest."
+    },
+    {
+      "zh": "如果你是因为某个项目、某篇文章，或一次偶然的推荐来到这里，希望你能在这里看到一点对你有帮助的内容——哪怕只是一个新的想法，或者一个让你愿意停留几秒钟的瞬间。",
+      "en": "If you arrived here because of a project, an article, or a recommendation that happened to bring you here, I hope you will find something helpful here, even if it is only a new idea or a moment that makes you want to stay for a few more seconds."
+    },
+    {
+      "zh": "如果你也喜欢交流想法，或愿意聊聊合作与有趣的项目，欢迎继续往下看。还有，如果你喜欢猫，那你大概会在这个网站里发现一个小彩蛋。至于入口藏在哪，就留给你自己去找了。",
+      "en": "If you also enjoy exchanging ideas, or would like to talk about collaboration and interesting projects, feel free to keep exploring. And if you like cats, you may discover a small easter egg somewhere on this website. As for where the entrance is hidden, I will leave that for you to find yourself."
     }
   ],
   "recentTitle": "最近在做",

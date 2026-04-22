@@ -73,6 +73,10 @@ function applyLanguage(lang) {
     localStorage.setItem(LANGUAGE_STORAGE_KEY, nextLanguage);
   } catch {
   }
+
+  document.dispatchEvent(new CustomEvent('site:language-change', {
+    detail: { language: nextLanguage },
+  }));
 }
 
 function initLanguageToggle() {
@@ -297,21 +301,56 @@ function initTypingAnimation() {
   const el = document.getElementById('typingText');
   if (!el) return;
 
-  const words = ['设计师', '开发者', '创作者', '学生'];
   let wordIdx = 0;
   let charIdx = 0;
   let deleting = false;
-  let paused = false;
+  let timerId;
+
+  function readWords(lang) {
+    const raw = lang === 'en' ? el.dataset.wordsEn : el.dataset.wordsZh;
+    if (!raw) return [];
+
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function getWords() {
+    const lang = getPreferredLanguage();
+    const words = readWords(lang);
+    return words.length > 0 ? words : [''];
+  }
+
+  function schedule(delay) {
+    clearTimeout(timerId);
+    timerId = window.setTimeout(tick, delay);
+  }
+
+  function resetTyping() {
+    wordIdx = 0;
+    charIdx = 0;
+    deleting = false;
+    el.textContent = '';
+    schedule(120);
+  }
 
   function tick() {
-    if (paused) return;
-    const word = words[wordIdx];
+    const words = getWords();
+    const word = words[wordIdx % words.length] ?? '';
+
+    if (!word) {
+      el.textContent = '';
+      return;
+    }
 
     if (!deleting) {
       el.textContent = word.slice(0, ++charIdx);
       if (charIdx === word.length) {
-        paused = true;
-        setTimeout(() => { paused = false; deleting = true; tick(); }, 1800);
+        deleting = true;
+        schedule(1800);
         return;
       }
     } else {
@@ -322,10 +361,11 @@ function initTypingAnimation() {
       }
     }
 
-    setTimeout(tick, deleting ? 60 : 110);
+    schedule(deleting ? 60 : 110);
   }
 
-  tick();
+  document.addEventListener('site:language-change', resetTyping);
+  resetTyping();
 }
 
 // ── Active nav highlight ──────────────────────────

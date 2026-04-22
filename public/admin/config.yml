@@ -30,6 +30,26 @@ collections:
             fields:
               - {label: "中文", name: "zh", widget: "string"}
               - {label: "英文", name: "en", widget: "string", required: false}
+          - {label: "首页首句前半（中文）", name: "heroLeadPrefix", widget: "string", required: false}
+          - {label: "首页首句前半（英文）", name: "heroLeadPrefixEn", widget: "string", required: false}
+          - label: "首页打字特效词组"
+            name: "heroTypingWords"
+            widget: "list"
+            summary: "{{fields.zh}}"
+            fields:
+              - {label: "中文", name: "zh", widget: "string"}
+              - {label: "英文", name: "en", widget: "string", required: false}
+          - {label: "首页首句后半（中文）", name: "heroLeadSuffix", widget: "string", required: false}
+          - {label: "首页首句后半（英文）", name: "heroLeadSuffixEn", widget: "string", required: false}
+          - {label: "首页第二句（中文）", name: "heroLeadSecondLine", widget: "string", required: false}
+          - {label: "首页第二句（英文）", name: "heroLeadSecondLineEn", widget: "string", required: false}
+          - label: "首页简介段落"
+            name: "heroDescriptionParagraphs"
+            widget: "list"
+            summary: "{{fields.zh}}"
+            fields:
+              - {label: "中文", name: "zh", widget: "text"}
+              - {label: "英文", name: "en", widget: "text", required: false}
           - {label: "关于我标题（中文）", name: "aboutTitle", widget: "string", required: false}
           - {label: "关于我标题（英文）", name: "aboutTitleEn", widget: "string", required: false}
           - {label: "联系邮箱", name: "contactEmail", widget: "string", required: false, hint: "用于侧栏“发送邮件” mailto 链接"}
@@ -104,6 +124,25 @@ collections:
               - {label: "链接 URL", name: "url", widget: "string", required: false}
               - {label: "描述（中文）", name: "description", widget: "text", required: false}
               - {label: "描述（英文）", name: "descriptionEn", widget: "text", required: false}
+
+  - name: "secret_settings"
+    label: "彩蛋设置 (Secret)"
+    files:
+      - name: "secret"
+        label: "猫猫彩蛋页面"
+        file: "src/content/site/secret.json"
+        format: "json"
+        fields:
+          - {label: "页面标题（中文）", name: "pageTitle", widget: "string"}
+          - {label: "页面标题（英文）", name: "pageTitleEn", widget: "string", required: false}
+          - {label: "页面说明（中文）", name: "intro", widget: "text", required: false}
+          - {label: "页面说明（英文）", name: "introEn", widget: "text", required: false}
+          - {label: "空状态标题（中文）", name: "emptyTitle", widget: "string", required: false}
+          - {label: "空状态标题（英文）", name: "emptyTitleEn", widget: "string", required: false}
+          - {label: "空状态说明（中文）", name: "emptyDescription", widget: "text", required: false}
+          - {label: "空状态说明（英文）", name: "emptyDescriptionEn", widget: "text", required: false}
+          - {label: "彩蛋入口提示（中文）", name: "secretLinkLabel", widget: "string", required: false}
+          - {label: "彩蛋入口提示（英文）", name: "secretLinkLabelEn", widget: "string", required: false}
 
   - name: "page_settings"
     label: "页面设置 (Pages)"
@@ -278,3 +317,22 @@ collections:
       - {label: "英文说明 (English Caption)", name: "captionEn", widget: "string", required: false}
       - {label: "宽版显示 (Wide)", name: "wide", widget: "boolean", default: false, required: false}
       - {label: "高版显示 (Tall)", name: "tall", widget: "boolean", default: false, required: false}
+
+  - name: "cats"
+    label: "猫猫彩蛋 (Cats)"
+    folder: "src/content/cats"
+    create: true
+    extension: "json"
+    format: "json"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - {label: "ID", name: "id", widget: "string", required: false}
+      - {label: "标题 (Title)", name: "title", widget: "string"}
+      - {label: "英文标题 (English Title)", name: "titleEn", widget: "string", required: false}
+      - {label: "日期 (Date)", name: "date", widget: "datetime"}
+      - {label: "地点 (Location)", name: "location", widget: "string", required: false}
+      - {label: "英文地点 (English Location)", name: "locationEn", widget: "string", required: false}
+      - {label: "图片 (Image)", name: "image", widget: "image"}
+      - {label: "说明文字 (Caption)", name: "caption", widget: "string", required: false}
+      - {label: "英文说明 (English Caption)", name: "captionEn", widget: "string", required: false}
+      - {label: "设为精选 (Featured)", name: "featured", widget: "boolean", default: false, required: false}

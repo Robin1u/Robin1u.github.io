@@ -17,6 +17,20 @@ const siteHome = defineCollection({
       zh: z.string(),
       en: z.string().optional(),
     })).default([]),
+    heroLeadPrefix: z.string().optional(),
+    heroLeadPrefixEn: z.string().optional(),
+    heroTypingWords: z.array(z.object({
+      zh: z.string(),
+      en: z.string().optional(),
+    })).default([]),
+    heroLeadSuffix: z.string().optional(),
+    heroLeadSuffixEn: z.string().optional(),
+    heroLeadSecondLine: z.string().optional(),
+    heroLeadSecondLineEn: z.string().optional(),
+    heroDescriptionParagraphs: z.array(z.object({
+      zh: z.string(),
+      en: z.string().optional(),
+    })).default([]),
     aboutTitle: z.string().default('关于我'),
     aboutTitleEn: z.string().optional(),
     aboutParagraphs: z.array(z.object({
@@ -40,6 +54,22 @@ const siteHome = defineCollection({
       date: z.coerce.date(),
       done: z.boolean().default(false),
     })).default([]),
+  }),
+});
+
+const siteSecret = defineCollection({
+  loader: glob({ pattern: 'secret.json', base: './src/content/site' }),
+  schema: z.object({
+    pageTitle: z.string().default('猫猫彩蛋'),
+    pageTitleEn: z.string().optional(),
+    intro: z.string().default('给愿意停下来看看猫咪的人。'),
+    introEn: z.string().optional(),
+    emptyTitle: z.string().default('猫咪还在路上'),
+    emptyTitleEn: z.string().optional(),
+    emptyDescription: z.string().default('第一张猫猫照片还没有放进来，等它们慢慢把这个角落占领。'),
+    emptyDescriptionEn: z.string().optional(),
+    secretLinkLabel: z.string().default('猫咪入口'),
+    secretLinkLabelEn: z.string().optional(),
   }),
 });
 
@@ -149,5 +179,21 @@ const life = defineCollection({
   }),
 });
 
+const cats = defineCollection({
+  loader: glob({ pattern: '*.json', base: './src/content/cats' }),
+  schema: z.object({
+    id: z.string().optional(),
+    title: z.string(),
+    titleEn: z.string().optional(),
+    caption: z.string().optional(),
+    captionEn: z.string().optional(),
+    location: z.string().optional(),
+    locationEn: z.string().optional(),
+    image: z.string(),
+    date: z.coerce.date(),
+    featured: z.boolean().default(false),
+  }),
+});
+
 // 记得导出 collections
-export const collections = { siteHome, sitePages, siteChannel, projects, thoughts, life };
+export const collections = { siteHome, siteSecret, sitePages, siteChannel, projects, thoughts, life, cats };

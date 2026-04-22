@@ -6,6 +6,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const [siteEntry] = await getCollection('siteHome').catch(() => []);
 const [pagesEntry] = await getCollection('sitePages').catch(() => []);
+const [secretEntry] = await getCollection('siteSecret').catch(() => []);
 const site = siteEntry?.data ?? {
   name: 'Robin Lu',
   nameEn: 'Robin Lu',
@@ -14,12 +15,31 @@ const site = siteEntry?.data ?? {
   status: '现在在柏林',
   statusEn: 'Currently in Berlin',
   roles: [],
+  heroLeadPrefix: '一名在柏林学习设计与工程的',
+  heroLeadPrefixEn: 'A',
+  heroTypingWords: [
+    { zh: '学生', en: 'student' },
+  ],
+  heroLeadSuffix: '，',
+  heroLeadSuffixEn: ' based in Berlin,',
+  heroLeadSecondLine: '也持续把想法做成项目、文字与表达。',
+  heroLeadSecondLineEn: 'while continuously turning ideas into projects, writing, and expression.',
+  heroDescriptionParagraphs: [
+    {
+      zh: '这里记录我的作品、观察，以及日常生活里那些值得被留下来的片段。',
+      en: 'This is where I keep my work, observations, and the fragments of everyday life worth holding onto.',
+    },
+  ],
   aboutTitle: '关于我',
   aboutTitleEn: 'About Me',
   aboutParagraphs: [],
   recentTitle: '最近在做',
   recentTitleEn: 'Recently Doing',
   recentItems: [],
+};
+const secretPage = secretEntry?.data ?? {
+  secretLinkLabel: '猫咪入口',
+  secretLinkLabelEn: 'Cat Entrance',
 };
 const sitePages = pagesEntry?.data ?? {
   portfolio: {
@@ -63,6 +83,9 @@ const rolesZh = site.roles.map((role) => role.zh).join(' / ');
 const rolesEn = site.roles.map((role) => role.en ?? role.zh).join(' / ');
 const statusLineZh = rolesZh ? `${site.status} · ${rolesZh}` : site.status;
 const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` : (site.statusEn ?? site.status);
+const typingWords = site.heroTypingWords.length > 0 ? site.heroTypingWords : [{ zh: '学生', en: 'student' }];
+const typingWordsZh = JSON.stringify(typingWords.map((word) => word.zh));
+const typingWordsEn = JSON.stringify(typingWords.map((word) => word.en ?? word.zh));
 ---
 <BaseLayout
   title="首页"
@@ -85,12 +108,28 @@ const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` :
     <h1 class="hero-name">
       <I18nText zh={site.name} en={site.nameEn ?? site.name} />
     </h1>
-    <p class="hero-subtitle">
-      <I18nText
-        zh="这里记录我正在做的项目、想法和日常。"
-        en="This is where I document the projects, ideas, and everyday work I care about."
-      />
-    </p>
+    <div class="hero-copy">
+      <p class="hero-lead">
+        <I18nText zh={site.heroLeadPrefix ?? ''} en={site.heroLeadPrefixEn ?? site.heroLeadPrefix ?? ''} />
+        <span
+          id="typingText"
+          class="typing-word"
+          data-words-zh={typingWordsZh}
+          data-words-en={typingWordsEn}
+        >
+          {typingWords[0]?.zh ?? ''}
+        </span>
+        <span class="typing-cursor" aria-hidden="true"></span>
+        <I18nText zh={site.heroLeadSuffix ?? ''} en={site.heroLeadSuffixEn ?? site.heroLeadSuffix ?? ''} />
+        <br />
+        <I18nText zh={site.heroLeadSecondLine ?? ''} en={site.heroLeadSecondLineEn ?? site.heroLeadSecondLine ?? ''} />
+      </p>
+      <div class="hero-summary">
+        {site.heroDescriptionParagraphs.map((paragraph) => (
+          <p><I18nText zh={paragraph.zh} en={paragraph.en ?? paragraph.zh} /></p>
+        ))}
+      </div>
+    </div>
     <div class="hero-cta">
       <a href="/portfolio" class="btn-primary">
         <I18nText zh="查看作品集" en="View Portfolio" />
@@ -172,6 +211,25 @@ const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` :
           </div>
         )}
       </div>
+    </div>
+
+    <div class="about-secret">
+      <a
+        href="/lucky-cat"
+        class="secret-cat-link"
+        aria-label={secretPage.secretLinkLabelEn ?? secretPage.secretLinkLabel}
+        data-i18n-title-zh={secretPage.secretLinkLabel}
+        data-i18n-title-en={secretPage.secretLinkLabelEn ?? secretPage.secretLinkLabel}
+        title={secretPage.secretLinkLabel}
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M6 10.5c0-4 2.8-6.5 6-6.5s6 2.5 6 6.5c0 5-2.5 8.5-6 8.5s-6-3.5-6-8.5z"></path>
+          <path d="M8 5 6 2.8 5.4 7M16 5l2-2.2.6 4.2"></path>
+          <circle cx="10" cy="11" r=".9" fill="currentColor" stroke="none"></circle>
+          <circle cx="14" cy="11" r=".9" fill="currentColor" stroke="none"></circle>
+          <path d="M10 14c.6.5 1.3.8 2 .8s1.4-.3 2-.8"></path>
+        </svg>
+      </a>
     </div>
   </section>
 
@@ -355,6 +413,51 @@ const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` :
       color: var(--color-text-muted);
     }
 
+    .hero-copy {
+      display: grid;
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .hero-lead {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1.45;
+      color: var(--color-white);
+      letter-spacing: -0.03em;
+    }
+
+    .typing-word {
+      display: inline-block;
+      min-width: 1ch;
+      color: var(--color-accent);
+      font-weight: 700;
+    }
+
+    .typing-cursor {
+      display: inline-block;
+      width: 1px;
+      height: 0.95em;
+      margin: 0 5px 0 2px;
+      background: currentColor;
+      vertical-align: -0.12em;
+      animation: blink-cursor 0.9s steps(1) infinite;
+    }
+
+    .hero-summary {
+      display: grid;
+      gap: 8px;
+      max-width: 760px;
+    }
+
+    .hero-summary p {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.9;
+      color: var(--color-text-muted);
+    }
+
     .now-panel {
       display: flex;
       flex-direction: column;
@@ -445,9 +548,44 @@ const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` :
       box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
     }
 
+    .about-secret {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    .secret-cat-link {
+      width: 38px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 999px;
+      color: rgba(255, 255, 255, 0.28);
+      transition: transform var(--transition), border-color var(--transition), color var(--transition), background var(--transition);
+    }
+
+    .secret-cat-link:hover {
+      color: var(--color-accent);
+      border-color: rgba(232, 214, 158, 0.32);
+      background: rgba(232, 214, 158, 0.05);
+      transform: translateY(-2px);
+    }
+
+    .secret-cat-link svg {
+      width: 18px;
+      height: 18px;
+    }
+
     .content-preview {
       padding: 72px 64px;
       border-top: 1px solid var(--color-border);
+    }
+
+    @keyframes blink-cursor {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
     }
 
     .content-grid {
@@ -544,6 +682,14 @@ const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` :
     }
 
     @media (max-width: 768px) {
+      .hero-lead {
+        font-size: 22px;
+      }
+
+      .hero-summary p {
+        font-size: 15px;
+      }
+
       .content-preview {
         padding: 56px 24px;
       }

@@ -1,0 +1,234 @@
+---
+import { readdirSync } from 'node:fs';
+import { getCollection } from 'astro:content';
+import I18nText from '../components/I18nText.astro';
+import { formatLocalizedDate } from '../lib/i18n';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const [secretEntry] = await getCollection('siteSecret').catch(() => []);
+const secretPage = secretEntry?.data ?? {
+  pageTitle: '猫猫彩蛋',
+  pageTitleEn: 'Cat Easter Egg',
+  intro: '给那些愿意停下来看看猫咪的人。这里收着一些关于猫的照片、瞬间和小备注。',
+  introEn: 'For anyone willing to pause for a cat. A quiet place for photos, moments, and tiny notes.',
+  emptyTitle: '猫咪还在路上',
+  emptyTitleEn: 'No Cats Yet',
+  emptyDescription: '第一张猫猫照片还没有放进来，等它们慢慢把这个角落占领。',
+  emptyDescriptionEn: 'The first cat photo has not arrived yet. Give them a little time and they will take over this corner.',
+};
+
+function hasCatEntries() {
+  try {
+    return readdirSync(new URL('../content/cats', import.meta.url)).some((file) => file.endsWith('.json'));
+  } catch {
+    return false;
+  }
+}
+
+const catEntries = hasCatEntries()
+  ? (await getCollection('cats').catch(() => [])).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  : [];
+---
+<BaseLayout
+  title={secretPage.pageTitle}
+  titleEn={secretPage.pageTitleEn ?? secretPage.pageTitle}
+  description="Robin Lu 的猫猫彩蛋页面"
+  descriptionEn="A hidden cat page on Robin Lu's website"
+  activePage="cat"
+>
+  <section class="cat-hero">
+    <div class="section-header" style="margin-bottom:0;">
+      <span class="section-number">∞</span>
+      <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);">
+        <I18nText zh={secretPage.pageTitle} en={secretPage.pageTitleEn ?? secretPage.pageTitle} />
+      </h1>
+      <div class="section-line"></div>
+    </div>
+    <p class="cat-hero-intro">
+      <I18nText zh={secretPage.intro} en={secretPage.introEn ?? secretPage.intro} />
+    </p>
+  </section>
+
+  {catEntries.length > 0 ? (
+    <div class="cat-grid">
+      {catEntries.map((entry, index) => {
+        const dateCopy = formatLocalizedDate(entry.data.date);
+        const titleEn = entry.data.titleEn ?? entry.data.title;
+        const captionEn = entry.data.captionEn ?? entry.data.caption;
+
+        return (
+          <article class:list={['cat-card', { featured: index === 0 && (entry.data.featured || catEntries.length === 1) }]}>
+            <div class="cat-card-image">
+              <img
+                src={entry.data.image}
+                alt={entry.data.title}
+                data-i18n-alt-zh={entry.data.title}
+                data-i18n-alt-en={titleEn}
+                loading="lazy"
+              />
+            </div>
+            <div class="cat-card-body">
+              <div class="cat-card-meta">
+                <span><I18nText zh={dateCopy.zh} en={dateCopy.en} /></span>
+                {entry.data.location && (
+                  <span class="cat-chip">
+                    <I18nText zh={entry.data.location} en={entry.data.locationEn ?? entry.data.location} />
+                  </span>
+                )}
+              </div>
+              <h2 class="cat-card-title"><I18nText zh={entry.data.title} en={titleEn} /></h2>
+              {entry.data.caption && (
+                <p class="cat-card-caption"><I18nText zh={entry.data.caption} en={captionEn ?? entry.data.caption} /></p>
+              )}
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  ) : (
+    <div class="cat-empty">
+      <div class="cat-empty-icon">=^.^=</div>
+      <h2><I18nText zh={secretPage.emptyTitle} en={secretPage.emptyTitleEn ?? secretPage.emptyTitle} /></h2>
+      <p><I18nText zh={secretPage.emptyDescription} en={secretPage.emptyDescriptionEn ?? secretPage.emptyDescription} /></p>
+    </div>
+  )}
+
+  <style>
+    .cat-hero {
+      padding: 64px 64px 40px;
+      border-bottom: 1px solid var(--color-border);
+      background:
+        radial-gradient(circle at top right, rgba(232, 214, 158, 0.12), transparent 34%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent);
+    }
+
+    .cat-hero-intro {
+      margin: 16px 0 0;
+      max-width: 620px;
+      color: var(--color-text-muted);
+      line-height: 1.85;
+    }
+
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+      padding: 40px 64px 72px;
+    }
+
+    .cat-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01));
+    }
+
+    .cat-card.featured {
+      grid-column: span 2;
+    }
+
+    .cat-card-image {
+      aspect-ratio: 16 / 10;
+      background: var(--color-surface-2);
+      overflow: hidden;
+    }
+
+    .cat-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cat-card-body {
+      padding: 18px 20px 22px;
+    }
+
+    .cat-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: var(--color-text-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .cat-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(232, 214, 158, 0.15);
+      background: rgba(232, 214, 158, 0.05);
+      color: var(--color-accent);
+      letter-spacing: 0.04em;
+      text-transform: none;
+    }
+
+    .cat-card-title {
+      margin: 0;
+      font-size: clamp(22px, 2.2vw, 34px);
+      color: var(--color-white);
+      letter-spacing: -0.03em;
+    }
+
+    .cat-card-caption {
+      margin: 12px 0 0;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    .cat-empty {
+      margin: 64px;
+      padding: 52px 28px;
+      border: 1px dashed rgba(232, 214, 158, 0.18);
+      border-radius: var(--radius-md);
+      text-align: center;
+      background: rgba(255, 255, 255, 0.015);
+    }
+
+    .cat-empty-icon {
+      font-size: 24px;
+      color: var(--color-accent);
+      margin-bottom: 16px;
+      font-family: var(--font-mono, monospace);
+    }
+
+    .cat-empty h2 {
+      margin: 0;
+      font-size: 24px;
+      color: var(--color-white);
+    }
+
+    .cat-empty p {
+      margin: 12px auto 0;
+      max-width: 560px;
+      color: var(--color-text-muted);
+      line-height: 1.8;
+    }
+
+    @media (max-width: 768px) {
+      .cat-hero {
+        padding: 48px 24px 28px;
+      }
+
+      .cat-grid {
+        grid-template-columns: 1fr;
+        padding: 28px 24px 56px;
+      }
+
+      .cat-card.featured {
+        grid-column: span 1;
+      }
+
+      .cat-empty {
+        margin: 28px 24px 56px;
+      }
+    }
+  </style>
+</BaseLayout>
