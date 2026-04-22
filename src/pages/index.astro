@@ -190,9 +190,8 @@ const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` :
 
       <div class="works-grid">
         {featuredProjects.map((project) => {
-          const hasEnglishVersion = Boolean(project.data.titleEn?.trim() && project.data.bodyEn?.trim());
-          const titleEn = hasEnglishVersion ? project.data.titleEn ?? project.data.title : project.data.title;
-          const descriptionEn = hasEnglishVersion ? project.data.descriptionEn ?? project.data.description : project.data.description;
+          const titleEn = project.data.titleEn ?? project.data.title;
+          const descriptionEn = project.data.descriptionEn ?? project.data.description;
           const categoryCopy = project.data.category ? projectCategoryLabels[project.data.category] : undefined;
 
           return (

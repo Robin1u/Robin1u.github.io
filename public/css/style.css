@@ -1847,12 +1847,13 @@ button {
   }
 
   .stats-bar {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .stat-item {
-    padding: 20px 24px;
-    min-width: 50%;
+    min-width: 0;
+    padding: 18px 14px;
   }
 
   .about-section,
@@ -1936,7 +1937,16 @@ button {
   }
 
   .stat-item {
-    min-width: 100%;
+    padding: 16px 12px;
+  }
+
+  .stat-number {
+    font-size: 24px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.06em;
   }
 
   .recent-posts {

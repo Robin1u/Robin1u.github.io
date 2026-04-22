@@ -15,11 +15,11 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);  // ← render(project)，不是 project.render()
-const hasEnglishVersion = Boolean(project.data.titleEn?.trim() && project.data.bodyEn?.trim());
-const titleEn = hasEnglishVersion ? project.data.titleEn ?? project.data.title : project.data.title;
-const descriptionEn = hasEnglishVersion ? project.data.descriptionEn ?? project.data.description : project.data.description;
+const hasEnglishBody = Boolean(project.data.bodyEn?.trim());
+const titleEn = project.data.titleEn ?? project.data.title;
+const descriptionEn = project.data.descriptionEn ?? project.data.description;
 const categoryLabel = project.data.category ? projectCategoryLabels[project.data.category] : undefined;
-const englishBodyHtml = hasEnglishVersion ? await renderMarkdownToHtml(project.data.bodyEn ?? '') : '';
+const englishBodyHtml = hasEnglishBody ? await renderMarkdownToHtml(project.data.bodyEn ?? '') : '';
 ---
 <BaseLayout
   title={project.data.title}
@@ -34,11 +34,6 @@ const englishBodyHtml = hasEnglishVersion ? await renderMarkdownToHtml(project.d
   </a>
 
   <article style="max-width:780px; margin: 64px auto; padding: 0 64px 64px;">
-
-    <a href="/portfolio" style="display:inline-flex; align-items:center; gap:8px; color:var(--color-text-muted); font-size:13px; margin-bottom:40px;">
-      ← <I18nText zh="返回作品集" en="Back to Portfolio" />
-    </a>
-
     <div class="portfolio-card-image" style="border-radius:12px; margin-bottom:40px; aspect-ratio:16/9;">
       {project.data.image
         ? (
@@ -89,7 +84,7 @@ const englishBodyHtml = hasEnglishVersion ? await renderMarkdownToHtml(project.d
       <div class="i18n-markdown" data-i18n-lang="zh">
         <Content />
       </div>
-      {hasEnglishVersion && <div class="i18n-markdown" data-i18n-lang="en" set:html={englishBodyHtml} />}
+      {hasEnglishBody && <div class="i18n-markdown" data-i18n-lang="en" set:html={englishBodyHtml} />}
     </div>
 
   </article>
@@ -97,8 +92,8 @@ const englishBodyHtml = hasEnglishVersion ? await renderMarkdownToHtml(project.d
   <style>
     .floating-back-link {
       position: fixed;
-      left: max(20px, calc(50% - 520px));
-      bottom: 24px;
+      left: max(calc(var(--nav-width) + 32px), calc(50% - 390px));
+      top: 24px;
       z-index: 40;
       display: inline-flex;
       align-items: center;
@@ -122,8 +117,8 @@ const englishBodyHtml = hasEnglishVersion ? await renderMarkdownToHtml(project.d
     @media (max-width: 900px) {
       .floating-back-link {
         left: 20px;
-        right: 20px;
-        justify-content: center;
+        right: auto;
+        top: 72px;
       }
     }
   </style>
