@@ -53,10 +53,13 @@ const sitePages = pagesEntry?.data ?? {
   },
 };
 
-const activeRecentItems = site.recentItems.filter((item) => !item.done);
+const sortedRecentItems = site.recentItems
+  .slice()
+  .sort((a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf());
+const activeRecentItems = sortedRecentItems.filter((item) => !item.done);
 const recentItemsPreview = activeRecentItems.length > 0
   ? activeRecentItems.slice(0, 3)
-  : site.recentItems.slice(0, 3);
+  : sortedRecentItems.slice(0, 3);
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
