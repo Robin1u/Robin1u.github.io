@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import I18nText from '../components/I18nText.astro';
-import { formatLocalizedDate, formatWeekLabel, projectCategoryLabels, recentCategoryLabels } from '../lib/i18n';
+import { formatLocalizedDate, formatWeekLabel, localizeThoughtLabel, projectCategoryLabels, recentCategoryLabels } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const [siteEntry] = await getCollection('siteHome').catch(() => []);
@@ -302,12 +302,18 @@ const typingWordsEn = JSON.stringify([typingWordEn]);
       <div class="content-grid">
         {featuredThoughts.map((post) => {
           const dateCopy = formatLocalizedDate(post.data.date);
+          const categoryCopy = localizeThoughtLabel(post.data.category);
+          const tagCopies = (post.data.tags ?? []).slice(0, 3).map((tag) => localizeThoughtLabel(tag));
 
           return (
             <a href={`/thoughts/${post.id}`} class="content-card content-card-text">
               <div class="content-card-meta">
                 <span><I18nText zh={dateCopy.zh} en={dateCopy.en} /></span>
-                {post.data.category && <span class="content-chip">{post.data.category}</span>}
+                {categoryCopy && (
+                  <span class="content-chip">
+                    <I18nText zh={categoryCopy.zh} en={categoryCopy.en} />
+                  </span>
+                )}
               </div>
               <h3 class="content-card-title"><I18nText zh={post.data.title} en={post.data.titleEn ?? post.data.title} /></h3>
               {post.data.description && (
@@ -315,9 +321,13 @@ const typingWordsEn = JSON.stringify([typingWordEn]);
                   <I18nText zh={post.data.description} en={post.data.descriptionEn ?? post.data.description} />
                 </p>
               )}
-              {(post.data.tags ?? []).length > 0 && (
+              {tagCopies.length > 0 && (
                 <div class="content-card-tags">
-                  {(post.data.tags ?? []).slice(0, 3).map((tag) => <span class="content-chip">{tag}</span>)}
+                  {tagCopies.map((tagCopy) => tagCopy && (
+                    <span class="content-chip">
+                      <I18nText zh={tagCopy.zh} en={tagCopy.en} />
+                    </span>
+                  ))}
                 </div>
               )}
             </a>

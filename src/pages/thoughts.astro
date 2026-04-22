@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import I18nText from '../components/I18nText.astro';
-import { formatLocalizedDate } from '../lib/i18n';
+import { formatLocalizedDate, localizeThoughtLabel } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 const thoughts = (await getCollection('thoughts', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
@@ -49,13 +49,23 @@ const thoughtsPage = pagesEntry?.data?.thoughts ?? {
               const hasEnglishVersion = Boolean(post.data.titleEn?.trim() && post.data.bodyEn?.trim());
               const titleEn = hasEnglishVersion ? post.data.titleEn ?? post.data.title : post.data.title;
               const descriptionEn = hasEnglishVersion ? post.data.descriptionEn ?? post.data.description : post.data.description;
+              const categoryCopy = localizeThoughtLabel(post.data.category);
+              const tagCopies = (post.data.tags ?? []).slice(0, 2).map((tag) => localizeThoughtLabel(tag));
 
               return (
                 <a href={`/thoughts/${post.id}`} class="post-item" style="display:block">
                   <div class="post-item-meta">
                     <span class="post-date"><I18nText zh={dateCopy.zh} en={dateCopy.en} /></span>
-                    {post.data.category && <span class="post-category">{post.data.category}</span>}
-                    {(post.data.tags ?? []).slice(0, 2).map((tag) => <span class="tag">{tag}</span>)}
+                    {categoryCopy && (
+                      <span class="post-category">
+                        <I18nText zh={categoryCopy.zh} en={categoryCopy.en} />
+                      </span>
+                    )}
+                    {tagCopies.map((tagCopy) => tagCopy && (
+                      <span class="tag">
+                        <I18nText zh={tagCopy.zh} en={tagCopy.en} />
+                      </span>
+                    ))}
                   </div>
                   <h3><I18nText zh={post.data.title} en={titleEn} /></h3>
                   {post.data.description && descriptionEn && <p><I18nText zh={post.data.description} en={descriptionEn} /></p>}

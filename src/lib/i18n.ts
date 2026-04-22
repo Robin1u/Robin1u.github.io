@@ -57,3 +57,25 @@ export const projectCategoryLabels = {
   tool: defineCopy('工具', 'Tools'),
   mobile: defineCopy('移动端', 'Mobile'),
 } as const;
+
+export const thoughtLabelMap: Record<string, LocalizedCopy> = {
+  观点: defineCopy('观点', 'Opinion'),
+  学习: defineCopy('学习', 'Learning'),
+  观察: defineCopy('观察', 'Observation'),
+  设计: defineCopy('设计', 'Design'),
+  技术: defineCopy('技术', 'Tech'),
+  生活: defineCopy('生活', 'Life'),
+  方法: defineCopy('方法', 'Method'),
+  方法论: defineCopy('方法论', 'Methodology'),
+  创作: defineCopy('创作', 'Creation'),
+  写作: defineCopy('写作', 'Writing'),
+  产品: defineCopy('产品', 'Product'),
+  城市: defineCopy('城市', 'City'),
+  成长: defineCopy('成长', 'Growth'),
+  ADHD: defineCopy('ADHD', 'ADHD'),
+};
+
+export function localizeThoughtLabel(label?: string | null): LocalizedCopy | undefined {
+  if (!label) return undefined;
+  return thoughtLabelMap[label] ?? defineCopy(label, label);
+}

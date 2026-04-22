@@ -15,11 +15,13 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);  // ← render(project)，不是 project.render()
-const hasEnglishBody = Boolean(project.data.bodyEn?.trim());
+const englishBodySource = project.data.bodyEn?.trim() ? project.data.bodyEn : project.body ?? '';
+const hasEnglishBody = Boolean(englishBodySource.trim());
 const titleEn = project.data.titleEn ?? project.data.title;
 const descriptionEn = project.data.descriptionEn ?? project.data.description;
 const categoryLabel = project.data.category ? projectCategoryLabels[project.data.category] : undefined;
-const englishBodyHtml = hasEnglishBody ? await renderMarkdownToHtml(project.data.bodyEn ?? '') : '';
+const englishBodyHtml = hasEnglishBody ? await renderMarkdownToHtml(englishBodySource) : '';
+const backLinkStyle = 'display:inline-flex; align-items:center; gap:8px; color:var(--color-text-muted); font-size:13px;';
 ---
 <BaseLayout
   title={project.data.title}
@@ -28,12 +30,13 @@ const englishBodyHtml = hasEnglishBody ? await renderMarkdownToHtml(project.data
   descriptionEn={descriptionEn ?? 'Project detail'}
   activePage="portfolio"
 >
-  <a href="/portfolio" class="floating-back-link">
-    <span aria-hidden="true">←</span>
-    <I18nText zh="返回作品集" en="Back to Portfolio" />
-  </a>
-
   <article style="max-width:780px; margin: 64px auto; padding: 0 64px 64px;">
+    <div style="margin-bottom:32px;">
+      <a href="/portfolio" style={backLinkStyle}>
+        ← <I18nText zh="返回作品集" en="Back to Portfolio" />
+      </a>
+    </div>
+
     <div class="portfolio-card-image" style="border-radius:12px; margin-bottom:40px; aspect-ratio:16/9;">
       {project.data.image
         ? (
@@ -86,40 +89,10 @@ const englishBodyHtml = hasEnglishBody ? await renderMarkdownToHtml(project.data
       </div>
       {hasEnglishBody && <div class="i18n-markdown" data-i18n-lang="en" set:html={englishBodyHtml} />}
     </div>
-
+    <div style="margin-top:48px; padding-top:32px; border-top:1px solid var(--color-border);">
+      <a href="/portfolio" style={backLinkStyle}>
+        ← <I18nText zh="返回作品集" en="Back to Portfolio" />
+      </a>
+    </div>
   </article>
-
-  <style>
-    .floating-back-link {
-      position: fixed;
-      left: max(calc(var(--nav-width) + 32px), calc(50% - 390px));
-      top: 24px;
-      z-index: 40;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--color-border);
-      background: rgba(10, 10, 10, 0.88);
-      color: var(--color-white);
-      backdrop-filter: blur(14px);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
-      transition: transform var(--transition), border-color var(--transition), background-color var(--transition);
-    }
-
-    .floating-back-link:hover {
-      transform: translateY(-2px);
-      border-color: var(--color-text-subtle);
-      background: rgba(18, 18, 18, 0.94);
-    }
-
-    @media (max-width: 900px) {
-      .floating-back-link {
-        left: 20px;
-        right: auto;
-        top: 72px;
-      }
-    }
-  </style>
 </BaseLayout>

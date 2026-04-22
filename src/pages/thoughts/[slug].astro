@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import I18nText from '../../components/I18nText.astro';
-import { formatLocalizedDate } from '../../lib/i18n';
+import { formatLocalizedDate, localizeThoughtLabel } from '../../lib/i18n';
 import { renderMarkdownToHtml } from '../../lib/markdown';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
@@ -20,6 +20,9 @@ const hasEnglishVersion = Boolean(post.data.titleEn?.trim() && post.data.bodyEn?
 const detailTitleEn = hasEnglishVersion ? post.data.titleEn ?? post.data.title : post.data.title;
 const detailDescriptionEn = hasEnglishVersion ? post.data.descriptionEn ?? post.data.description : post.data.description;
 const englishBodyHtml = hasEnglishVersion ? await renderMarkdownToHtml(post.data.bodyEn ?? '') : '';
+const categoryCopy = localizeThoughtLabel(post.data.category);
+const tagCopies = (post.data.tags ?? []).map((tag) => localizeThoughtLabel(tag));
+const backLinkStyle = 'display:inline-flex; align-items:center; gap:8px; color:var(--color-text-muted); font-size:13px;';
 ---
 <BaseLayout
   title={post.data.title}
@@ -29,10 +32,23 @@ const englishBodyHtml = hasEnglishVersion ? await renderMarkdownToHtml(post.data
   activePage="thoughts"
 >
   <article style="max-width:680px; margin: 64px auto; padding: 0 64px 64px;">
+    <div style="margin-bottom:32px;">
+      <a href="/thoughts" style={backLinkStyle}>
+        ← <I18nText zh="返回全部文章" en="Back to All Thoughts" />
+      </a>
+    </div>
     <div style="display:flex; gap:12px; align-items:center; margin-bottom:24px; flex-wrap:wrap;">
       <span class="post-date"><I18nText zh={dateCopy.zh} en={dateCopy.en} /></span>
-      {post.data.category && <span class="post-category">{post.data.category}</span>}
-      {(post.data.tags ?? []).map((tag) => <span class="tag">{tag}</span>)}
+      {categoryCopy && (
+        <span class="post-category">
+          <I18nText zh={categoryCopy.zh} en={categoryCopy.en} />
+        </span>
+      )}
+      {tagCopies.map((tagCopy) => tagCopy && (
+        <span class="tag">
+          <I18nText zh={tagCopy.zh} en={tagCopy.en} />
+        </span>
+      ))}
       <span class="post-read-time"><I18nText zh={`${post.data.readTime} 分钟阅读`} en={`${post.data.readTime} min read`} /></span>
     </div>
     <h1 style="font-size:clamp(28px,3vw,42px); font-weight:800; color:var(--color-white); letter-spacing:-0.03em; margin-bottom:32px; line-height:1.15;">
@@ -45,7 +61,7 @@ const englishBodyHtml = hasEnglishVersion ? await renderMarkdownToHtml(post.data
       {hasEnglishVersion && <div class="i18n-markdown" data-i18n-lang="en" set:html={englishBodyHtml} />}
     </div>
     <div style="margin-top:48px; padding-top:32px; border-top:1px solid var(--color-border);">
-      <a href="/thoughts" style="display:inline-flex; align-items:center; gap:8px; color:var(--color-text-muted); font-size:13px;">
+      <a href="/thoughts" style={backLinkStyle}>
         ← <I18nText zh="返回全部文章" en="Back to All Thoughts" />
       </a>
     </div>
