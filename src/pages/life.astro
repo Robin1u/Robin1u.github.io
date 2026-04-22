@@ -48,6 +48,41 @@ const sortedPhotos = lifePhotos.sort((a, b) => new Date(b.data.date).valueOf() -
         </p>
       </div>
 
+      <section class="life-mobile-recent">
+        <div class="sidebar-widget">
+          <div class="widget-title"><I18nText zh={site.recentTitle ?? '最近在做'} en={site.recentTitleEn ?? site.recentTitle ?? 'Recently Doing'} /></div>
+          {timelineItems.length > 0 ? (
+            <div class="life-timeline-list">
+              {timelineItems.map((item) => {
+                const categoryCopy = recentCategoryLabels[item.category];
+                const weekCopy = formatWeekLabel(item.date);
+
+                return (
+                  <article class:list={['life-timeline-item', { done: item.done }]}>
+                    <div class="life-timeline-top">
+                      <span class="life-timeline-category"><I18nText zh={categoryCopy.zh} en={categoryCopy.en} /></span>
+                      <span class="life-timeline-week"><I18nText zh={weekCopy.zh} en={weekCopy.en} /></span>
+                    </div>
+                    <h3 class="life-timeline-title"><I18nText zh={item.title} en={item.titleEn ?? item.title} /></h3>
+                    {item.subtitle && (
+                      <p class="life-timeline-subtitle"><I18nText zh={item.subtitle} en={item.subtitleEn ?? item.subtitle} /></p>
+                    )}
+                    <div class:list={['life-timeline-state', { done: item.done, active: !item.done }]}>
+                      <span class="life-timeline-state-dot" aria-hidden="true"></span>
+                      <I18nText zh={item.done ? '已完成' : '进行中'} en={item.done ? 'Done' : 'In Progress'} />
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <div class="quote-block" style="margin:0;">
+              <p class="quote-text"><I18nText zh="这里还没有最近在做的内容。" en="No recent items yet." /></p>
+            </div>
+          )}
+        </div>
+      </section>
+
       {sortedPhotos.length > 0 ? (
         <div class="life-feed">
           {sortedPhotos.map((photo) => {
@@ -126,6 +161,11 @@ const sortedPhotos = lifePhotos.sort((a, b) => new Date(b.data.date).valueOf() -
   </div>
 
   <style>
+    .life-mobile-recent {
+      display: none;
+      padding: 24px 64px 0;
+    }
+
     .life-feed {
       padding: 32px 64px 64px;
       display: grid;
@@ -262,7 +302,17 @@ const sortedPhotos = lifePhotos.sort((a, b) => new Date(b.data.date).valueOf() -
       box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
     }
 
+    @media (max-width: 1024px) {
+      .life-mobile-recent {
+        display: block;
+      }
+    }
+
     @media (max-width: 768px) {
+      .life-mobile-recent {
+        padding: 24px 20px 0;
+      }
+
       .life-feed {
         padding: 24px 20px 40px;
       }
