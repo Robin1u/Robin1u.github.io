@@ -313,8 +313,37 @@ const sortedPhotos = lifePhotos.sort((a, b) => new Date(b.data.date).valueOf() -
         padding: 24px 20px 0;
       }
 
+      .life-mobile-recent .life-timeline-list {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(240px, 82vw);
+        overflow-x: auto;
+        gap: 12px;
+        padding-bottom: 6px;
+        margin-right: -20px;
+        padding-right: 20px;
+        scroll-snap-type: x proximity;
+      }
+
+      .life-mobile-recent .life-timeline-item {
+        scroll-snap-align: start;
+      }
+
+      .life-mobile-recent .life-timeline-title {
+        font-size: 20px;
+        line-height: 1.2;
+      }
+
+      .life-mobile-recent .life-timeline-subtitle {
+        font-size: 13px;
+      }
+
       .life-feed {
         padding: 24px 20px 40px;
+      }
+
+      .life-story-title {
+        font-size: clamp(24px, 7vw, 30px);
       }
     }
   </style>
