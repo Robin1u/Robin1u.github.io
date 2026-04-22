@@ -4,28 +4,19 @@
       "platform": "bilibili",
       "title": "ADHD 内容分享",
       "titleEn": "ADHD Content Sharing",
-      "description": "",
-      "descriptionEn": "",
       "handle": "小L的注意力离线中",
-      "url": "https://space.bilibili.com/27124811"
+      "url": "https://space.bilibili.com/27124811",
+      "description": "",
+      "descriptionEn": ""
     },
     {
       "platform": "xiaohongshu",
       "title": "ADHDer 日常分享和笔记",
       "titleEn": "ADHD Notes and Daily Share",
-      "description": "",
-      "descriptionEn": "",
       "handle": "小L的注意力离线中",
-      "url": "https://xhslink.com/m/3btFpRWrBa6"
-    },
-    {
-      "platform": "github",
-      "title": "项目与源码",
-      "titleEn": "Projects & Source Code",
+      "url": "https://xhslink.com/m/3btFpRWrBa6",
       "description": "",
-      "descriptionEn": "",
-      "handle": "robin1u",
-      "url": "https://github.com/robin1u"
+      "descriptionEn": ""
     }
   ]
 }
