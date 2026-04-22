@@ -32,13 +32,8 @@ collections:
               - {label: "英文", name: "en", widget: "string", required: false}
           - {label: "首页首句前半（中文）", name: "heroLeadPrefix", widget: "string", required: false}
           - {label: "首页首句前半（英文）", name: "heroLeadPrefixEn", widget: "string", required: false}
-          - label: "首页打字特效词组"
-            name: "heroTypingWords"
-            widget: "list"
-            summary: "{{fields.zh}}"
-            fields:
-              - {label: "中文", name: "zh", widget: "string"}
-              - {label: "英文", name: "en", widget: "string", required: false}
+          - {label: "打字特效词（中文）", name: "heroTypingWord", widget: "string", required: false, hint: "只会对这个词做打字效果，例如：学生"}
+          - {label: "打字特效词（英文）", name: "heroTypingWordEn", widget: "string", required: false, hint: "英文状态下对应的单词，例如：student"}
           - {label: "首页首句后半（中文）", name: "heroLeadSuffix", widget: "string", required: false}
           - {label: "首页首句后半（英文）", name: "heroLeadSuffixEn", widget: "string", required: false}
           - {label: "首页第二句（中文）", name: "heroLeadSecondLine", widget: "string", required: false}
@@ -126,10 +121,10 @@ collections:
               - {label: "描述（英文）", name: "descriptionEn", widget: "text", required: false}
 
   - name: "secret_settings"
-    label: "彩蛋设置 (Secret)"
+    label: "彩蛋页面设置 (Secret Page)"
     files:
       - name: "secret"
-        label: "猫猫彩蛋页面"
+        label: "彩蛋文案与空状态"
         file: "src/content/site/secret.json"
         format: "json"
         fields:
@@ -319,7 +314,7 @@ collections:
       - {label: "高版显示 (Tall)", name: "tall", widget: "boolean", default: false, required: false}
 
   - name: "cats"
-    label: "猫猫彩蛋 (Cats)"
+    label: "猫猫照片内容 (Cats)"
     folder: "src/content/cats"
     create: true
     extension: "json"

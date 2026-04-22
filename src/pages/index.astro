@@ -17,9 +17,8 @@ const site = siteEntry?.data ?? {
   roles: [],
   heroLeadPrefix: '一名在柏林学习设计与工程的',
   heroLeadPrefixEn: 'A',
-  heroTypingWords: [
-    { zh: '学生', en: 'student' },
-  ],
+  heroTypingWord: '学生',
+  heroTypingWordEn: 'student',
   heroLeadSuffix: '，',
   heroLeadSuffixEn: ' based in Berlin,',
   heroLeadSecondLine: '也持续把想法做成项目、文字与表达。',
@@ -83,9 +82,10 @@ const rolesZh = site.roles.map((role) => role.zh).join(' / ');
 const rolesEn = site.roles.map((role) => role.en ?? role.zh).join(' / ');
 const statusLineZh = rolesZh ? `${site.status} · ${rolesZh}` : site.status;
 const statusLineEn = rolesEn ? `${site.statusEn ?? site.status} · ${rolesEn}` : (site.statusEn ?? site.status);
-const typingWords = site.heroTypingWords.length > 0 ? site.heroTypingWords : [{ zh: '学生', en: 'student' }];
-const typingWordsZh = JSON.stringify(typingWords.map((word) => word.zh));
-const typingWordsEn = JSON.stringify(typingWords.map((word) => word.en ?? word.zh));
+const typingWordZh = site.heroTypingWord ?? '学生';
+const typingWordEn = site.heroTypingWordEn ?? 'student';
+const typingWordsZh = JSON.stringify([typingWordZh]);
+const typingWordsEn = JSON.stringify([typingWordEn]);
 ---
 <BaseLayout
   title="首页"
@@ -117,7 +117,7 @@ const typingWordsEn = JSON.stringify(typingWords.map((word) => word.en ?? word.z
           data-words-zh={typingWordsZh}
           data-words-en={typingWordsEn}
         >
-          {typingWords[0]?.zh ?? ''}
+          {typingWordZh}
         </span>
         <span class="typing-cursor" aria-hidden="true"></span>
         <I18nText zh={site.heroLeadSuffix ?? ''} en={site.heroLeadSuffixEn ?? site.heroLeadSuffix ?? ''} />

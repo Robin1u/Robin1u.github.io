@@ -19,10 +19,8 @@ const siteHome = defineCollection({
     })).default([]),
     heroLeadPrefix: z.string().optional(),
     heroLeadPrefixEn: z.string().optional(),
-    heroTypingWords: z.array(z.object({
-      zh: z.string(),
-      en: z.string().optional(),
-    })).default([]),
+    heroTypingWord: z.string().optional(),
+    heroTypingWordEn: z.string().optional(),
     heroLeadSuffix: z.string().optional(),
     heroLeadSuffixEn: z.string().optional(),
     heroLeadSecondLine: z.string().optional(),

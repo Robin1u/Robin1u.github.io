@@ -15,12 +15,8 @@
   ],
   "heroLeadPrefix": "一名在科隆学习商业心理学的",
   "heroLeadPrefixEn": "A",
-  "heroTypingWords": [
-    {
-      "zh": "学生",
-      "en": "student"
-    }
-  ],
+  "heroTypingWord": "学生",
+  "heroTypingWordEn": "student",
   "heroLeadSuffix": "，",
   "heroLeadSuffixEn": " studying Business Psychology in Cologne,",
   "heroLeadSecondLine": "也持续把想法做成项目、文字与表达。",
@@ -47,12 +43,12 @@
     {
       "platform": "linkedin",
       "label": "LinkedIn",
-      "url": ""
+      "url": "https://www.linkedin.com/in/rongsheng-lu-97a085281"
     },
     {
       "platform": "huggingface",
       "label": "Hugging Face",
-      "url": ""
+      "url": "https://huggingface.co/Robin9812"
     }
   ],
   "aboutParagraphs": [
