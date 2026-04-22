@@ -7,28 +7,28 @@
     "sectionNumber": "02",
     "navLabel": "作品集",
     "navLabelEn": "Portfolio",
-    "intro": "保留当前项目内容，使用新的列表框架与路由结构。",
-    "introEn": "Existing project content, reorganized with a cleaner list layout and route structure."
+    "intro": "这里收录我正在做和已经完成的项目。从最初的想法，到设计、搭建与迭代，它们记录了我如何把抽象的概念变成具体的结果。",
+    "introEn": "This is where I keep the projects I am building and the ones I have already finished. From the first idea to design, building, and iteration, they record how I turn abstract concepts into concrete outcomes."
   },
   "thoughts": {
     "sectionNumber": "03",
     "navLabel": "想法",
     "navLabelEn": "Thoughts",
-    "intro": "这里专门放文字内容、观点整理和方法记录。",
-    "introEn": "This page is dedicated to writing, reflections, and methods."
+    "intro": "这里整理我持续关心的问题与观察。是观点，是方法，是哲学，是我试着把复杂事情讲清楚的过程。",
+    "introEn": "This is where I organize the questions and observations I keep returning to. It holds opinions, methods, philosophy, and my ongoing attempt to make complicated things easier to understand."
   },
   "life": {
     "sectionNumber": "04",
     "navLabel": "生活",
     "navLabelEn": "Life",
-    "intro": "这里只保留生活痕迹本身：照片、片段、当下的场景与一句说明。",
-    "introEn": "This page is reserved for the traces of everyday life itself: photos, moments, and a short note for each one."
+    "intro": "这里留下生活本身的痕迹，还有那些值得被记住一下的普通时刻。",
+    "introEn": "This is where I leave traces of life itself, along with the ordinary moments that feel worth remembering for a little longer."
   },
   "channel": {
     "sectionNumber": "05",
     "navLabel": "频道",
     "navLabelEn": "Channels",
-    "intro": "这里更适合做平台入口页：放账号链接、简短介绍和更新方向。先把 B 站和小红书集中在这里，后续如果 ADHDer 内容沉淀成体系，再拆出独立专题页会更清晰。",
-    "introEn": "This page works best as a platform hub for profile links, short introductions, and the latest direction of your work. Keep Bilibili and Xiaohongshu here first, then create a dedicated topic page later if your ADHDer content grows into a bigger knowledge base."
+    "intro": "这里连接我在不同平台上的持续表达。视频、笔记与日常更新会先在那里发生，再慢慢沉淀成这里的一部分。",
+    "introEn": "This page connects the places where I keep expressing myself across different platforms. Videos, notes, and everyday updates usually happen there first, and then gradually settle into this site over time."
   }
 }
