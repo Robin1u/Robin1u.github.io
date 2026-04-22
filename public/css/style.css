@@ -1818,11 +1818,16 @@ button {
   }
 
   .language-switch-sidebar {
-    margin-right: 12px;
+    margin: 0;
   }
 
   .sidebar {
+    top: 56px;
+    width: 100vw;
+    min-height: calc(100vh - 56px);
+    padding: 24px 0;
     transform: translateX(-100%);
+    overflow-y: auto;
   }
 
   .sidebar.open {
