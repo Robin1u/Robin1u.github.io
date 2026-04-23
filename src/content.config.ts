@@ -2,6 +2,12 @@
 import { defineCollection, z } from 'astro:content';
 import { glob, file } from 'astro/loaders';
 
+const optionalUrl = z.preprocess((value) => {
+  if (typeof value !== 'string') return value;
+  const normalized = value.trim();
+  return normalized ? normalized : undefined;
+}, z.string().url().optional());
+
 const siteHome = defineCollection({
   loader: glob({ pattern: 'home.json', base: './src/content/site' }),
   schema: z.object({
@@ -120,8 +126,8 @@ const projects = defineCollection({
     tags: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
     image: z.string().optional(),
-    liveUrl: z.string().url().optional(),
-    githubUrl: z.string().url().optional(),
+    liveUrl: optionalUrl,
+    githubUrl: optionalUrl,
     date: z.coerce.date(),
     draft: z.boolean().default(false),
   }),

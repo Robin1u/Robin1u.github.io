@@ -98,6 +98,17 @@
     return nextData.delete(SOURCE_FIELD);
   }
 
+  function normalizeOptionalUrls(data) {
+    let nextData = data;
+    ['liveUrl', 'githubUrl'].forEach((field) => {
+      const value = data.get(field);
+      if (typeof value === 'string' && !value.trim()) {
+        nextData = nextData.delete(field);
+      }
+    });
+    return nextData;
+  }
+
   function ensureToastElement() {
     let toast = document.getElementById(TOAST_ID);
     if (toast) return toast;
@@ -163,13 +174,15 @@
       name: 'preSave',
       handler: ({ entry }) => {
         const collection = entry.get('collection');
-        if (!SUPPORTED_COLLECTIONS.has(collection)) return entry;
+        if (!SUPPORTED_COLLECTIONS.has(collection)) {
+          return entry;
+        }
 
-        const data = entry.get('data');
+        const data = normalizeOptionalUrls(entry.get('data'));
         const rawSource = data.get(SOURCE_FIELD);
         if (!String(rawSource ?? '').trim()) {
           validateManualOrSource(data);
-          return entry;
+          return entry.set('data', data);
         }
 
         const parsed = parseTaggedSource(rawSource);
