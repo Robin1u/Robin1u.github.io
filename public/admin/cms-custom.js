@@ -21,16 +21,8 @@
   const REQUIRED_FIELDS = ['title', 'titleEn', 'body', 'bodyEn'];
   const SOURCE_FIELD = 'bilingualSource';
   const WAIT_MS = 120;
-  const DOM_SYNC_DEBOUNCE_MS = 160;
   const TOAST_ID = 'bilingual-autofill-toast';
-  const FIELD_LABELS = {
-    title: ['标题 (Title)'],
-    titleEn: ['英文标题 (English Title)'],
-    description: ['描述 (Description)', '摘要 (Description)'],
-    descriptionEn: ['英文描述 (English Description)', '英文摘要 (English Description)'],
-    body: ['中文正文 (Chinese Body)'],
-    bodyEn: ['英文正文（支持 Markdown）'],
-  };
+  let shouldShowPostSaveToast = false;
 
   function normalizeLineEndings(value) {
     return String(value ?? '').replace(/\r\n?/g, '\n');
@@ -106,47 +98,6 @@
     return nextData.delete(SOURCE_FIELD);
   }
 
-  function normalizeText(value) {
-    return String(value ?? '').replace(/\s+/g, ' ').trim();
-  }
-
-  function isInEditPane(element) {
-    if (!element || typeof element.getBoundingClientRect !== 'function') return false;
-    const rect = element.getBoundingClientRect();
-    if (rect.width === 0 && rect.height === 0) return false;
-    return rect.left < window.innerWidth * 0.55;
-  }
-
-  function setControlValue(control, value) {
-    if (!control) return;
-
-    if (control.matches('input, textarea')) {
-      const prototype = control.tagName === 'TEXTAREA'
-        ? window.HTMLTextAreaElement?.prototype
-        : window.HTMLInputElement?.prototype;
-      const setter = prototype
-        ? Object.getOwnPropertyDescriptor(prototype, 'value')?.set
-        : null;
-
-      if (setter) {
-        setter.call(control, value);
-      } else {
-        control.value = value;
-      }
-
-      control.dispatchEvent(new Event('input', { bubbles: true }));
-      control.dispatchEvent(new Event('change', { bubbles: true }));
-      control.dispatchEvent(new Event('blur', { bubbles: true }));
-      return;
-    }
-
-    if (control.isContentEditable) {
-      control.textContent = value;
-      control.dispatchEvent(new InputEvent('input', { bubbles: true, data: value, inputType: 'insertText' }));
-      control.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-  }
-
   function ensureToastElement() {
     let toast = document.getElementById(TOAST_ID);
     if (toast) return toast;
@@ -189,139 +140,6 @@
     }, 2200);
   }
 
-  function findFieldLabelElement(labelText) {
-    const target = normalizeText(labelText);
-    const candidates = [...document.querySelectorAll('label, legend, span, div, p, h6')];
-
-    return candidates.find((element) => {
-      if (!isInEditPane(element)) return false;
-      return normalizeText(element.textContent).startsWith(target);
-    });
-  }
-
-  function findNearestControlBelow(labelElement) {
-    if (!labelElement) return null;
-
-    const labelRect = labelElement.getBoundingClientRect();
-    const controls = [
-      ...document.querySelectorAll('textarea:not([disabled]), input:not([disabled]):not([type="hidden"]), [contenteditable="true"]'),
-    ].filter((control) => isInEditPane(control));
-
-    let best = null;
-    let bestDistance = Number.POSITIVE_INFINITY;
-
-    controls.forEach((control) => {
-      const rect = control.getBoundingClientRect();
-      const verticalDistance = rect.top - labelRect.top;
-      if (verticalDistance < -8) return;
-
-      if (verticalDistance < bestDistance) {
-        best = control;
-        bestDistance = verticalDistance;
-      }
-    });
-
-    return best;
-  }
-
-  function findFieldControlByLabels(labels) {
-    for (const labelText of labels) {
-      const labelElement = findFieldLabelElement(labelText);
-      if (!labelElement) continue;
-
-      let container = labelElement;
-      while (container && container !== document.body) {
-        const control = [...container.querySelectorAll(
-          'textarea:not([disabled]), input:not([disabled]):not([type="hidden"]), [contenteditable="true"]',
-        )].find((candidate) => isInEditPane(candidate));
-        if (control) return control;
-        container = container.parentElement;
-      }
-
-      const fallbackControl = findNearestControlBelow(labelElement);
-      if (fallbackControl) return fallbackControl;
-    }
-
-    return null;
-  }
-
-  function fillParsedFieldsIntoForm(parsed) {
-    const fieldNames = ['title', 'titleEn', 'description', 'descriptionEn', 'body', 'bodyEn'];
-    let filledCount = 0;
-
-    fieldNames.forEach((fieldName) => {
-      const control = findFieldControlByLabels(FIELD_LABELS[fieldName] ?? []);
-      if (!control) return;
-      setControlValue(control, parsed[fieldName] ?? '');
-      filledCount += 1;
-    });
-
-    return filledCount;
-  }
-
-  function getSourceControl() {
-    const labelElement = findFieldLabelElement('双语原稿自动拆分（可选）');
-    if (!labelElement) return null;
-
-    let container = labelElement;
-    while (container && container !== document.body) {
-      const control = container.querySelector('textarea:not([disabled]), input:not([disabled])');
-      if (control) return control;
-      container = container.parentElement;
-    }
-
-    return null;
-  }
-
-  function syncSourceControlIntoFields(sourceControl) {
-    if (!sourceControl) return;
-
-    const rawSource = String(sourceControl.value ?? '').trim();
-    if (!rawSource) return;
-
-    let parsed;
-    try {
-      parsed = parseTaggedSource(rawSource);
-    } catch {
-      return;
-    }
-
-    const filledCount = fillParsedFieldsIntoForm(parsed);
-    if (filledCount === 0) return;
-    setControlValue(sourceControl, '');
-    showToast('已自动拆分到正式字段');
-  }
-
-  function bindSourceFieldAutoFill() {
-    const sourceControl = getSourceControl();
-    if (!sourceControl || sourceControl.dataset.bilingualAutofillBound === 'true') return;
-
-    sourceControl.dataset.bilingualAutofillBound = 'true';
-
-    let timer = null;
-    const scheduleSync = () => {
-      window.clearTimeout(timer);
-      timer = window.setTimeout(() => syncSourceControlIntoFields(sourceControl), DOM_SYNC_DEBOUNCE_MS);
-    };
-
-    sourceControl.addEventListener('paste', scheduleSync);
-    sourceControl.addEventListener('change', scheduleSync);
-    sourceControl.addEventListener('blur', scheduleSync);
-  }
-
-  function watchEditorDom() {
-    const observer = new MutationObserver(() => {
-      bindSourceFieldAutoFill();
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
-
-    bindSourceFieldAutoFill();
-  }
-
   function validateManualOrSource(data) {
     const rawSource = String(data.get(SOURCE_FIELD) ?? '').trim();
     if (rawSource) return;
@@ -355,7 +173,17 @@
         }
 
         const parsed = parseTaggedSource(rawSource);
+        shouldShowPostSaveToast = true;
         return entry.set('data', applyParsedFields(data, parsed));
+      },
+    });
+
+    CMS.registerEventListener({
+      name: 'postSave',
+      handler: () => {
+        if (!shouldShowPostSaveToast) return;
+        shouldShowPostSaveToast = false;
+        showToast('已自动拆分并保存到正式字段');
       },
     });
   }
@@ -363,7 +191,6 @@
   function waitForCMS() {
     if (window.CMS?.registerEventListener) {
       registerHook(window.CMS);
-      watchEditorDom();
       return;
     }
 
