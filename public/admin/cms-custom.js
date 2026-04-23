@@ -22,6 +22,7 @@
   const SOURCE_FIELD = 'bilingualSource';
   const WAIT_MS = 120;
   const DOM_SYNC_DEBOUNCE_MS = 160;
+  const TOAST_ID = 'bilingual-autofill-toast';
   const FIELD_LABELS = {
     title: ['标题 (Title)'],
     titleEn: ['英文标题 (English Title)'],
@@ -139,6 +140,48 @@
     }
   }
 
+  function ensureToastElement() {
+    let toast = document.getElementById(TOAST_ID);
+    if (toast) return toast;
+
+    toast = document.createElement('div');
+    toast.id = TOAST_ID;
+    toast.setAttribute('aria-live', 'polite');
+    toast.style.position = 'fixed';
+    toast.style.top = '20px';
+    toast.style.right = '20px';
+    toast.style.zIndex = '9999';
+    toast.style.padding = '10px 14px';
+    toast.style.borderRadius = '12px';
+    toast.style.background = 'rgba(18, 18, 18, 0.92)';
+    toast.style.color = '#f3e0a2';
+    toast.style.fontSize = '13px';
+    toast.style.lineHeight = '1.4';
+    toast.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.2)';
+    toast.style.border = '1px solid rgba(243, 224, 162, 0.16)';
+    toast.style.backdropFilter = 'blur(12px)';
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(-6px)';
+    toast.style.transition = 'opacity 180ms ease, transform 180ms ease';
+    toast.style.pointerEvents = 'none';
+
+    document.body.appendChild(toast);
+    return toast;
+  }
+
+  function showToast(message) {
+    const toast = ensureToastElement();
+    toast.textContent = message;
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateY(0)';
+
+    window.clearTimeout(showToast._timer);
+    showToast._timer = window.setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(-6px)';
+    }, 2200);
+  }
+
   function findFieldLabelElement(labelText) {
     const target = normalizeText(labelText);
     const candidates = [...document.querySelectorAll('label, legend, span, div, p, h6')];
@@ -206,6 +249,7 @@
 
     fillParsedFieldsIntoForm(parsed);
     setControlValue(sourceControl, '');
+    showToast('已自动拆分到正式字段');
   }
 
   function bindSourceFieldAutoFill() {
