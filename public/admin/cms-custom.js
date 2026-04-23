@@ -110,6 +110,13 @@
     return String(value ?? '').replace(/\s+/g, ' ').trim();
   }
 
+  function isInEditPane(element) {
+    if (!element || typeof element.getBoundingClientRect !== 'function') return false;
+    const rect = element.getBoundingClientRect();
+    if (rect.width === 0 && rect.height === 0) return false;
+    return rect.left < window.innerWidth * 0.55;
+  }
+
   function setControlValue(control, value) {
     if (!control) return;
 
@@ -187,9 +194,34 @@
     const candidates = [...document.querySelectorAll('label, legend, span, div, p, h6')];
 
     return candidates.find((element) => {
-      if (element.closest('.nc-previewPane')) return false;
+      if (!isInEditPane(element)) return false;
       return normalizeText(element.textContent).startsWith(target);
     });
+  }
+
+  function findNearestControlBelow(labelElement) {
+    if (!labelElement) return null;
+
+    const labelRect = labelElement.getBoundingClientRect();
+    const controls = [
+      ...document.querySelectorAll('textarea:not([disabled]), input:not([disabled]):not([type="hidden"]), [contenteditable="true"]'),
+    ].filter((control) => isInEditPane(control));
+
+    let best = null;
+    let bestDistance = Number.POSITIVE_INFINITY;
+
+    controls.forEach((control) => {
+      const rect = control.getBoundingClientRect();
+      const verticalDistance = rect.top - labelRect.top;
+      if (verticalDistance < -8) return;
+
+      if (verticalDistance < bestDistance) {
+        best = control;
+        bestDistance = verticalDistance;
+      }
+    });
+
+    return best;
   }
 
   function findFieldControlByLabels(labels) {
@@ -199,12 +231,15 @@
 
       let container = labelElement;
       while (container && container !== document.body) {
-        const control = container.querySelector(
+        const control = [...container.querySelectorAll(
           'textarea:not([disabled]), input:not([disabled]):not([type="hidden"]), [contenteditable="true"]',
-        );
+        )].find((candidate) => isInEditPane(candidate));
         if (control) return control;
         container = container.parentElement;
       }
+
+      const fallbackControl = findNearestControlBelow(labelElement);
+      if (fallbackControl) return fallbackControl;
     }
 
     return null;
@@ -212,12 +247,16 @@
 
   function fillParsedFieldsIntoForm(parsed) {
     const fieldNames = ['title', 'titleEn', 'description', 'descriptionEn', 'body', 'bodyEn'];
+    let filledCount = 0;
 
     fieldNames.forEach((fieldName) => {
       const control = findFieldControlByLabels(FIELD_LABELS[fieldName] ?? []);
       if (!control) return;
       setControlValue(control, parsed[fieldName] ?? '');
+      filledCount += 1;
     });
+
+    return filledCount;
   }
 
   function getSourceControl() {
@@ -247,7 +286,8 @@
       return;
     }
 
-    fillParsedFieldsIntoForm(parsed);
+    const filledCount = fillParsedFieldsIntoForm(parsed);
+    if (filledCount === 0) return;
     setControlValue(sourceControl, '');
     showToast('已自动拆分到正式字段');
   }
