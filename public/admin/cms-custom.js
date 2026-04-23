@@ -96,6 +96,24 @@
     return nextData.delete(SOURCE_FIELD);
   }
 
+  function validateManualOrSource(data) {
+    const rawSource = String(data.get(SOURCE_FIELD) ?? '').trim();
+    if (rawSource) return;
+
+    const title = String(data.get('title') ?? '').trim();
+    const body = String(data.get('body') ?? '').trim();
+
+    if (!title || !body) {
+      throw new Error(
+        [
+          '请二选一完成内容录入：',
+          '1. 直接填写标题 + 中文正文；或',
+          '2. 在“双语原稿自动拆分”中粘贴带标签的完整原稿。',
+        ].join('\n'),
+      );
+    }
+  }
+
   function registerHook(CMS) {
     CMS.registerEventListener({
       name: 'preSave',
@@ -105,7 +123,10 @@
 
         const data = entry.get('data');
         const rawSource = data.get(SOURCE_FIELD);
-        if (!String(rawSource ?? '').trim()) return entry;
+        if (!String(rawSource ?? '').trim()) {
+          validateManualOrSource(data);
+          return entry;
+        }
 
         const parsed = parseTaggedSource(rawSource);
         return entry.set('data', applyParsedFields(data, parsed));
