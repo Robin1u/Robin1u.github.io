@@ -181,7 +181,7 @@ collections:
         name: "bilingualSource"
         widget: "text"
         required: false
-        hint: "把双语原稿按标签贴在这里，保存时会自动拆到对应字段。必填标签：[ZH_TITLE] [EN_TITLE] [ZH_BODY] [EN_BODY]；可选标签：[ZH_DESC] [EN_DESC]。如果使用这里，就不用手动填写下方标题/正文。保存成功后此字段不会写入文件。"
+        hint: "把双语原稿按标签贴在这里，粘贴后会自动回填到下方正式字段，并清空此输入区。必填标签：[ZH_TITLE] [EN_TITLE] [ZH_BODY] [EN_BODY]；可选标签：[ZH_DESC] [EN_DESC]。"
       - {label: "标题 (Title)", name: "title", widget: "string", required: false}
       - {label: "英文标题 (English Title)", name: "titleEn", widget: "string", required: false}
       - {label: "描述 (Description)", name: "description", widget: "text", required: false}
@@ -232,7 +232,7 @@ collections:
         name: "bilingualSource"
         widget: "text"
         required: false
-        hint: "把双语原稿按标签贴在这里，保存时会自动拆到对应字段。必填标签：[ZH_TITLE] [EN_TITLE] [ZH_BODY] [EN_BODY]；可选标签：[ZH_DESC] [EN_DESC]。如果使用这里，就不用手动填写下方标题/正文。保存成功后此字段不会写入文件。"
+        hint: "把双语原稿按标签贴在这里，粘贴后会自动回填到下方正式字段，并清空此输入区。必填标签：[ZH_TITLE] [EN_TITLE] [ZH_BODY] [EN_BODY]；可选标签：[ZH_DESC] [EN_DESC]。"
       - {label: "标题 (Title)", name: "title", widget: "string", required: false}
       - {label: "英文标题 (English Title)", name: "titleEn", widget: "string", required: false}
       - {label: "摘要 (Description)", name: "description", widget: "text", required: false}
