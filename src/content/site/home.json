@@ -129,6 +129,33 @@
       "subtitleEn": "",
       "date": "2026-01-25",
       "done": false
+    },
+    {
+      "category": "project",
+      "title": "商业动态网站设计和部署",
+      "titleEn": "Business Dynamic Website Design and Deployment",
+      "subtitle": "室内设计/软装",
+      "subtitleEn": "Interior Design/Soft Decoration",
+      "date": "2026-04-25",
+      "done": false
+    },
+    {
+      "category": "project",
+      "title": "个人Wiki知识库搭建",
+      "titleEn": "Personal Wiki Knowledge Base Deployment and Debug",
+      "subtitle": "Wiki 知识库的架构参考Andrej Karpathy的LLM-Wiki的架构理论及其他Github上相关的开源代码",
+      "subtitleEn": "The architecture of the Wiki knowledge base draws on Andrej Karpathy’s architectural theory for LLM-Wiki and other relevant open-source code on GitHub.",
+      "date": "2026-04-28",
+      "done": false
+    },
+    {
+      "category": "project",
+      "title": "周易六十四卦/小六壬App",
+      "titleEn": "The 64 Hexagrams of the I Ching / Xiao Liu Ren App",
+      "subtitle": "基于相关的周易和小六壬已公开的架构知识，设计搭建可使用的app",
+      "subtitleEn": "Design and build a functional app based on the publicly available framework knowledge relating to the I Ching and the Minor Liu Ren system",
+      "date": "2026-05-02",
+      "done": false
     }
   ]
 }
