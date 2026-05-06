@@ -1,6 +1,6 @@
 ---
-import { readdirSync } from 'node:fs';
-import { getCollection } from 'astro:content';
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import I18nText from '../components/I18nText.astro';
 import { formatLocalizedDate } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -16,17 +16,35 @@ const secretPage = {
   emptyDescriptionEn: 'The first cat photo has not arrived yet. Give them a little time and they will take over this corner.',
 };
 
-function hasCatEntries() {
+function getCatEntries() {
   try {
-    return readdirSync(new URL('../content/cats', import.meta.url)).some((file) => file.endsWith('.json'));
+    const catsDir = join(process.cwd(), 'src/content/cats');
+
+    return readdirSync(catsDir)
+      .filter((file) => file.endsWith('.json'))
+      .flatMap((file) => {
+        try {
+          const data = JSON.parse(readFileSync(join(catsDir, file), 'utf-8'));
+          if (!data.title || !data.image || !data.date) return [];
+
+          return [{
+            id: file.replace(/\.json$/, ''),
+            data: {
+              ...data,
+              date: new Date(data.date),
+              featured: Boolean(data.featured),
+            },
+          }];
+        } catch {
+          return [];
+        }
+      });
   } catch {
-    return false;
+    return [];
   }
 }
 
-const catEntries = hasCatEntries()
-  ? (await getCollection('cats').catch(() => [])).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  : [];
+const catEntries = getCatEntries().sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 <BaseLayout
   title={secretPage.pageTitle}

@@ -304,7 +304,6 @@ collections:
     format: "json"
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
-      - {label: "ID", name: "id", widget: "string", required: false}
       - {label: "标题 (Title)", name: "title", widget: "string"}
       - {label: "英文标题 (English Title)", name: "titleEn", widget: "string", required: false}
       - {label: "日期 (Date)", name: "date", widget: "datetime"}

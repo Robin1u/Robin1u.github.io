@@ -22,6 +22,7 @@ const descriptionEn = project.data.descriptionEn ?? project.data.description;
 const categoryLabel = project.data.category ? projectCategoryLabels[project.data.category] : undefined;
 const englishBodyHtml = hasEnglishBody ? await renderMarkdownToHtml(englishBodySource) : '';
 const hasActionLinks = Boolean(project.data.liveUrl || project.data.githubUrl);
+const backLinkStyle = 'display:inline-flex; align-items:center; gap:8px; color:var(--color-text-muted); font-size:13px; margin:0 0 28px; transition:color var(--transition);';
 ---
 <BaseLayout
   title={project.data.title}
@@ -30,12 +31,14 @@ const hasActionLinks = Boolean(project.data.liveUrl || project.data.githubUrl);
   descriptionEn={descriptionEn ?? 'Project detail'}
   activePage="portfolio"
 >
-  <a href="/portfolio" class="floating-back-link">
-    <span aria-hidden="true">←</span>
-    <I18nText zh="返回作品集" en="Back to Portfolio" />
-  </a>
-
   <article class="portfolio-detail-article">
+    <div>
+      <a href="/portfolio" style={backLinkStyle}>
+        <span aria-hidden="true">←</span>
+        <I18nText zh="返回作品集" en="Back to Portfolio" />
+      </a>
+    </div>
+
     <div class="portfolio-card-image portfolio-card-image-desktop" style="border-radius:12px; margin-bottom:40px; aspect-ratio:16/9;">
       {project.data.image
         ? (
@@ -90,33 +93,16 @@ const hasActionLinks = Boolean(project.data.liveUrl || project.data.githubUrl);
       </div>
       {hasEnglishBody && <div class="i18n-markdown" data-i18n-lang="en" set:html={englishBodyHtml} />}
     </div>
+
+    <div style="margin-top:56px; padding-top:28px; border-top:1px solid var(--color-border);">
+      <a href="/portfolio" style={backLinkStyle}>
+        <span aria-hidden="true">←</span>
+        <I18nText zh="返回作品集" en="Back to Portfolio" />
+      </a>
+    </div>
   </article>
 
   <style>
-    .floating-back-link {
-      position: fixed;
-      left: max(calc(var(--nav-width) + 32px), calc(50% - 390px));
-      top: 24px;
-      z-index: 40;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--color-border);
-      background: rgba(10, 10, 10, 0.88);
-      color: var(--color-white);
-      backdrop-filter: blur(14px);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
-      transition: transform var(--transition), border-color var(--transition), background-color var(--transition);
-    }
-
-    .floating-back-link:hover {
-      transform: translateY(-1px);
-      border-color: rgba(232, 213, 163, 0.32);
-      background: rgba(18, 18, 18, 0.94);
-    }
-
     .portfolio-detail-article {
       max-width: 780px;
       margin: 64px auto;
@@ -206,21 +192,7 @@ const hasActionLinks = Boolean(project.data.liveUrl || project.data.githubUrl);
       margin: 1.3em 0 1.5em;
     }
 
-    @media (max-width: 900px) {
-      .floating-back-link {
-        left: 20px;
-        top: 72px;
-      }
-    }
-
     @media (max-width: 768px) {
-      .floating-back-link {
-        position: static;
-        margin: 16px 20px 0;
-        width: fit-content;
-        max-width: calc(100% - 40px);
-      }
-
       .portfolio-detail-article {
         margin: 20px auto 0;
         padding: 0 20px 44px;

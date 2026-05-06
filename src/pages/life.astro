@@ -190,13 +190,16 @@ const sortedPhotos = lifePhotos.sort((a, b) => new Date(b.data.date).valueOf() -
     }
 
     .life-feed {
-      padding: 32px 64px 64px;
+      padding: 40px 64px 72px;
       display: grid;
       gap: 24px;
       min-width: 0;
     }
 
     .life-story-card {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.9fr) minmax(260px, 0.7fr);
+      align-items: stretch;
       border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
       overflow: hidden;
@@ -204,7 +207,8 @@ const sortedPhotos = lifePhotos.sort((a, b) => new Date(b.data.date).valueOf() -
     }
 
     .life-story-image {
-      aspect-ratio: 16 / 9;
+      min-height: 320px;
+      max-height: 460px;
       background: var(--color-surface-2);
       overflow: hidden;
     }
@@ -217,7 +221,10 @@ const sortedPhotos = lifePhotos.sort((a, b) => new Date(b.data.date).valueOf() -
     }
 
     .life-story-body {
-      padding: 18px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 28px;
     }
 
     .life-story-date {
@@ -326,6 +333,71 @@ const sortedPhotos = lifePhotos.sort((a, b) => new Date(b.data.date).valueOf() -
       box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
     }
 
+    .thoughts-sidebar .life-timeline-list {
+      position: relative;
+      gap: 0;
+      padding-left: 18px;
+    }
+
+    .thoughts-sidebar .life-timeline-list::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 8px;
+      bottom: 12px;
+      width: 1px;
+      background: linear-gradient(
+        to bottom,
+        rgba(232, 213, 163, 0.5),
+        rgba(255, 255, 255, 0.07)
+      );
+    }
+
+    .thoughts-sidebar .life-timeline-item {
+      position: relative;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      padding: 0 0 24px 18px;
+    }
+
+    .thoughts-sidebar .life-timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -17px;
+      top: 5px;
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #7be495;
+      box-shadow: 0 0 0 4px rgba(123, 228, 149, 0.08);
+    }
+
+    .thoughts-sidebar .life-timeline-item.done::before {
+      background: #151515;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+    }
+
+    .thoughts-sidebar .life-timeline-top {
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .thoughts-sidebar .life-timeline-title {
+      font-size: 16px;
+      line-height: 1.35;
+    }
+
+    .thoughts-sidebar .life-timeline-subtitle {
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .thoughts-sidebar .life-timeline-state {
+      margin-top: 10px;
+      font-size: 11px;
+    }
+
     @media (max-width: 1024px) {
       .life-mobile-recent {
         display: block;
@@ -369,6 +441,21 @@ const sortedPhotos = lifePhotos.sort((a, b) => new Date(b.data.date).valueOf() -
       .life-feed {
         padding: 24px 20px 40px;
         overflow-x: hidden;
+      }
+
+      .life-story-card {
+        display: block;
+      }
+
+      .life-story-image {
+        aspect-ratio: 4 / 3;
+        min-height: 0;
+        max-height: none;
+      }
+
+      .life-story-body {
+        display: block;
+        padding: 18px 20px 20px;
       }
 
       .life-story-title {
