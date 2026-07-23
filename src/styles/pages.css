@@ -68,7 +68,7 @@
 }
 
 .post-item p {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--color-text-muted);
   line-height: 1.65;
   max-width: 580px;
@@ -173,7 +173,7 @@
 }
 
 .life-card-caption {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--color-text-muted);
   line-height: 1.5;
 }
@@ -361,9 +361,9 @@
 }
 
 .channel-desc {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--color-text-muted);
-  line-height: 1.65;
+  line-height: 1.75;
   margin-bottom: 24px;
 }
 
