@@ -1,0 +1,70 @@
+---
+import {
+  getAttachmentExtension,
+  getAttachmentKind,
+  getAttachmentPreviewHref,
+  type ArticleAttachment,
+  type AttachmentSource,
+} from '../lib/attachments';
+import I18nText from './I18nText.astro';
+
+interface Props {
+  attachments: ArticleAttachment[];
+  source: AttachmentSource;
+  entryId: string;
+}
+
+const { attachments, source, entryId } = Astro.props;
+const kindLabels = {
+  markdown: { zh: 'Markdown 文档', en: 'Markdown document' },
+  pdf: { zh: 'PDF 文档', en: 'PDF document' },
+  image: { zh: '图片', en: 'Image' },
+};
+---
+{attachments.length > 0 && (
+  <section class="article-attachments" aria-labelledby="attachments-title">
+    <div class="article-attachments-heading">
+      <I18nText as="h2" id="attachments-title" zh="附件" en="Attachments" />
+      <I18nText
+        as="p"
+        zh="与正文相关的补充材料，可在线浏览或下载原文件。"
+        en="Supporting material related to this article, available to preview or download."
+      />
+    </div>
+
+    <div class="attachment-card-list">
+      {attachments.map((attachment, index) => {
+        const kind = getAttachmentKind(attachment.file);
+        const kindLabel = kindLabels[kind];
+        const extension = getAttachmentExtension(attachment.file).toUpperCase();
+        const titleEn = attachment.titleEn?.trim() || attachment.title;
+        const descriptionEn = attachment.descriptionEn?.trim() || attachment.description;
+        const previewHref = getAttachmentPreviewHref(source, entryId, index);
+
+        return (
+          <article class="attachment-card">
+            <div class:list={['attachment-file-mark', `attachment-file-mark-${kind}`]} aria-hidden="true">
+              {extension}
+            </div>
+            <div class="attachment-card-copy">
+              <span class="attachment-kind"><I18nText zh={kindLabel.zh} en={kindLabel.en} /></span>
+              <I18nText as="h3" zh={attachment.title} en={titleEn} />
+              {attachment.description && (
+                <I18nText as="p" zh={attachment.description} en={descriptionEn} />
+              )}
+            </div>
+            <div class="attachment-card-actions">
+              <a href={previewHref} class="attachment-preview-link">
+                <I18nText zh="浏览" en="Preview" />
+                <span aria-hidden="true">→</span>
+              </a>
+              <a href={attachment.file} class="attachment-download-link" download>
+                <I18nText zh="下载" en="Download" />
+              </a>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+)}

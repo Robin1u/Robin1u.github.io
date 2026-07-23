@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import AttachmentList from '../../components/AttachmentList.astro';
 import BackLink from '../../components/BackLink.astro';
 import I18nText from '../../components/I18nText.astro';
 import LocalizedMarkdown from '../../components/LocalizedMarkdown.astro';
@@ -52,6 +53,11 @@ const tagCopies = (post.data.tags ?? []).map((tag) => localizeThoughtLabel(tag))
     <LocalizedMarkdown englishSource={hasEnglishVersion ? post.data.bodyEn : ''}>
         <Content />
     </LocalizedMarkdown>
+    <AttachmentList
+      attachments={post.data.attachments}
+      source="thoughts"
+      entryId={post.id}
+    />
     <BackLink href="/thoughts" zh="返回全部文章" en="Back to All Thoughts" position="bottom" />
   </article>
   <style>

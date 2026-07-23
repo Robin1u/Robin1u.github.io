@@ -1,0 +1,138 @@
+---
+import { readFile } from 'node:fs/promises';
+import { getCollection } from 'astro:content';
+import BackLink from '../../components/BackLink.astro';
+import I18nText from '../../components/I18nText.astro';
+import {
+  getAttachmentExtension,
+  type ArticleAttachment,
+  type AttachmentKind,
+  type AttachmentSource,
+  validateAttachmentFile,
+} from '../../lib/attachments';
+import { renderSafeMarkdownToHtml } from '../../lib/markdown';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+interface AttachmentPageProps {
+  attachment: ArticleAttachment;
+  kind: AttachmentKind;
+  markdownHtml: string;
+  source: AttachmentSource;
+  sourceHref: string;
+  sourceTitle: string;
+  sourceTitleEn: string;
+}
+
+export async function getStaticPaths() {
+  const [projects, thoughts] = await Promise.all([
+    getCollection('projects', ({ data }) => !data.draft),
+    getCollection('thoughts', ({ data }) => !data.draft),
+  ]);
+
+  const sources = [
+    ...projects.map((entry) => ({
+      source: 'projects' as const,
+      entry,
+      href: `/portfolio/${entry.id}`,
+    })),
+    ...thoughts.map((entry) => ({
+      source: 'thoughts' as const,
+      entry,
+      href: `/thoughts/${entry.id}`,
+    })),
+  ];
+
+  const paths = [];
+  for (const { source, entry, href } of sources) {
+    for (const [index, attachment] of entry.data.attachments.entries()) {
+      const validated = await validateAttachmentFile(attachment.file);
+      const markdownHtml = validated.kind === 'markdown'
+        ? await renderSafeMarkdownToHtml(await readFile(validated.absolutePath, 'utf8'))
+        : '';
+
+      paths.push({
+        params: { slug: `${source}/${entry.id}/${index + 1}` },
+        props: {
+          attachment,
+          kind: validated.kind,
+          markdownHtml,
+          source,
+          sourceHref: href,
+          sourceTitle: entry.data.title,
+          sourceTitleEn: entry.data.titleEn?.trim() || entry.data.title,
+        } satisfies AttachmentPageProps,
+      });
+    }
+  }
+
+  return paths;
+}
+
+const {
+  attachment,
+  kind,
+  markdownHtml,
+  source,
+  sourceHref,
+  sourceTitle,
+  sourceTitleEn,
+} = Astro.props as AttachmentPageProps;
+
+const titleEn = attachment.titleEn?.trim() || attachment.title;
+const descriptionEn = attachment.descriptionEn?.trim() || attachment.description;
+const extension = getAttachmentExtension(attachment.file).toUpperCase();
+const returnCopy = source === 'projects'
+  ? { zh: '返回作品', en: 'Back to Project' }
+  : { zh: '返回文章', en: 'Back to Article' };
+---
+<BaseLayout
+  title={attachment.title}
+  titleEn={titleEn}
+  description={attachment.description ?? `附件 · ${sourceTitle}`}
+  descriptionEn={descriptionEn ?? `Attachment · ${sourceTitleEn}`}
+  activePage={source === 'projects' ? 'portfolio' : 'thoughts'}
+>
+  <article class="attachment-preview-page">
+    <BackLink href={sourceHref} zh={returnCopy.zh} en={returnCopy.en} />
+
+    <header class="attachment-preview-header">
+      <span class="attachment-preview-type">{extension}</span>
+      <I18nText as="h1" zh={attachment.title} en={titleEn} />
+      {attachment.description && (
+        <I18nText as="p" zh={attachment.description} en={descriptionEn} />
+      )}
+      <a href={attachment.file} class="btn-secondary attachment-primary-download" download>
+        <I18nText zh="下载原文件 ↓" en="Download Original ↓" />
+      </a>
+    </header>
+
+    <div class:list={['attachment-preview-surface', `attachment-preview-${kind}`]}>
+      {kind === 'markdown' && <div class="prose" set:html={markdownHtml} />}
+      {kind === 'pdf' && (
+        <object data={attachment.file} type="application/pdf" class="attachment-pdf-object">
+          <div class="attachment-preview-fallback">
+            <I18nText
+              as="p"
+              zh="当前浏览器无法内嵌显示 PDF，请下载原文件查看。"
+              en="This browser cannot display the PDF inline. Please download the original file."
+            />
+            <a href={attachment.file} class="btn-secondary" download>
+              <I18nText zh="下载 PDF" en="Download PDF" />
+            </a>
+          </div>
+        </object>
+      )}
+      {kind === 'image' && (
+        <img
+          src={attachment.file}
+          alt={attachment.title}
+          data-i18n-alt-zh={attachment.title}
+          data-i18n-alt-en={titleEn}
+          loading="eager"
+        />
+      )}
+    </div>
+
+    <BackLink href={sourceHref} zh={returnCopy.zh} en={returnCopy.en} position="bottom" />
+  </article>
+</BaseLayout>

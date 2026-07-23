@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';  // ← 导入 render
+import AttachmentList from '../../components/AttachmentList.astro';
 import BackLink from '../../components/BackLink.astro';
 import I18nText from '../../components/I18nText.astro';
 import LocalizedMarkdown from '../../components/LocalizedMarkdown.astro';
@@ -84,6 +85,12 @@ const hasActionLinks = Boolean(project.data.liveUrl || project.data.githubUrl);
     <LocalizedMarkdown englishSource={hasEnglishBody ? englishBodySource : ''}>
         <Content />
     </LocalizedMarkdown>
+
+    <AttachmentList
+      attachments={project.data.attachments}
+      source="projects"
+      entryId={project.id}
+    />
 
     <BackLink href="/portfolio" zh="返回作品集" en="Back to Portfolio" position="bottom" />
   </article>

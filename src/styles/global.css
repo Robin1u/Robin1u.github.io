@@ -4,6 +4,7 @@
 @import './pages.css';
 @import './responsive.css';
 @import './markdown.css';
+@import './attachments.css';
 
 .shared-section-header {
   margin-bottom: 0;

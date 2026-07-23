@@ -58,6 +58,28 @@ test('portfolio and thought details have top and bottom back links', async ({ pa
   await expect(page.locator('.prose')).toBeVisible();
 });
 
+test('article attachments link to a responsive preview when content provides one', async ({ page }) => {
+  await page.goto('/portfolio');
+  const projectHref = await page.locator('.portfolio-card').first().getAttribute('href');
+  expect(projectHref).toBeTruthy();
+  await page.goto(projectHref!);
+
+  const attachmentCards = page.locator('.attachment-card');
+  test.skip(await attachmentCards.count() === 0, 'No published article currently has attachments');
+
+  await expect(attachmentCards.first()).toBeVisible();
+  const previewHref = await attachmentCards.first().locator('.attachment-preview-link').getAttribute('href');
+  expect(previewHref).toMatch(/^\/attachments\//);
+  await page.goto(previewHref!);
+  await expect(page.locator('.attachment-preview-page')).toBeVisible();
+  await expect(page.locator('.detail-back-link')).toHaveCount(2);
+
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
+  expect(overflow).toBeLessThanOrEqual(1);
+});
+
 test('life timeline and cat collection content render', async ({ page }) => {
   await page.goto('/life');
   await expect(page.locator('.life-timeline-item:visible').first()).toBeVisible();

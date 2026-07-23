@@ -8,6 +8,19 @@ const optionalUrl = z.preprocess((value) => {
   return normalized ? normalized : undefined;
 }, z.string().url().optional());
 
+const attachmentSchema = z.object({
+  title: z.string().trim().min(1),
+  titleEn: z.string().optional(),
+  description: z.string().optional(),
+  descriptionEn: z.string().optional(),
+  file: z.string()
+    .trim()
+    .regex(
+      /^\/attachments\/.+\.(?:md|pdf|png|jpe?g|webp)$/i,
+      '附件必须位于 /attachments/，并使用 MD、PDF、PNG、JPG、JPEG 或 WEBP 格式',
+    ),
+});
+
 const siteHome = defineCollection({
   loader: glob({ pattern: 'home.json', base: './src/content/site' }),
   schema: z.object({
@@ -128,6 +141,7 @@ const projects = defineCollection({
     image: z.string().optional(),
     liveUrl: optionalUrl,
     githubUrl: optionalUrl,
+    attachments: z.array(attachmentSchema).default([]),
     date: z.coerce.date(),
     draft: z.boolean().default(false),
   }),
@@ -147,6 +161,7 @@ const thoughts = defineCollection({
     date: z.coerce.date(),       
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
+    attachments: z.array(attachmentSchema).default([]),
   }),
 });
 

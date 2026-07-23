@@ -222,6 +222,28 @@ collections:
       - {label: "草稿 (Draft)", name: "draft", widget: "boolean", default: false, required: false}
       - {label: "中文正文 (Chinese Body)", name: "body", widget: "markdown", required: false}
       - {label: "英文正文（支持 Markdown）", name: "bodyEn", widget: "markdown", required: false}
+      - label: "附件 (Attachments)"
+        name: "attachments"
+        widget: "list"
+        required: false
+        summary: "{{fields.title}} · {{fields.file}}"
+        hint: "支持 MD、PDF、PNG、JPG、JPEG、WEBP；单个文件不超过 20 MB。"
+        fields:
+          - {label: "附件名称（中文）", name: "title", widget: "string"}
+          - {label: "附件名称（英文）", name: "titleEn", widget: "string", required: false}
+          - {label: "附件说明（中文）", name: "description", widget: "text", required: false}
+          - {label: "附件说明（英文）", name: "descriptionEn", widget: "text", required: false}
+          - label: "附件文件"
+            name: "file"
+            widget: "file"
+            media_folder: "/public/attachments/{{slug}}"
+            public_folder: "/attachments/{{slug}}"
+            pattern:
+              - "^/attachments/.+\\.(md|pdf|png|jpg|jpeg|webp)$"
+              - "仅支持 MD、PDF、PNG、JPG、JPEG、WEBP 文件"
+            media_library:
+              config:
+                max_file_size: 20971520
 
   - name: "thoughts"
     label: "观点 & 文章 (Thoughts)"
@@ -275,6 +297,28 @@ collections:
       - {label: "草稿 (Draft)", name: "draft", widget: "boolean", default: false, required: false}
       - {label: "中文正文 (Chinese Body)", name: "body", widget: "markdown", required: false}
       - {label: "英文正文（支持 Markdown）", name: "bodyEn", widget: "markdown", required: false}
+      - label: "附件 (Attachments)"
+        name: "attachments"
+        widget: "list"
+        required: false
+        summary: "{{fields.title}} · {{fields.file}}"
+        hint: "支持 MD、PDF、PNG、JPG、JPEG、WEBP；单个文件不超过 20 MB。"
+        fields:
+          - {label: "附件名称（中文）", name: "title", widget: "string"}
+          - {label: "附件名称（英文）", name: "titleEn", widget: "string", required: false}
+          - {label: "附件说明（中文）", name: "description", widget: "text", required: false}
+          - {label: "附件说明（英文）", name: "descriptionEn", widget: "text", required: false}
+          - label: "附件文件"
+            name: "file"
+            widget: "file"
+            media_folder: "/public/attachments/{{slug}}"
+            public_folder: "/attachments/{{slug}}"
+            pattern:
+              - "^/attachments/.+\\.(md|pdf|png|jpg|jpeg|webp)$"
+              - "仅支持 MD、PDF、PNG、JPG、JPEG、WEBP 文件"
+            media_library:
+              config:
+                max_file_size: 20971520
 
   - name: "life"
     label: "生活 & 照片 (Life)"
