@@ -238,9 +238,7 @@ collections:
             widget: "file"
             media_folder: "/public/attachments/{{slug}}"
             public_folder: "/attachments/{{slug}}"
-            pattern:
-              - "^/attachments/.+\\.(md|pdf|png|jpg|jpeg|webp)$"
-              - "仅支持 MD、PDF、PNG、JPG、JPEG、WEBP 文件"
+            accept: "text/markdown,application/pdf,image/png,image/jpeg,image/webp,.md,.pdf,.png,.jpg,.jpeg,.webp"
             media_library:
               config:
                 max_file_size: 20971520
@@ -313,9 +311,7 @@ collections:
             widget: "file"
             media_folder: "/public/attachments/{{slug}}"
             public_folder: "/attachments/{{slug}}"
-            pattern:
-              - "^/attachments/.+\\.(md|pdf|png|jpg|jpeg|webp)$"
-              - "仅支持 MD、PDF、PNG、JPG、JPEG、WEBP 文件"
+            accept: "text/markdown,application/pdf,image/png,image/jpeg,image/webp,.md,.pdf,.png,.jpg,.jpeg,.webp"
             media_library:
               config:
                 max_file_size: 20971520
