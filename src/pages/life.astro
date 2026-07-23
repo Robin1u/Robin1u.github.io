@@ -1,30 +1,18 @@
 ---
-import { getCollection } from 'astro:content';
 import I18nText from '../components/I18nText.astro';
-import { formatLocalizedDate, formatWeekLabel, recentCategoryLabels } from '../lib/i18n';
+import PageHero from '../components/PageHero.astro';
+import RecentTimeline from '../components/RecentTimeline.astro';
+import { getHomeSettings, getLifeEntries, getPageSettings, sortRecentItems } from '../lib/content';
+import { formatLocalizedDate } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const [homeEntry] = await getCollection('siteHome').catch(() => []);
-const [pagesEntry] = await getCollection('sitePages').catch(() => []);
-const site = homeEntry?.data ?? {
-  recentTitle: '最近在做',
-  recentTitleEn: 'Recently Doing',
-  recentItems: [],
-};
-const lifePage = pagesEntry?.data?.life ?? {
-  sectionNumber: '04',
-  navLabel: '生活',
-  navLabelEn: 'Life',
-  intro: '这里留下生活本身的痕迹，还有那些值得被记住一下的普通时刻。',
-  introEn: 'This is where I leave traces of life itself, along with the ordinary moments that feel worth remembering for a little longer.',
-};
-
-const timelineItems = site.recentItems
-  .slice()
-  .sort((a, b) => b.date.valueOf() - a.date.valueOf());
-
-const lifePhotos = await getCollection('life').catch(() => []);
-const sortedPhotos = lifePhotos.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
+const [site, pages, sortedPhotos] = await Promise.all([
+  getHomeSettings(),
+  getPageSettings(),
+  getLifeEntries(),
+]);
+const lifePage = pages.life;
+const timelineItems = sortRecentItems(site.recentItems);
 ---
 <BaseLayout
   title={lifePage.navLabel}
@@ -35,53 +23,21 @@ const sortedPhotos = lifePhotos.sort((a, b) => new Date(b.data.date).valueOf() -
 >
   <div class="thoughts-layout life-page-layout">
     <div class="thoughts-main">
-      <div class="thoughts-header">
-        <div class="section-header" style="margin-bottom:0;">
-          <span class="section-number">{lifePage.sectionNumber}</span>
-          <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);">
-            <I18nText zh={lifePage.navLabel} en={lifePage.navLabelEn ?? lifePage.navLabel} />
-          </h1>
-          <div class="section-line"></div>
-        </div>
-        <p style="color:var(--color-text-muted); margin-top:16px; max-width:640px;">
-          <I18nText zh={lifePage.intro} en={lifePage.introEn ?? lifePage.intro} />
-        </p>
-      </div>
+      <PageHero
+        variant="thoughts"
+        sectionNumber={lifePage.sectionNumber}
+        title={lifePage.navLabel}
+        titleEn={lifePage.navLabelEn}
+        intro={lifePage.intro}
+        introEn={lifePage.introEn}
+      />
 
       <section class="life-mobile-recent">
         <div class="sidebar-widget">
           <div class="widget-title"><I18nText zh={site.recentTitle ?? '最近在做'} en={site.recentTitleEn ?? site.recentTitle ?? 'Recently Doing'} /></div>
-          {timelineItems.length > 0 ? (
-            <div class="life-mobile-recent-scroll">
-              <div class="life-timeline-list">
-                {timelineItems.map((item) => {
-                  const categoryCopy = recentCategoryLabels[item.category];
-                  const weekCopy = formatWeekLabel(item.date);
-
-                  return (
-                    <article class:list={['life-timeline-item', { done: item.done }]}>
-                      <div class="life-timeline-top">
-                        <span class="life-timeline-category"><I18nText zh={categoryCopy.zh} en={categoryCopy.en} /></span>
-                        <span class="life-timeline-week"><I18nText zh={weekCopy.zh} en={weekCopy.en} /></span>
-                      </div>
-                      <h3 class="life-timeline-title"><I18nText zh={item.title} en={item.titleEn ?? item.title} /></h3>
-                      {item.subtitle && (
-                        <p class="life-timeline-subtitle"><I18nText zh={item.subtitle} en={item.subtitleEn ?? item.subtitle} /></p>
-                      )}
-                      <div class:list={['life-timeline-state', { done: item.done, active: !item.done }]}>
-                        <span class="life-timeline-state-dot" aria-hidden="true"></span>
-                        <I18nText zh={item.done ? '已完成' : '进行中'} en={item.done ? 'Done' : 'In Progress'} />
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-            </div>
-          ) : (
-            <div class="quote-block" style="margin:0;">
-              <p class="quote-text"><I18nText zh="这里还没有最近在做的内容。" en="No recent items yet." /></p>
-            </div>
-          )}
+          <div class="life-mobile-recent-scroll">
+            <RecentTimeline items={timelineItems} emptyClass="flush-quote" />
+          </div>
         </div>
       </section>
 
@@ -129,40 +85,12 @@ const sortedPhotos = lifePhotos.sort((a, b) => new Date(b.data.date).valueOf() -
     <aside class="thoughts-sidebar">
       <div class="sidebar-widget">
         <div class="widget-title"><I18nText zh={site.recentTitle ?? '最近在做'} en={site.recentTitleEn ?? site.recentTitle ?? 'Recently Doing'} /></div>
-        {timelineItems.length > 0 ? (
-          <div class="life-timeline-list">
-            {timelineItems.map((item) => {
-              const categoryCopy = recentCategoryLabels[item.category];
-              const weekCopy = formatWeekLabel(item.date);
-
-              return (
-                <article class:list={['life-timeline-item', { done: item.done }]}>
-                  <div class="life-timeline-top">
-                    <span class="life-timeline-category"><I18nText zh={categoryCopy.zh} en={categoryCopy.en} /></span>
-                    <span class="life-timeline-week"><I18nText zh={weekCopy.zh} en={weekCopy.en} /></span>
-                  </div>
-                  <h3 class="life-timeline-title"><I18nText zh={item.title} en={item.titleEn ?? item.title} /></h3>
-                  {item.subtitle && (
-                    <p class="life-timeline-subtitle"><I18nText zh={item.subtitle} en={item.subtitleEn ?? item.subtitle} /></p>
-                  )}
-                  <div class:list={['life-timeline-state', { done: item.done, active: !item.done }]}>
-                    <span class="life-timeline-state-dot" aria-hidden="true"></span>
-                    <I18nText zh={item.done ? '已完成' : '进行中'} en={item.done ? 'Done' : 'In Progress'} />
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        ) : (
-          <div class="quote-block" style="margin:0;">
-            <p class="quote-text"><I18nText zh="这里还没有最近在做的内容。" en="No recent items yet." /></p>
-          </div>
-        )}
+        <RecentTimeline items={timelineItems} emptyClass="flush-quote" />
       </div>
     </aside>
   </div>
 
-  <style>
+  <style is:global>
     .life-page-layout,
     .life-page-layout .thoughts-main {
       min-width: 0;

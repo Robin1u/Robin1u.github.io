@@ -1,0 +1,558 @@
+/* =============================================
+   THOUGHTS / LIFE PAGE
+   ============================================= */
+.thoughts-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 0;
+  min-height: 100vh;
+  min-width: 0;
+}
+
+.thoughts-main {
+  border-right: 1px solid var(--color-border);
+  min-width: 0;
+}
+
+.thoughts-header {
+  padding: 64px 64px 48px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.post-list {
+  padding: 0;
+}
+
+.post-item {
+  padding: 32px 64px;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background-color var(--transition);
+}
+
+.post-item:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.post-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.post-date {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--color-text-subtle);
+}
+
+.post-category {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  padding: 2px 8px;
+  border-radius: 3px;
+  background-color: rgba(232, 213, 163, 0.08);
+}
+
+.post-item h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-white);
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.post-item p {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  line-height: 1.65;
+  max-width: 580px;
+}
+
+.post-item-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.post-read-time {
+  font-size: 11px;
+  color: var(--color-text-subtle);
+  font-family: var(--font-mono);
+}
+
+.post-arrow {
+  margin-left: auto;
+  color: var(--color-text-subtle);
+  transition: color var(--transition), transform var(--transition);
+  display: flex;
+}
+
+.post-item:hover .post-arrow {
+  color: var(--color-accent);
+  transform: translateX(4px);
+}
+
+.post-arrow svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Life grid */
+.life-grid {
+  padding: 32px 64px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.life-card {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  transition: border-color var(--transition), transform var(--transition);
+}
+
+.life-card:hover {
+  border-color: var(--color-text-subtle);
+  transform: translateY(-3px);
+}
+
+.life-card-img {
+  aspect-ratio: 4 / 3;
+  background-color: var(--color-surface-2);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  color: var(--color-border);
+  font-weight: 900;
+}
+
+.life-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--transition-slow);
+}
+
+.life-card:hover .life-card-img img {
+  transform: scale(1.05);
+}
+
+.life-card.wide .life-card-img {
+  aspect-ratio: 16 / 9;
+}
+
+.life-card-body {
+  padding: 16px;
+}
+
+.life-card-date {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--color-text-subtle);
+  margin-bottom: 6px;
+}
+
+.life-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+.life-card-caption {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+/* Sidebar */
+.thoughts-sidebar {
+  padding: 64px 32px;
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar-widget {
+  margin-bottom: 40px;
+  min-width: 0;
+}
+
+.widget-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  margin-bottom: 16px;
+}
+
+.topic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.topic-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.topic-item:hover {
+  background-color: var(--color-surface-2);
+  color: var(--color-text);
+}
+
+.topic-count {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--color-text-subtle);
+}
+
+.quote-block {
+  padding: 20px;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-accent);
+}
+
+.quote-text {
+  font-size: 14px;
+  font-style: italic;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+.quote-author {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+
+/* =============================================
+   CHANNEL PAGE
+   ============================================= */
+.channel-hero {
+  padding: 64px 64px 48px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.channel-list {
+  padding: 48px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.channel-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  transition: border-color var(--transition);
+}
+
+.channel-card:hover {
+  border-color: var(--color-text-subtle);
+}
+
+.channel-card-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.channel-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.channel-icon.bilibili {
+  background-color: rgba(0, 161, 214, 0.12);
+}
+
+.channel-icon.xiaohongshu {
+  background-color: rgba(255, 85, 85, 0.12);
+}
+
+.channel-icon.github {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.channel-icon.youtube {
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+.channel-info {
+  flex: 1;
+}
+
+.channel-platform {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  margin-bottom: 4px;
+}
+
+.channel-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-white);
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+
+.channel-subs {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+}
+
+.channel-follow-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-bg);
+  background-color: var(--color-accent);
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition);
+  text-decoration: none;
+}
+
+.channel-follow-btn:hover {
+  background-color: var(--color-accent-2);
+}
+
+.channel-desc {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+
+.channel-recent {
+  margin-top: 20px;
+}
+
+.channel-recent-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  margin-bottom: 12px;
+}
+
+.recent-posts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.recent-post-card {
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  transition: border-color var(--transition);
+  cursor: pointer;
+}
+
+.recent-post-card:hover {
+  border-color: var(--color-text-subtle);
+}
+
+.recent-post-thumb {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background-color: var(--color-border);
+  border-radius: 4px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: var(--color-text-subtle);
+  overflow: hidden;
+  position: relative;
+}
+
+.recent-post-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.recent-post-thumb .play-badge {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+.recent-post-thumb .play-badge svg {
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6));
+}
+
+.recent-post-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.45;
+  margin-bottom: 4px;
+}
+
+.recent-post-meta {
+  font-size: 10px;
+  color: var(--color-text-subtle);
+  font-family: var(--font-mono);
+}
+
+/* =============================================
+   COLLAB / CONTACT SECTION
+   ============================================= */
+.collab-section {
+  padding: 64px;
+  border-top: 1px solid var(--color-border);
+}
+
+.collab-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 48px;
+}
+
+.collab-type {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 28px;
+  transition: border-color var(--transition);
+}
+
+.collab-type:hover {
+  border-color: var(--color-text-subtle);
+}
+
+.collab-type-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background-color: rgba(232, 213, 163, 0.08);
+  border: 1px solid rgba(232, 213, 163, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  color: var(--color-accent);
+}
+
+.collab-type-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.collab-type h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-white);
+  margin-bottom: 8px;
+}
+
+.collab-type p {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* =============================================
+   FOOTER
+   ============================================= */
+.page-footer {
+  padding: 24px 64px;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.footer-copy {
+  font-size: 12px;
+  color: var(--color-text-subtle);
+  font-family: var(--font-mono);
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-links a {
+  font-size: 11px;
+  color: var(--color-text-subtle);
+  letter-spacing: 0.04em;
+  transition: color var(--transition);
+}
+
+.footer-links a:hover {
+  color: var(--color-text-muted);
+}
+
+/* =============================================
+   SCROLL PROGRESS
+   ============================================= */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: var(--nav-width);
+  right: 0;
+  height: 2px;
+  background-color: var(--color-accent);
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.1s linear;
+  z-index: 300;
+}

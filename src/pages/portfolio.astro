@@ -1,19 +1,12 @@
 ---
-import { getCollection } from 'astro:content';
 import I18nText from '../components/I18nText.astro';
+import PageHero from '../components/PageHero.astro';
+import { getPageSettings, getPublishedProjects } from '../lib/content';
 import { projectCategoryLabels } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const projects = (await getCollection('projects', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const [pagesEntry] = await getCollection('sitePages').catch(() => []);
-const portfolioPage = pagesEntry?.data?.portfolio ?? {
-  sectionNumber: '02',
-  navLabel: '作品集',
-  navLabelEn: 'Portfolio',
-  intro: '这里收录我正在做和已经完成的项目。从最初的想法，到设计、搭建与迭代，它们记录了我如何把抽象的概念变成具体的结果。',
-  introEn: 'This is where I keep the projects I am building and the ones I have already finished. From the first idea to design, building, and iteration, they record how I turn abstract concepts into concrete outcomes.',
-};
+const [projects, pages] = await Promise.all([getPublishedProjects(), getPageSettings()]);
+const portfolioPage = pages.portfolio;
 
 const categories = [
   { key: 'all', label: projectCategoryLabels.all },
@@ -30,21 +23,13 @@ const categories = [
   descriptionEn="Projects and selected work by Robin Lu"
   activePage="portfolio"
 >
-  <section class="page-hero">
-    <div class="section-header" style="margin-bottom:0;">
-      <span class="section-number">{portfolioPage.sectionNumber}</span>
-      <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);">
-        <I18nText zh={portfolioPage.navLabel} en={portfolioPage.navLabelEn ?? portfolioPage.navLabel} />
-      </h1>
-      <div class="section-line"></div>
-    </div>
-    <p style="margin-top:16px;">
-      <I18nText
-        zh={portfolioPage.intro}
-        en={portfolioPage.introEn ?? portfolioPage.intro}
-      />
-    </p>
-  </section>
+  <PageHero
+    sectionNumber={portfolioPage.sectionNumber}
+    title={portfolioPage.navLabel}
+    titleEn={portfolioPage.navLabelEn}
+    intro={portfolioPage.intro}
+    introEn={portfolioPage.introEn}
+  />
 
   <div class="filter-bar">
     {categories.map((category, index) => (

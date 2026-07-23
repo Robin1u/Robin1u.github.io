@@ -1,0 +1,309 @@
+/* =============================================
+   LAYOUT
+   ============================================= */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* =============================================
+   SIDEBAR NAV
+   ============================================= */
+.sidebar {
+  width: var(--nav-width);
+  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  padding: 40px 0;
+  z-index: 100;
+  transition: transform var(--transition);
+}
+
+.sidebar-logo {
+  padding: 0 28px 40px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 32px;
+}
+
+.sidebar-logo .name {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--color-white);
+  line-height: 1.2;
+}
+
+.sidebar-logo .title {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.sidebar-logo .status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #4caf76;
+  margin-right: 6px;
+  vertical-align: middle;
+  box-shadow: 0 0 6px rgba(76, 175, 118, 0.5);
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 0 16px;
+}
+
+.nav-section {
+  margin-bottom: 32px;
+}
+
+.nav-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  padding: 0 12px;
+  margin-bottom: 8px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--color-text-muted);
+  transition: color var(--transition), background-color var(--transition);
+  letter-spacing: 0.01em;
+}
+
+.nav-link:hover {
+  color: var(--color-text);
+  background-color: var(--color-surface-2);
+}
+
+.nav-link.active {
+  color: var(--color-accent);
+  background-color: rgba(232, 213, 163, 0.08);
+  font-weight: 500;
+}
+
+.nav-link svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.nav-link.active svg {
+  opacity: 1;
+}
+
+.nav-link-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.nav-section-compact {
+  margin-bottom: 24px;
+}
+
+.language-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-2);
+}
+
+.language-switch-sidebar {
+  margin: 0 12px;
+}
+
+.language-btn {
+  min-width: 42px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  transition: background-color var(--transition), color var(--transition), transform var(--transition);
+}
+
+.language-btn:hover {
+  color: var(--color-text);
+}
+
+.language-btn.active {
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.sidebar-footer {
+  padding: 24px 28px 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.sidebar-footer-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  margin-bottom: 12px;
+}
+
+.social-links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  transition: color var(--transition), border-color var(--transition), background-color var(--transition);
+}
+
+.social-link:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  background-color: rgba(232, 213, 163, 0.06);
+}
+
+.social-link-disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.social-link svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* =============================================
+   MOBILE HEADER
+   ============================================= */
+.mobile-header {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 200;
+}
+
+.mobile-header-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-white);
+}
+
+.mobile-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-menu-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 4px;
+  color: var(--color-text);
+}
+
+.mobile-menu-btn span {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background-color: currentColor;
+  transition: transform var(--transition), opacity var(--transition);
+}
+
+.mobile-menu-btn.open span:nth-child(1) {
+  transform: translateY(6.5px) rotate(45deg);
+}
+
+.mobile-menu-btn.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-btn.open span:nth-child(3) {
+  transform: translateY(-6.5px) rotate(-45deg);
+}
+
+/* =============================================
+   OVERLAY
+   ============================================= */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 99;
+}
+
+/* =============================================
+   MAIN CONTENT
+   ============================================= */
+.main-content {
+  margin-left: var(--nav-width);
+  flex: 1;
+  min-height: 100vh;
+  min-width: 0;
+}
+
+/* =============================================
+   PAGE SECTIONS
+   ============================================= */
+.page-section {
+  display: none;
+  min-height: 100vh;
+  animation: fadeIn 0.4s ease;
+}
+
+.page-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

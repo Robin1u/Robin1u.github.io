@@ -1,0 +1,18 @@
+---
+import I18nText from './I18nText.astro';
+
+interface Props {
+  href: string;
+  zh: string;
+  en: string;
+  position?: 'top' | 'bottom';
+}
+
+const { href, zh, en, position = 'top' } = Astro.props;
+---
+<div class:list={['detail-back-link-wrap', `detail-back-link-${position}`]}>
+  <a href={href} class="detail-back-link">
+    <span aria-hidden="true">←</span>
+    <I18nText zh={zh} en={en} />
+  </a>
+</div>

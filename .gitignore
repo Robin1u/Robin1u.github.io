@@ -3,3 +3,6 @@ dist/
 .DS_Store
 .env
 .astro/
+test-results/
+playwright-report/
+blob-report/

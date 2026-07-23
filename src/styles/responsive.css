@@ -1,0 +1,162 @@
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 1024px) {
+  .thoughts-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .thoughts-sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-header {
+    display: flex;
+  }
+
+  .language-switch-sidebar {
+    margin: 0;
+  }
+
+  .sidebar {
+    top: 56px;
+    width: 100vw;
+    min-height: calc(100vh - 56px);
+    padding: 24px 0;
+    transform: translateX(-100%);
+    overflow-y: auto;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .overlay.open {
+    display: block;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding-top: 56px;
+    overflow-x: hidden;
+  }
+
+  .scroll-progress {
+    left: 0;
+  }
+
+  .hero {
+    padding: 48px 24px 40px;
+  }
+
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .stat-item {
+    min-width: 0;
+    padding: 18px 14px;
+  }
+
+  .about-section,
+  .works-preview,
+  .contact-teaser {
+    padding: 40px 24px;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .works-grid {
+    margin-right: -24px;
+    padding-right: 24px;
+  }
+
+  .work-card {
+    flex-basis: min(82vw, 340px);
+    scroll-snap-align: start;
+  }
+
+  .contact-teaser {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-hero,
+  .channel-hero {
+    padding: 40px 24px 32px;
+  }
+
+  .filter-bar {
+    padding: 16px 24px;
+  }
+
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+    padding: 32px 24px;
+  }
+
+  .thoughts-header {
+    padding: 40px 24px 32px;
+  }
+
+  .post-item {
+    padding: 24px;
+  }
+
+  .life-grid {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+
+  .channel-list {
+    padding: 32px 24px;
+  }
+
+  .recent-posts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .collab-section {
+    padding: 40px 24px;
+  }
+
+  .collab-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-footer {
+    padding: 20px 24px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-name {
+    font-size: 36px;
+  }
+
+  .stat-item {
+    padding: 16px 12px;
+  }
+
+  .stat-number {
+    font-size: 24px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+  }
+
+  .recent-posts {
+    grid-template-columns: 1fr;
+  }
+}

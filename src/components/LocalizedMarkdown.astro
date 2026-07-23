@@ -1,0 +1,17 @@
+---
+import { renderMarkdownToHtml } from '../lib/markdown';
+
+interface Props {
+  englishSource?: string;
+}
+
+const { englishSource = '' } = Astro.props;
+const hasEnglishBody = Boolean(englishSource.trim());
+const englishBodyHtml = hasEnglishBody ? await renderMarkdownToHtml(englishSource) : '';
+---
+<div class="prose">
+  <div class="i18n-markdown" data-i18n-lang="zh">
+    <slot />
+  </div>
+  {hasEnglishBody && <div class="i18n-markdown" data-i18n-lang="en" set:html={englishBodyHtml} />}
+</div>

@@ -1,8 +1,9 @@
 ---
 import { getCollection, render } from 'astro:content';  // ← 导入 render
+import BackLink from '../../components/BackLink.astro';
 import I18nText from '../../components/I18nText.astro';
+import LocalizedMarkdown from '../../components/LocalizedMarkdown.astro';
 import { projectCategoryLabels } from '../../lib/i18n';
-import { renderMarkdownToHtml } from '../../lib/markdown';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export async function getStaticPaths() {
@@ -20,9 +21,7 @@ const hasEnglishBody = Boolean(englishBodySource.trim());
 const titleEn = project.data.titleEn ?? project.data.title;
 const descriptionEn = project.data.descriptionEn ?? project.data.description;
 const categoryLabel = project.data.category ? projectCategoryLabels[project.data.category] : undefined;
-const englishBodyHtml = hasEnglishBody ? await renderMarkdownToHtml(englishBodySource) : '';
 const hasActionLinks = Boolean(project.data.liveUrl || project.data.githubUrl);
-const backLinkStyle = 'display:inline-flex; align-items:center; gap:8px; color:var(--color-text-muted); font-size:13px; margin:0 0 28px; transition:color var(--transition);';
 ---
 <BaseLayout
   title={project.data.title}
@@ -32,12 +31,7 @@ const backLinkStyle = 'display:inline-flex; align-items:center; gap:8px; color:v
   activePage="portfolio"
 >
   <article class="portfolio-detail-article">
-    <div>
-      <a href="/portfolio" style={backLinkStyle}>
-        <span aria-hidden="true">←</span>
-        <I18nText zh="返回作品集" en="Back to Portfolio" />
-      </a>
-    </div>
+    <BackLink href="/portfolio" zh="返回作品集" en="Back to Portfolio" />
 
     <div class="portfolio-card-image portfolio-card-image-desktop" style="border-radius:12px; margin-bottom:40px; aspect-ratio:16/9;">
       {project.data.image
@@ -87,22 +81,14 @@ const backLinkStyle = 'display:inline-flex; align-items:center; gap:8px; color:v
       </div>
     )}
 
-    <div class="prose">
-      <div class="i18n-markdown" data-i18n-lang="zh">
+    <LocalizedMarkdown englishSource={hasEnglishBody ? englishBodySource : ''}>
         <Content />
-      </div>
-      {hasEnglishBody && <div class="i18n-markdown" data-i18n-lang="en" set:html={englishBodyHtml} />}
-    </div>
+    </LocalizedMarkdown>
 
-    <div style="margin-top:56px; padding-top:28px; border-top:1px solid var(--color-border);">
-      <a href="/portfolio" style={backLinkStyle}>
-        <span aria-hidden="true">←</span>
-        <I18nText zh="返回作品集" en="Back to Portfolio" />
-      </a>
-    </div>
+    <BackLink href="/portfolio" zh="返回作品集" en="Back to Portfolio" position="bottom" />
   </article>
 
-  <style>
+  <style is:global>
     .portfolio-detail-article {
       max-width: 780px;
       margin: 64px auto;

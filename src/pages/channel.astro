@@ -1,6 +1,7 @@
 ---
-import { getCollection } from 'astro:content';
 import I18nText from '../components/I18nText.astro';
+import PageHero from '../components/PageHero.astro';
+import { getChannelSettings, getPageSettings } from '../lib/content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const platformMeta = {
@@ -21,18 +22,8 @@ const platformMeta = {
   },
 };
 
-const [channelEntry] = await getCollection('siteChannel').catch(() => []);
-const [pagesEntry] = await getCollection('sitePages').catch(() => []);
-const channelSettings = channelEntry?.data ?? {
-  channels: [],
-};
-const channelPage = pagesEntry?.data?.channel ?? {
-  sectionNumber: '05',
-  navLabel: '频道',
-  navLabelEn: 'Channels',
-  intro: '这里连接我在不同平台上的持续表达。视频、笔记与日常更新会先在那里发生，再慢慢沉淀成这里的一部分。',
-  introEn: 'This page connects the places where I keep expressing myself across different platforms. Videos, notes, and everyday updates usually happen there first, and then gradually settle into this site over time.',
-};
+const [channelSettings, pages] = await Promise.all([getChannelSettings(), getPageSettings()]);
+const channelPage = pages.channel;
 const channels = channelSettings.channels ?? [];
 ---
 <BaseLayout
@@ -42,21 +33,14 @@ const channels = channelSettings.channels ?? [];
   descriptionEn="Channel and platform links for Robin Lu"
   activePage="channel"
 >
-  <section class="channel-hero">
-    <div class="section-header" style="margin-bottom:0;">
-      <span class="section-number">{channelPage.sectionNumber}</span>
-      <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);">
-        <I18nText zh={channelPage.navLabel} en={channelPage.navLabelEn ?? channelPage.navLabel} />
-      </h1>
-      <div class="section-line"></div>
-    </div>
-    <p style="margin-top:16px; max-width:620px; color:var(--color-text-muted);">
-      <I18nText
-        zh={channelPage.intro}
-        en={channelPage.introEn ?? channelPage.intro}
-      />
-    </p>
-  </section>
+  <PageHero
+    class="channel-hero"
+    sectionNumber={channelPage.sectionNumber}
+    title={channelPage.navLabel}
+    titleEn={channelPage.navLabelEn}
+    intro={channelPage.intro}
+    introEn={channelPage.introEn}
+  />
 
   {channels.length > 0 ? (
     <div class="channel-list">

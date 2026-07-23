@@ -1,0 +1,43 @@
+@import './tokens.css';
+@import './shell.css';
+@import './home.css';
+@import './pages.css';
+@import './responsive.css';
+@import './markdown.css';
+
+.shared-section-header {
+  margin-bottom: 0;
+}
+
+.shared-page-title {
+  font-size: clamp(32px, 4vw, 52px);
+}
+
+.shared-page-intro {
+  margin-top: 16px;
+  color: var(--color-text-muted);
+}
+
+.detail-back-link-wrap {
+  margin-bottom: 32px;
+}
+
+.detail-back-link-bottom {
+  margin-top: 48px;
+  margin-bottom: 0;
+  padding-top: 32px;
+  border-top: 1px solid var(--color-border);
+}
+
+.detail-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  transition: color var(--transition);
+}
+
+.detail-back-link:hover {
+  color: var(--color-accent);
+}

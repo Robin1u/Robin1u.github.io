@@ -1,7 +1,7 @@
 ---
-import { readdirSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import I18nText from '../components/I18nText.astro';
+import PageHero from '../components/PageHero.astro';
+import { getCatEntries } from '../lib/content';
 import { formatLocalizedDate } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
@@ -16,35 +16,7 @@ const secretPage = {
   emptyDescriptionEn: 'The first cat photo has not arrived yet. Give them a little time and they will take over this corner.',
 };
 
-function getCatEntries() {
-  try {
-    const catsDir = join(process.cwd(), 'src/content/cats');
-
-    return readdirSync(catsDir)
-      .filter((file) => file.endsWith('.json'))
-      .flatMap((file) => {
-        try {
-          const data = JSON.parse(readFileSync(join(catsDir, file), 'utf-8'));
-          if (!data.title || !data.image || !data.date) return [];
-
-          return [{
-            id: file.replace(/\.json$/, ''),
-            data: {
-              ...data,
-              date: new Date(data.date),
-              featured: Boolean(data.featured),
-            },
-          }];
-        } catch {
-          return [];
-        }
-      });
-  } catch {
-    return [];
-  }
-}
-
-const catEntries = getCatEntries().sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const catEntries = await getCatEntries();
 ---
 <BaseLayout
   title={secretPage.pageTitle}
@@ -53,18 +25,14 @@ const catEntries = getCatEntries().sort((a, b) => b.data.date.valueOf() - a.data
   descriptionEn="A hidden cat page on Robin Lu's website"
   activePage="cat"
 >
-  <section class="cat-hero">
-    <div class="section-header" style="margin-bottom:0;">
-      <span class="section-number">∞</span>
-      <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);">
-        <I18nText zh={secretPage.pageTitle} en={secretPage.pageTitleEn ?? secretPage.pageTitle} />
-      </h1>
-      <div class="section-line"></div>
-    </div>
-    <p class="cat-hero-intro">
-      <I18nText zh={secretPage.intro} en={secretPage.introEn ?? secretPage.intro} />
-    </p>
-  </section>
+  <PageHero
+    class="cat-hero"
+    sectionNumber="∞"
+    title={secretPage.pageTitle}
+    titleEn={secretPage.pageTitleEn}
+    intro={secretPage.intro}
+    introEn={secretPage.introEn}
+  />
 
   {catEntries.length > 0 ? (
     <div class="cat-grid">
@@ -110,20 +78,13 @@ const catEntries = getCatEntries().sort((a, b) => b.data.date.valueOf() - a.data
     </div>
   )}
 
-  <style>
+  <style is:global>
     .cat-hero {
       padding: 64px 64px 40px;
       border-bottom: 1px solid var(--color-border);
       background:
         radial-gradient(circle at top right, rgba(232, 214, 158, 0.12), transparent 34%),
         linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent);
-    }
-
-    .cat-hero-intro {
-      margin: 16px 0 0;
-      max-width: 620px;
-      color: var(--color-text-muted);
-      line-height: 1.85;
     }
 
     .cat-grid {

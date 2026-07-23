@@ -1,0 +1,41 @@
+---
+import type { RecentItem } from '../lib/content';
+import { formatWeekLabel, recentCategoryLabels } from '../lib/i18n';
+import I18nText from './I18nText.astro';
+
+interface Props {
+  items: RecentItem[];
+  emptyClass?: string;
+}
+
+const { items, emptyClass = '' } = Astro.props;
+---
+{items.length > 0 ? (
+  <div class="life-timeline-list">
+    {items.map((item) => {
+      const categoryCopy = recentCategoryLabels[item.category];
+      const weekCopy = formatWeekLabel(item.date);
+
+      return (
+        <article class:list={['life-timeline-item', { done: item.done }]}>
+          <div class="life-timeline-top">
+            <span class="life-timeline-category"><I18nText zh={categoryCopy.zh} en={categoryCopy.en} /></span>
+            <span class="life-timeline-week"><I18nText zh={weekCopy.zh} en={weekCopy.en} /></span>
+          </div>
+          <h3 class="life-timeline-title"><I18nText zh={item.title} en={item.titleEn ?? item.title} /></h3>
+          {item.subtitle && (
+            <p class="life-timeline-subtitle"><I18nText zh={item.subtitle} en={item.subtitleEn ?? item.subtitle} /></p>
+          )}
+          <div class:list={['life-timeline-state', { done: item.done, active: !item.done }]}>
+            <span class="life-timeline-state-dot" aria-hidden="true"></span>
+            <I18nText zh={item.done ? '已完成' : '进行中'} en={item.done ? 'Done' : 'In Progress'} />
+          </div>
+        </article>
+      );
+    })}
+  </div>
+) : (
+  <div class:list={['quote-block', emptyClass]}>
+    <p class="quote-text"><I18nText zh="这里还没有最近在做的内容。" en="No recent items yet." /></p>
+  </div>
+)}

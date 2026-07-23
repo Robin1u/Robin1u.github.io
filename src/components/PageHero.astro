@@ -1,0 +1,39 @@
+---
+import I18nText from './I18nText.astro';
+
+interface Props {
+  sectionNumber: string;
+  title: string;
+  titleEn?: string;
+  intro?: string;
+  introEn?: string;
+  variant?: 'page' | 'thoughts';
+  class?: string;
+}
+
+const {
+  sectionNumber,
+  title,
+  titleEn = title,
+  intro,
+  introEn = intro,
+  variant = 'page',
+  class: className,
+} = Astro.props;
+
+const Wrapper = variant === 'thoughts' ? 'div' : 'section';
+---
+<Wrapper class:list={[variant === 'thoughts' ? 'thoughts-header' : 'page-hero', 'shared-page-hero', className]}>
+  <div class="section-header shared-section-header">
+    <span class="section-number">{sectionNumber}</span>
+    <h1 class="section-title shared-page-title">
+      <I18nText zh={title} en={titleEn} />
+    </h1>
+    <div class="section-line"></div>
+  </div>
+  {intro && (
+    <p class="shared-page-intro">
+      <I18nText zh={intro} en={introEn ?? intro} />
+    </p>
+  )}
+</Wrapper>

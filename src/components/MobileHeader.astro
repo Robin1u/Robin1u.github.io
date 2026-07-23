@@ -1,0 +1,36 @@
+---
+import I18nText from './I18nText.astro';
+
+interface Props {
+  name: string;
+  nameEn?: string;
+}
+
+const { name, nameEn = name } = Astro.props;
+---
+<header class="mobile-header">
+  <span class="mobile-header-name">
+    <I18nText zh={name} en={nameEn} />
+  </span>
+  <div class="mobile-header-actions">
+    <div
+      class="language-switch"
+      role="group"
+      aria-label="语言切换"
+      data-i18n-aria-label-zh="语言切换"
+      data-i18n-aria-label-en="Language switch"
+    >
+      <button type="button" class="language-btn" data-set-language="zh">中</button>
+      <button type="button" class="language-btn" data-set-language="en">EN</button>
+    </div>
+    <button
+      class="mobile-menu-btn"
+      id="menuBtn"
+      aria-label="打开菜单"
+      data-i18n-aria-label-zh="打开菜单"
+      data-i18n-aria-label-en="Open menu"
+    >
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>

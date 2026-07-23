@@ -1,0 +1,125 @@
+/* ========== Markdown 正文排版 ========== */
+.prose {
+  color: var(--color-text-muted);
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  color: var(--color-white);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 2.5em;
+  margin-bottom: 0.75em;
+  line-height: 1.2;
+}
+
+.prose h2 {
+  font-size: clamp(18px, 2vw, 22px);
+}
+
+.prose h3 {
+  font-size: clamp(15px, 1.5vw, 17px);
+}
+
+.prose p {
+  margin-bottom: 1.4em;
+  max-width: 68ch;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.5em;
+  margin-bottom: 1.4em;
+}
+
+.prose li {
+  margin-bottom: 0.4em;
+  max-width: 65ch;
+}
+
+.prose ul li {
+  list-style-type: disc;
+}
+
+.prose ol li {
+  list-style-type: decimal;
+}
+
+.prose strong {
+  color: var(--color-white);
+  font-weight: 600;
+}
+
+.prose em {
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+.prose a {
+  color: var(--color-primary, #4f98a3);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 180ms ease;
+}
+
+.prose a:hover {
+  text-decoration-color: currentColor;
+}
+
+.prose code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.85em;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.15em 0.45em;
+  border-radius: 4px;
+  color: #a8d8dc;
+}
+
+.prose pre {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 20px 24px;
+  overflow-x: auto;
+  margin-bottom: 1.6em;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.prose blockquote {
+  border-left: 2px solid rgba(255, 255, 255, 0.15);
+  padding-left: 1.25em;
+  margin: 1.8em 0;
+  color: rgba(255, 255, 255, 0.45);
+  font-style: italic;
+}
+
+.prose hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 2.5em 0;
+}
+
+.i18n-markdown[data-i18n-lang] {
+  display: block;
+}
+
+html[data-language='en'] .i18n-markdown[data-i18n-lang='zh'],
+html[data-language='zh'] .i18n-markdown[data-i18n-lang='en'] {
+  display: none;
+}
+
+.prose img {
+  width: 100%;
+  border-radius: 8px;
+  margin: 1.6em 0;
+}

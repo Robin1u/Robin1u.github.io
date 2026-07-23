@@ -2,25 +2,7 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
-
-const SECTION_ALIASES = {
-  ZH_TITLE: 'title',
-  TITLE_ZH: 'title',
-  EN_TITLE: 'titleEn',
-  TITLE_EN: 'titleEn',
-  ZH_DESC: 'description',
-  ZH_DESCRIPTION: 'description',
-  DESCRIPTION_ZH: 'description',
-  EN_DESC: 'descriptionEn',
-  EN_DESCRIPTION: 'descriptionEn',
-  DESCRIPTION_EN: 'descriptionEn',
-  ZH_BODY: 'body',
-  BODY_ZH: 'body',
-  EN_BODY: 'bodyEn',
-  BODY_EN: 'bodyEn',
-};
-
-const REQUIRED_FIELDS = ['title', 'titleEn', 'body', 'bodyEn'];
+import { normalizeLineEndings, parseTaggedSource } from '../public/admin/bilingual-parser.js';
 const cwd = process.cwd();
 
 function printHelp() {
@@ -75,48 +57,6 @@ function parseArgs(argv) {
   }
 
   return args;
-}
-
-function normalizeLineEndings(value) {
-  return String(value ?? '').replace(/\r\n?/g, '\n');
-}
-
-function parseTaggedSource(rawSource) {
-  const source = normalizeLineEndings(rawSource).trim();
-  if (!source) {
-    throw new Error('双语原稿为空。');
-  }
-
-  const matches = [...source.matchAll(/^\[(?<tag>[A-Z_]+)\]\s*$/gm)];
-  if (matches.length === 0) {
-    throw new Error('未找到标签。请使用 [ZH_TITLE] / [EN_TITLE] / [ZH_BODY] / [EN_BODY] 这类标签。');
-  }
-
-  const parsed = {};
-
-  matches.forEach((match, index) => {
-    const rawTag = String(match.groups?.tag ?? '').trim().toUpperCase();
-    const field = SECTION_ALIASES[rawTag];
-
-    if (!field) {
-      throw new Error(`无法识别的标签: [${rawTag}]`);
-    }
-
-    if (Object.prototype.hasOwnProperty.call(parsed, field)) {
-      throw new Error(`标签重复: [${rawTag}]`);
-    }
-
-    const start = match.index + match[0].length;
-    const end = index + 1 < matches.length ? matches[index + 1].index : source.length;
-    parsed[field] = source.slice(start, end).trim();
-  });
-
-  const missing = REQUIRED_FIELDS.filter((field) => !parsed[field]);
-  if (missing.length > 0) {
-    throw new Error(`缺少必填内容: ${missing.join(', ')}`);
-  }
-
-  return parsed;
 }
 
 function yamlEscape(value) {

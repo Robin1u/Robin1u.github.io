@@ -1,72 +1,22 @@
 ---
-import { getCollection } from 'astro:content';
 import I18nText from '../components/I18nText.astro';
+import { getHomeSettings, getLifeEntries, getPageSettings, getPublishedProjects, getPublishedThoughts, sortRecentItems } from '../lib/content';
 import { formatLocalizedDate, formatWeekLabel, localizeThoughtLabel, projectCategoryLabels, recentCategoryLabels } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const [siteEntry] = await getCollection('siteHome').catch(() => []);
-const [pagesEntry] = await getCollection('sitePages').catch(() => []);
-const site = siteEntry?.data ?? {
-  name: 'Robin Lu',
-  nameEn: 'Robin Lu',
-  heroTag: '开放合作机会',
-  heroTagEn: 'Open for collaboration',
-  status: '现在在柏林',
-  statusEn: 'Currently in Berlin',
-  roles: [],
-  heroLeadPrefix: '一名在柏林学习设计与工程的',
-  heroLeadPrefixEn: 'A',
-  heroTypingWord: '学生',
-  heroTypingWordEn: 'student',
-  heroLeadSuffix: '，',
-  heroLeadSuffixEn: ' based in Berlin,',
-  heroLeadSecondLine: '也持续把想法做成项目、文字与表达。',
-  heroLeadSecondLineEn: 'while continuously turning ideas into projects, writing, and expression.',
-  heroDescriptionParagraphs: [
-    {
-      zh: '这里记录我的作品、观察，以及日常生活里那些值得被留下来的片段。',
-      en: 'This is where I keep my work, observations, and the fragments of everyday life worth holding onto.',
-    },
-  ],
-  aboutTitle: '关于我',
-  aboutTitleEn: 'About Me',
-  aboutParagraphs: [],
-  recentTitle: '最近在做',
-  recentTitleEn: 'Recently Doing',
-  recentItems: [],
-};
-const sitePages = pagesEntry?.data ?? {
-  portfolio: {
-    sectionNumber: '02',
-    navLabel: '作品集',
-    navLabelEn: 'Portfolio',
-  },
-  thoughts: {
-    sectionNumber: '03',
-    navLabel: '想法',
-    navLabelEn: 'Thoughts',
-  },
-  life: {
-    sectionNumber: '04',
-    navLabel: '生活',
-    navLabelEn: 'Life',
-  },
-};
+const [site, sitePages, projects, thoughts, life] = await Promise.all([
+  getHomeSettings(),
+  getPageSettings(),
+  getPublishedProjects(),
+  getPublishedThoughts(),
+  getLifeEntries(),
+]);
 
-const sortedRecentItems = site.recentItems
-  .slice()
-  .sort((a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf());
+const sortedRecentItems = sortRecentItems(site.recentItems);
 const activeRecentItems = sortedRecentItems.filter((item) => !item.done);
 const recentItemsPreview = activeRecentItems.length > 0
   ? activeRecentItems.slice(0, 3)
   : sortedRecentItems.slice(0, 3);
-
-const projects = (await getCollection('projects', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const thoughts = (await getCollection('thoughts', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const life = (await getCollection('life'))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const featuredProjects = projects.filter((project) => project.data.featured).length > 0
   ? projects.filter((project) => project.data.featured).slice(0, 3)

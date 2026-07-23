@@ -1,20 +1,13 @@
 ---
-import { getCollection } from 'astro:content';
 import I18nText from '../components/I18nText.astro';
+import PageHero from '../components/PageHero.astro';
+import { getPageSettings, getPublishedThoughts } from '../lib/content';
 import { formatLocalizedDate, localizeThoughtLabel } from '../lib/i18n';
 import BaseLayout from '../layouts/BaseLayout.astro';
-const thoughts = (await getCollection('thoughts', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const [thoughts, pages] = await Promise.all([getPublishedThoughts(), getPageSettings()]);
 const categoryCount = new Set(thoughts.map((post) => post.data.category).filter(Boolean)).size;
 const tagCount = new Set(thoughts.flatMap((post) => post.data.tags ?? [])).size;
-const [pagesEntry] = await getCollection('sitePages').catch(() => []);
-const thoughtsPage = pagesEntry?.data?.thoughts ?? {
-  sectionNumber: '03',
-  navLabel: '想法',
-  navLabelEn: 'Thoughts',
-  intro: '这里整理我持续关心的问题与观察。是观点，是方法，是哲学，是我试着把复杂事情讲清楚的过程。',
-  introEn: 'This is where I organize the questions and observations I keep returning to. It holds opinions, methods, philosophy, and my ongoing attempt to make complicated things easier to understand.',
-};
+const thoughtsPage = pages.thoughts;
 ---
 <BaseLayout
   title={thoughtsPage.navLabel}
@@ -25,23 +18,16 @@ const thoughtsPage = pagesEntry?.data?.thoughts ?? {
 >
   <div class="thoughts-layout">
     <div class="thoughts-main">
-      <div class="thoughts-header">
-        <div class="section-header" style="margin-bottom:0;">
-          <span class="section-number">{thoughtsPage.sectionNumber}</span>
-          <h1 class="section-title" style="font-size: clamp(32px,4vw,52px);">
-            <I18nText zh={thoughtsPage.navLabel} en={thoughtsPage.navLabelEn ?? thoughtsPage.navLabel} />
-          </h1>
-          <div class="section-line"></div>
-        </div>
-        <p style="color:var(--color-text-muted); margin-top:16px;">
-          <I18nText
-            zh={thoughtsPage.intro}
-            en={thoughtsPage.introEn ?? thoughtsPage.intro}
-          />
-        </p>
-      </div>
+      <PageHero
+        variant="thoughts"
+        sectionNumber={thoughtsPage.sectionNumber}
+        title={thoughtsPage.navLabel}
+        titleEn={thoughtsPage.navLabelEn}
+        intro={thoughtsPage.intro}
+        introEn={thoughtsPage.introEn}
+      />
 
-      <div class="tab-content active">
+      <div class="thoughts-content">
         {thoughts.length > 0 ? (
           <div class="post-list">
             {thoughts.map((post) => {

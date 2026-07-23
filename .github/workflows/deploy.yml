@@ -37,15 +37,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
-      - name: Debug Directory
-        run: |
-          pwd
-          ls -la
-          echo "--- Checking src directory ---"
-          ls -la src/ || echo "src directory not found!"
+      - name: Type check
+        run: npm run check
 
-      - name: Build with Astro
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: Build
         run: npm run build
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Browser tests
+        run: npm run test:e2e
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

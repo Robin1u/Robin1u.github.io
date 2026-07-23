@@ -1,5 +1,5 @@
 ---
-interface Props {
+export interface Props {
   as?: string;
   zh: string;
   en?: string;
@@ -11,7 +11,7 @@ const {
   zh,
   en = zh,
   ...rest
-} = Astro.props;
+} = Astro.props as Props;
 
 const Tag = as;
 ---

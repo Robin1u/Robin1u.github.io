@@ -1,6 +1,6 @@
 // src/content.config.ts
 import { defineCollection, z } from 'astro:content';
-import { glob, file } from 'astro/loaders';
+import { glob } from 'astro/loaders';
 
 const optionalUrl = z.preprocess((value) => {
   if (typeof value !== 'string') return value;
@@ -168,7 +168,7 @@ const life = defineCollection({
 });
 
 const cats = defineCollection({
-  loader: glob({ pattern: '*.json', base: './src/content/cats' }),
+  loader: glob({ pattern: '**/*.json', base: './src/content/cats' }),
   schema: z.object({
     id: z.string().optional(),
     title: z.string(),
@@ -183,5 +183,4 @@ const cats = defineCollection({
   }),
 });
 
-// 记得导出 collections
 export const collections = { siteHome, sitePages, siteChannel, projects, thoughts, life, cats };
