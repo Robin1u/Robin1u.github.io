@@ -5,6 +5,7 @@ import {
   normalizeOptionalUrls,
   parseTaggedSource,
   prepareContentRecord,
+  preparePreviewRecord,
   validateManualOrSource,
 } from '../public/admin/bilingual-parser.js';
 
@@ -74,4 +75,28 @@ test('normalizes only optional URL fields', () => {
     normalizeOptionalUrls({ liveUrl: ' ', githubUrl: 'https://github.com/test', title: '标题' }),
     { githubUrl: 'https://github.com/test', title: '标题' },
   );
+});
+
+test('previews tagged source without mutating the source record', () => {
+  const record = { bilingualSource: completeSource, title: '旧标题' };
+  const preview = preparePreviewRecord(record);
+
+  assert.equal(preview.parsedSource, true);
+  assert.equal(preview.error, null);
+  assert.equal(preview.data.title, '中文标题');
+  assert.equal(preview.data.titleEn, 'English title');
+  assert.equal(record.title, '旧标题');
+  assert.equal(record.bilingualSource, completeSource);
+});
+
+test('keeps formal fields and reports incomplete preview source', () => {
+  const preview = preparePreviewRecord({
+    bilingualSource: '[ZH_TITLE]\n只有标题',
+    title: '手动标题',
+    body: '手动正文',
+  });
+
+  assert.equal(preview.parsedSource, false);
+  assert.match(preview.error, /缺少必填部分/);
+  assert.equal(preview.data.title, '手动标题');
 });

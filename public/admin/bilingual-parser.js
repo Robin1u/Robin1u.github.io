@@ -114,3 +114,24 @@ export function prepareContentRecord(record) {
     parsedSource: true,
   };
 }
+
+export function preparePreviewRecord(record) {
+  const rawSource = String(record?.[SOURCE_FIELD] ?? '').trim();
+  if (!rawSource) {
+    return { data: { ...record }, parsedSource: false, error: null };
+  }
+
+  try {
+    return {
+      data: applyParsedRecord(record, parseTaggedSource(rawSource)),
+      parsedSource: true,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: { ...record },
+      parsedSource: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
